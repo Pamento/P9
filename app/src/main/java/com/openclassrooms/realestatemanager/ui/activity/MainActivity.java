@@ -12,6 +12,8 @@ import com.openclassrooms.realestatemanager.databinding.ActivityMainBinding;
 import com.openclassrooms.realestatemanager.ui.fragments.ListProperty;
 import com.openclassrooms.realestatemanager.ui.fragments.MapFragment;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
@@ -33,12 +35,17 @@ public class MainActivity extends AppCompatActivity {
         fTransaction.add(R.id.main_activity_fragment_container, listProperty).addToBackStack(null).commit();
     }
 
-    public void displayMap() {
-        MapFragment mf = MapFragment.newInstance(null, null);
+    public void displayFrak(String fragment) {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
         transaction.setReorderingAllowed(true);
-        transaction.replace(R.id.main_activity_fragment_container, mf);
+        if (fragment.equals("LIST")) {
+            ListProperty lp = ListProperty.newInstance(null,null);
+            transaction.replace(R.id.main_activity_fragment_container, lp);
+        } else if (fragment.equals("MAP")) {
+            MapFragment mf = MapFragment.newInstance(null, null);
+            transaction.replace(R.id.main_activity_fragment_container, mf);
+        }
         transaction.commit();
     }
 }

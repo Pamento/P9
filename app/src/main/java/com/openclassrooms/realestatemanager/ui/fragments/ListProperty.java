@@ -5,21 +5,29 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.openclassrooms.realestatemanager.data.model.SingleProperty;
 import com.openclassrooms.realestatemanager.databinding.FragmentListPropertyBinding;
 import com.openclassrooms.realestatemanager.ui.activity.MainActivity;
+import com.openclassrooms.realestatemanager.ui.adapters.ListPropertyAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link ListProperty#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ListProperty extends Fragment {
+public class ListProperty extends Fragment implements ListPropertyAdapter.OnItemPropertyListClickListener {
 
     private static final String TAG = "LIST_TO_MAP";
     // TODO: Rename parameter arguments, choose names that match
@@ -27,6 +35,8 @@ public class ListProperty extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private FragmentListPropertyBinding binding;
+    private ListPropertyAdapter mAdapter;
+    private List<SingleProperty> mProperties = new ArrayList<>();
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -74,6 +84,7 @@ public class ListProperty extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        setRecyclerView();
         setFabListener();
     }
 
@@ -83,14 +94,28 @@ public class ListProperty extends Fragment {
             public void onClick(View view) {
                 Log.i(TAG, "onClick: LISTE _ fab;;");
                 MainActivity ma = (MainActivity) requireActivity();
-                ma.displayMap();
+                ma.displayFrak("MAP");
             }
         });
+    }
+
+    private void setRecyclerView() {
+        RecyclerView recyclerView = binding.listRecyclerView;
+        mAdapter = new ListPropertyAdapter(mProperties,this);
+        recyclerView.setAdapter(mAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         binding = null;
+    }
+
+    @Override
+    public void onItemPropertyListClickListener(int position) {
+        // TODO on click what you want to do ?
+        Log.i(TAG, "LIST__ onItemPropertyListClickListener:");
     }
 }
