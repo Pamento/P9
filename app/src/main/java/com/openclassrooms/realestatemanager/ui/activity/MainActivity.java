@@ -9,14 +9,14 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.databinding.ActivityMainBinding;
+import com.openclassrooms.realestatemanager.ui.fragments.DetailFragment;
 import com.openclassrooms.realestatemanager.ui.fragments.ListProperty;
 import com.openclassrooms.realestatemanager.ui.fragments.MapFragment;
-
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +45,9 @@ public class MainActivity extends AppCompatActivity {
         } else if (fragment.equals("MAP")) {
             MapFragment mf = MapFragment.newInstance(null, null);
             transaction.replace(R.id.main_activity_fragment_container, mf);
+        } else {
+            DetailFragment df = DetailFragment.newInstance(fragment,null);
+            transaction.replace(R.id.main_activity_fragment_container, df);
         }
         transaction.commit();
     }

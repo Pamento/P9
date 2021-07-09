@@ -21,6 +21,7 @@ import com.openclassrooms.realestatemanager.ui.adapters.ListPropertyAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -88,14 +89,15 @@ public class ListProperty extends Fragment implements ListPropertyAdapter.OnItem
         setFabListener();
     }
 
+    private void startOtherFragment(String param) {
+        MainActivity ma = (MainActivity) requireActivity();
+        ma.displayFrak(param);
+    }
+
     private void setFabListener() {
-        binding.fabList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i(TAG, "onClick: LISTE _ fab;;");
-                MainActivity ma = (MainActivity) requireActivity();
-                ma.displayFrak("MAP");
-            }
+        binding.fabList.setOnClickListener(view -> {
+            Log.i(TAG, "onClick: LIST _ fab;;");
+            startOtherFragment("MAP");
         });
     }
 
@@ -115,6 +117,10 @@ public class ListProperty extends Fragment implements ListPropertyAdapter.OnItem
 
     @Override
     public void onItemPropertyListClickListener(int position) {
+        //SingleProperty prop = mProperties.get(position);
+        //String id = prop.getId();
+        String id = "1";
+        startOtherFragment("id");
         // TODO on click what you want to do ?
         Log.i(TAG, "LIST__ onItemPropertyListClickListener:");
     }
