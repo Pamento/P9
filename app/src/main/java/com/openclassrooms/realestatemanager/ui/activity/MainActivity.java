@@ -1,9 +1,11 @@
 package com.openclassrooms.realestatemanager.ui.activity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -13,8 +15,10 @@ import com.openclassrooms.realestatemanager.ui.fragments.DetailFragment;
 import com.openclassrooms.realestatemanager.ui.fragments.ListProperty;
 import com.openclassrooms.realestatemanager.ui.fragments.MapFragment;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.Objects;
 
+public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "MainActivity";
     private ActivityMainBinding binding;
 
     @Override
@@ -26,6 +30,14 @@ public class MainActivity extends AppCompatActivity {
         displayListFragment();
     }
 
+    private void setToolbarTitle(String toolbarTitle, boolean backButton) {
+        Objects.requireNonNull(getSupportActionBar()).setTitle(toolbarTitle);
+        if (backButton) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowCustomEnabled(true);
+        }
+    }
+
     private void displayListFragment() {
         ListProperty listProperty = ListProperty.newInstance(null, null);
 
@@ -35,20 +47,45 @@ public class MainActivity extends AppCompatActivity {
         fTransaction.add(R.id.main_activity_fragment_container, listProperty).addToBackStack(null).commit();
     }
 
-    public void displayFrak(String fragment) {
+    public void displayFrak(String param) {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
         transaction.setReorderingAllowed(true);
-        if (fragment.equals("LIST")) {
+        if (param.equals("LIST")) {
             ListProperty lp = ListProperty.newInstance(null,null);
             transaction.replace(R.id.main_activity_fragment_container, lp);
-        } else if (fragment.equals("MAP")) {
+            setToolbarTitle(getResources().getString(R.string.app_name),false);
+        } else if (param.equals("MAP")) {
             MapFragment mf = MapFragment.newInstance(null, null);
             transaction.replace(R.id.main_activity_fragment_container, mf);
+            setToolbarTitle("New York", false);
         } else {
-            DetailFragment df = DetailFragment.newInstance(fragment,null);
-            transaction.replace(R.id.main_activity_fragment_container, df);
+            DetailFragment df = DetailFragment.newInstance(param,null);
+            // transaction.add add the fragment as a layer without removing the list
+            transaction.add(R.id.main_activity_fragment_container, df);
+            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+            setToolbarTitle(param, true);
         }
-        transaction.commit();
+        transaction.addToBackStack(param).commit();
+    }
+
+    // for manage display of name of fragment like title in the Toolbar
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Fragment fragment = this.getSupportFragmentManager().findFragmentById(R.id.main_activity_fragment_container);
+        if (fragment instanceof ListProperty) {
+            Log.i(TAG, "onBackPressed: " + getResources().getString(R.string.app_name));
+            setToolbarTitle(getResources().getString(R.string.app_name),false);
+        } else if (fragment instanceof MapFragment) {
+            Log.i(TAG, "onBackPressed: NEW YORK");
+        }
+    }
+
+    // enable/display the flesh of backUp button
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

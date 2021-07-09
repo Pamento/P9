@@ -119,8 +119,8 @@ public class ListProperty extends Fragment implements ListPropertyAdapter.OnItem
     public void onItemPropertyListClickListener(int position) {
         //SingleProperty prop = mProperties.get(position);
         //String id = prop.getId();
-        String id = "1";
-        startOtherFragment("id");
+        String id = "1 to be";
+        startOtherFragment(id);
         // TODO on click what you want to do ?
         Log.i(TAG, "LIST__ onItemPropertyListClickListener:");
     }

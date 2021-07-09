@@ -2,9 +2,11 @@ package com.openclassrooms.realestatemanager.ui.fragments;
 
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +21,7 @@ import com.openclassrooms.realestatemanager.databinding.FragmentMapBinding;
  * create an instance of this fragment.
  */
 public class DetailFragment extends Fragment {
-
+    private static final String TAG = "DetailFragment";
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -59,6 +61,14 @@ public class DetailFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+//        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+//            @Override
+//            public void handleOnBackPressed() {
+//                Log.i(TAG, "handleOnBackPressed: 1 param:: " + mParam1);
+//                Log.i(TAG, "handleOnBackPressed: 2 param:: " + mParam2);
+//            }
+//        };
+//        requireActivity().getOnBackPressedDispatcher().addCallback(this,callback);
     }
 
     @Override
