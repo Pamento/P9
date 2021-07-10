@@ -18,10 +18,13 @@ import com.openclassrooms.realestatemanager.data.model.SingleProperty;
 import com.openclassrooms.realestatemanager.databinding.FragmentListPropertyBinding;
 import com.openclassrooms.realestatemanager.ui.activity.MainActivity;
 import com.openclassrooms.realestatemanager.ui.adapters.ListPropertyAdapter;
+import com.openclassrooms.realestatemanager.util.EFragments;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+
+import static com.openclassrooms.realestatemanager.util.EFragments.DETAIL;
+import static com.openclassrooms.realestatemanager.util.EFragments.MAP;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -89,15 +92,15 @@ public class ListProperty extends Fragment implements ListPropertyAdapter.OnItem
         setFabListener();
     }
 
-    private void startOtherFragment(String param) {
+    private void startOtherFragment(EFragments fragment, String param) {
         MainActivity ma = (MainActivity) requireActivity();
-        ma.displayFrak(param);
+        ma.displayFrak(fragment,param);
     }
 
     private void setFabListener() {
         binding.fabList.setOnClickListener(view -> {
             Log.i(TAG, "onClick: LIST _ fab;;");
-            startOtherFragment("MAP");
+            startOtherFragment(MAP, "");
         });
     }
 
@@ -118,10 +121,8 @@ public class ListProperty extends Fragment implements ListPropertyAdapter.OnItem
     @Override
     public void onItemPropertyListClickListener(int position) {
         //SingleProperty prop = mProperties.get(position);
-        //String id = prop.getId();
-        String id = "1 to be";
-        startOtherFragment(id);
-        // TODO on click what you want to do ?
+        String id = "prop.getId()";
+        startOtherFragment(DETAIL, id);
         Log.i(TAG, "LIST__ onItemPropertyListClickListener:");
     }
 }

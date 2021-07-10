@@ -15,6 +15,8 @@ import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.databinding.FragmentMapBinding;
 import com.openclassrooms.realestatemanager.ui.activity.MainActivity;
 
+import static com.openclassrooms.realestatemanager.util.EFragments.LIST;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link MapFragment#newInstance} factory method to
@@ -77,13 +79,10 @@ public class MapFragment extends Fragment {
         setFabListener();
     }
     private void setFabListener() {
-        binding.fabList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i(TAG, "onClick: LISTE _ fab;;");
-                MainActivity ma = (MainActivity) requireActivity();
-                ma.displayFrak("LIST");
-            }
+        binding.fabList.setOnClickListener(view -> {
+            Log.i(TAG, "onClick: LIST _ fab;;");
+            MainActivity ma = (MainActivity) requireActivity();
+            ma.displayFrak(LIST,"");
         });
     }
 }

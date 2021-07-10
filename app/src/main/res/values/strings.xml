@@ -9,4 +9,12 @@
     <string name="detail_description">Description</string>
     <string name="img_descript_small_static_map">small static map</string>
     <string name="detail_rooms">%d rooms</string>
+    <string name="mi_title_search">Search property</string>
+    <string name="mi_title_add_property">Add property</string>
+    <string name="mi_title_edit_property">Edit property</string>
+    <string name="mi_title_save_change">Save change</string>
+    <string name="mi_title_discard_change">Discard change</string>
+    <string name="mi_dollar_to_euro"><![CDATA[$ → €]]></string>
+    <string name="mi_title_euro_to_dollar"><![CDATA[€ → $]]></string>
+    <string name="mi_title_loan_calculator">Loan calculator</string>
 </resources>

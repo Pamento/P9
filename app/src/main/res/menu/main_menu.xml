@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/mi_add"
+        android:icon="@drawable/ic_add_white_24"
+        android:title="@string/mi_title_add_property"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/mi_search"
+        android:icon="@drawable/ic_search_white_24"
+        android:title="@string/mi_title_search"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/mi_dollar_to_euro"
+        android:focusable="false"
+        android:title="@string/mi_dollar_to_euro"/>
+
+    <item
+        android:id="@+id/mi_euro_to_dollar"
+        android:focusable="false"
+        android:title="@string/mi_title_euro_to_dollar"/>
+</menu>
