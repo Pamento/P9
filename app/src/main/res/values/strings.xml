@@ -2,13 +2,21 @@
     <string name="app_name">Real Estate Manager</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Titles of fragments -->
+    <string name="frg_map_title">New York</string>
+    <string name="frg_add_title">New property</string>
+    <string name="frg_edit_title">Modify information\'s</string>
+    <string name="frg_search_title">Search</string>
+    <string name="frg_simulator_title">Loan calculator</string>
+    <!-- detail fragment -->
     <string name="img_description_about_property_image">about property image</string>
     <string name="detail_prop_available">Available</string>
     <string name="since">Since:</string>
     <string name="detail_date_init">2021/01/06</string>
     <string name="detail_description">Description</string>
-    <string name="img_descript_small_static_map">small static map</string>
+    <string name="img_description_small_static_map">small static map</string>
     <string name="detail_rooms">%d rooms</string>
+    <!-- menu items -->
     <string name="mi_title_search">Search property</string>
     <string name="mi_title_add_property">Add property</string>
     <string name="mi_title_edit_property">Edit property</string>
@@ -17,4 +25,5 @@
     <string name="mi_dollar_to_euro"><![CDATA[$ → €]]></string>
     <string name="mi_title_euro_to_dollar"><![CDATA[€ → $]]></string>
     <string name="mi_title_loan_calculator">Loan calculator</string>
+    <string name="add_frg_date_init_label">Date of take of the property in manage:</string>
 </resources>

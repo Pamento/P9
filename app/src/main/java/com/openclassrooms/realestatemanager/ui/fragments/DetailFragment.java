@@ -79,4 +79,10 @@ public class DetailFragment extends Fragment {
         return binding.getRoot();
         //return inflater.inflate(R.layout.fragment_detail, container, false);
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
+    }
 }

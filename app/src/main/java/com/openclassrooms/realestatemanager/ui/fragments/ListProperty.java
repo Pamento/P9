@@ -80,9 +80,7 @@ public class ListProperty extends Fragment implements ListPropertyAdapter.OnItem
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         binding = FragmentListPropertyBinding.inflate(inflater,container,false);
-        //return inflater.inflate(R.layout.fragment_list_property, container, false);
         return binding.getRoot();
     }
 
@@ -94,7 +92,7 @@ public class ListProperty extends Fragment implements ListPropertyAdapter.OnItem
 
     private void startOtherFragment(EFragments fragment, String param) {
         MainActivity ma = (MainActivity) requireActivity();
-        ma.displayFrak(fragment,param);
+        ma.displayFragm(fragment,param);
     }
 
     private void setFabListener() {
@@ -113,8 +111,8 @@ public class ListProperty extends Fragment implements ListPropertyAdapter.OnItem
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDestroyView() {
+        super.onDestroyView();
         binding = null;
     }
 

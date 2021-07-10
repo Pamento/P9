@@ -3,12 +3,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorWhite"
     tools:context=".ui.fragments.AddProperty">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:id="@+id/add_date_init_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/add_frg_date_init_label"
+        android:labelFor="@+id/add_date_init" />
+    <EditText
+        android:id="@+id/add_date_init"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:autofillHints="2021/01/07"
+        android:inputType="date" />
 
 </FrameLayout>

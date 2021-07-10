@@ -204,7 +204,7 @@
                     android:layout_height="250dp"
                     android:layout_gravity="center"
                     tools:src="@tools:sample/avatars"
-                    android:contentDescription="@string/img_descript_small_static_map" />
+                    android:contentDescription="@string/img_description_small_static_map" />
             </LinearLayout>
 
             <LinearLayout
