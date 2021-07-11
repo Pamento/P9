@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import com.openclassrooms.realestatemanager.databinding.FragmentMapBinding;
 import com.openclassrooms.realestatemanager.ui.activity.MainActivity;
 
-import static com.openclassrooms.realestatemanager.util.EFragments.LIST;
+import static com.openclassrooms.realestatemanager.util.enums.EFragments.LIST;
 
 /**
  * A simple {@link Fragment} subclass.

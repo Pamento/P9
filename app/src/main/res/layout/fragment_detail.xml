@@ -1,306 +1,304 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@android:color/white"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     tools:context=".ui.fragments.DetailFragment">
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/detail_1_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/detail_1_layout"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/detail_available"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
-
-                <TextView
-                    android:id="@+id/detail_available"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="@string/detail_prop_available"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
-                <TextView
-                    android:id="@+id/detail_since"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="@string/since"
-                    app:layout_constraintEnd_toStartOf="@+id/detail_date_init"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
-                <TextView
-                    android:id="@+id/detail_date_init"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="@string/detail_date_init"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/detail_2_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginHorizontal="16dp"
+                android:layout_margin="10dp"
+                android:text="@string/detail_prop_available"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/detail_1_layout">
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <ImageView
-                    android:id="@+id/imageView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="@string/app_name"
-                    tools:src="@tools:sample/avatars" />
-
-                <ImageView
-                    android:id="@+id/imageView2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="@string/app_name"
-                    tools:src="@tools:sample/avatars" />
-
-                <ImageView
-                    android:id="@+id/imageView3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="@string/app_name"
-                    tools:src="@tools:sample/avatars" />
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/detail_3_Layout"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/detail_since"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="48dp"
-                android:layout_marginVertical="16dp"
-                app:layout_constraintTop_toBottomOf="@+id/detail_2_layout"
-                app:layout_constraintStart_toStartOf="parent">
+                android:layout_margin="10dp"
+                android:text="@string/since"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/detail_date_init"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/detail_surface"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="surface: 200m²"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"/>
-
-                <TextView
-                    android:id="@+id/detail_price"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="1,000,000 $"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-                <TextView
-                    android:id="@+id/detail_bathroom"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/detail_rooms"
-                    app:layout_constraintTop_toBottomOf="@+id/detail_surface"
-                    app:layout_constraintStart_toStartOf="@+id/detail_surface"/>
-
-                <TextView
-                    android:id="@+id/detail_rooms_number"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="1 bathroom"
-                    app:layout_constraintTop_toBottomOf="@+id/detail_bathroom"
-                    app:layout_constraintStart_toStartOf="@+id/detail_bathroom"/>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <LinearLayout
-                android:id="@+id/detail_4_layout"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/detail_date_init"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_margin="16dp">
+                android:layout_margin="10dp"
+                android:text="@string/detail_date_init"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <TextView
-                    android:id="@+id/detail_description_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/detail_description"
-                    style="@style/TextAppearance.AppCompat.Title"/>
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/detail_2_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/detail_1_layout">
 
-                <TextView
-                    android:id="@+id/detail_description"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="bla bla cartoons fo karton tu titam. bla bla cartoons fo karton tu titam. bla bla cartoons fo karton tu titam. bla bla cartoons fo karton tu titam. bla bla cartoons fo karton tu titam. bla bla cartoons fo karton tu titam. bla bla cartoons fo karton tu titam. bla bla cartoons fo karton tu titam. bla bla cartoons fo karton tu titam. bla bla cartoons fo karton tu titam. bla bla cartoons fo karton tu titam. bla bla cartoons fo karton tu titam. bla bla cartoons fo karton tu titam. bla bla cartoons fo karton tu titam." />
-
-            </LinearLayout>
-            <LinearLayout
-                android:id="@+id/detail_5_layout"
-                android:layout_width="match_parent"
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="48dp"
-                android:layout_marginTop="16dp"
-                android:orientation="vertical">
+                android:contentDescription="@string/app_name"
+                tools:src="@tools:sample/avatars" />
 
-                <TextView
-                    android:id="@+id/detail_address_1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="740 Park Avenue" />
-
-                <TextView
-                    android:id="@+id/detail_address_2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Apt 6/7 A" />
-
-                <TextView
-                    android:id="@+id/detail_address_3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="New York" />
-
-                <TextView
-                    android:id="@+id/detail_address_4"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="NY 10021" />
-
-                <TextView
-                    android:id="@+id/detail_address_5"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="United States" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/detail_6_layout"
-                android:layout_width="match_parent"
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="32dp"
-                android:orientation="vertical">
+                android:contentDescription="@string/app_name"
+                tools:src="@tools:sample/avatars" />
 
-                <ImageView
-                    android:id="@+id/detail_small_map"
-                    android:layout_width="250dp"
-                    android:layout_height="250dp"
-                    android:layout_gravity="center"
-                    tools:src="@tools:sample/avatars"
-                    android:contentDescription="@string/img_description_small_static_map" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/detail_7_layout"
-                android:layout_width="match_parent"
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="48dp"
-                android:orientation="vertical">
+                android:contentDescription="@string/app_name"
+                tools:src="@tools:sample/avatars" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/detail_3_Layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="48dp"
+            android:layout_marginVertical="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/detail_2_layout">
 
-                <TextView
-                    android:id="@+id/textView10"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Near by:"
-                    style="@style/TextAppearance.AppCompat.Title"/>
-
-                <TextView
-                    android:id="@+id/textView12"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
-                    android:layout_marginVertical="8dp"
-                    android:text="Shop" />
-
-                <TextView
-                    android:id="@+id/textView9"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
-                    android:layout_marginVertical="8dp"
-                    android:text="Metro" />
-
-                <TextView
-                    android:id="@+id/textView8"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
-                    android:layout_marginVertical="8dp"
-                    android:text="School" />
-
-                <TextView
-                    android:id="@+id/textView13"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
-                    android:layout_marginVertical="8dp"
-                    android:text="train" />
-
-                <TextView
-                    android:id="@+id/textView7"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
-                    android:layout_marginVertical="8dp"
-                    android:text="bus" />
-
-                <TextView
-                    android:id="@+id/textView11"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
-                    android:layout_marginVertical="8dp"
-                    android:text="center of town" />
-
-                <TextView
-                    android:id="@+id/textView6"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
-                    android:layout_marginVertical="8dp"
-                    android:text="park" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/detail_8_layout"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/detail_surface"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="32dp"
-                android:orientation="vertical">
+                android:text="surface: 200m²"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/detail_agent_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/TextAppearance.AppCompat.Title"
-                    android:text="Managed by:"/>
-                <TextView
-                    android:id="@+id/detail_agent"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="Mark Manumer"/>
-            </LinearLayout>
+            <TextView
+                android:id="@+id/detail_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1,000,000 $"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/detail_bathroom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/detail_rooms"
+                app:layout_constraintStart_toStartOf="@+id/detail_surface"
+                app:layout_constraintTop_toBottomOf="@+id/detail_surface" />
+
+            <TextView
+                android:id="@+id/detail_rooms_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1 bathroom"
+                app:layout_constraintStart_toStartOf="@+id/detail_bathroom"
+                app:layout_constraintTop_toBottomOf="@+id/detail_bathroom" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:id="@+id/detail_4_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/detail_description_title"
+                style="@style/TextAppearance.AppCompat.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/detail_description" />
+
+            <TextView
+                android:id="@+id/detail_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="bla bla cartoons fo karton tu titam. bla bla cartoons fo karton tu titam. bla bla cartoons fo karton tu titam. bla bla cartoons fo karton tu titam. bla bla cartoons fo karton tu titam. bla bla cartoons fo karton tu titam. bla bla cartoons fo karton tu titam. bla bla cartoons fo karton tu titam. bla bla cartoons fo karton tu titam. bla bla cartoons fo karton tu titam. bla bla cartoons fo karton tu titam. bla bla cartoons fo karton tu titam. bla bla cartoons fo karton tu titam. bla bla cartoons fo karton tu titam." />
 
         </LinearLayout>
-    </ScrollView>
 
-</LinearLayout>
+        <LinearLayout
+            android:id="@+id/detail_5_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical"
+            android:paddingHorizontal="48dp">
+
+            <TextView
+                android:id="@+id/detail_address_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="740 Park Avenue" />
+
+            <TextView
+                android:id="@+id/detail_address_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Apt 6/7 A" />
+
+            <TextView
+                android:id="@+id/detail_address_3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="New York" />
+
+            <TextView
+                android:id="@+id/detail_address_4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="NY 10021" />
+
+            <TextView
+                android:id="@+id/detail_address_5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="United States" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/detail_6_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="32dp"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/detail_small_map"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:layout_gravity="center"
+                android:contentDescription="@string/img_description_small_static_map"
+                tools:src="@tools:sample/avatars" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/detail_7_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="48dp"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:id="@+id/textView10"
+                style="@style/TextAppearance.AppCompat.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Near by:" />
+
+            <TextView
+                android:id="@+id/textView12"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginVertical="8dp"
+                android:text="Shop" />
+
+            <TextView
+                android:id="@+id/textView9"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginVertical="8dp"
+                android:text="Metro" />
+
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginVertical="8dp"
+                android:text="School" />
+
+            <TextView
+                android:id="@+id/textView13"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginVertical="8dp"
+                android:text="train" />
+
+            <TextView
+                android:id="@+id/textView7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginVertical="8dp"
+                android:text="bus" />
+
+            <TextView
+                android:id="@+id/textView11"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginVertical="8dp"
+                android:text="center of town" />
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginVertical="8dp"
+                android:text="park" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/detail_8_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="32dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/detail_agent_title"
+                style="@style/TextAppearance.AppCompat.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Managed by:" />
+
+            <TextView
+                android:id="@+id/detail_agent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="Mark Manumer" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

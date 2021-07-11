@@ -8,14 +8,6 @@
     <string name="frg_edit_title">Modify information\'s</string>
     <string name="frg_search_title">Search</string>
     <string name="frg_simulator_title">Loan calculator</string>
-    <!-- detail fragment -->
-    <string name="img_description_about_property_image">about property image</string>
-    <string name="detail_prop_available">Available</string>
-    <string name="since">Since:</string>
-    <string name="detail_date_init">2021/01/06</string>
-    <string name="detail_description">Description</string>
-    <string name="img_description_small_static_map">small static map</string>
-    <string name="detail_rooms">%d rooms</string>
     <!-- menu items -->
     <string name="mi_title_search">Search property</string>
     <string name="mi_title_add_property">Add property</string>
@@ -26,4 +18,51 @@
     <string name="mi_title_euro_to_dollar"><![CDATA[€ → $]]></string>
     <string name="mi_title_loan_calculator">Loan calculator</string>
     <string name="add_frg_date_init_label">Date of take of the property in manage:</string>
+    <!-- detail fragment -->
+    <string name="img_description_about_property_image">about property image</string>
+    <string name="detail_prop_available">Available</string>
+    <string name="since">Since</string>
+    <string name="detail_date_init">2021/01/06</string>
+    <string name="detail_description">Description</string>
+    <string name="img_description_small_static_map">small static map</string>
+    <string name="detail_rooms">%d rooms</string>
+    <!-- add fragment -->
+    <string name="add_type_dropdown_menu">Type of property</string>
+    <string name="add_price_dollar">Price ($)</string>
+    <string name="add_surface_m2">Surface (m²)</string>
+    <string name="add_rooms">Rooms</string>
+    <string name="add_bedrooms">Bedrooms</string>
+    <string name="add_bathrooms">Bathrooms</string>
+    <string name="add_nearby">NearBy</string>
+    <string name="add_description">Description</string>
+    <string name="add_address">Address</string>
+    <string name="add_quarter">Quarter</string>
+    <string name="add_on_market_since">On Market since</string>
+    <string name="add_sold">Sold</string>
+    <string name="add_sold_on">Sold on</string>
+    <string name="add_manage_by">Manage by</string>
+    <string name="add_add_image_title">Add image</string>
+    <string name="add_add_img_camera">From camera</string>
+    <string name="add_add_img_gallery">From gallery</string>
+    <string name="add_hint_numeric_1">1</string>
+    <string name="add_hint_numeric_price">100,000,000</string>
+    <string name="add_location">Location</string>
+    <string name="add_type">Type of property</string>
+    <string name="add_date"><![CDATA[Date of put on market & sold]]></string>
+    <string name="add_manage_by_agent">Manage by agent</string>
+    <!-- amenities -->
+    <string name="school">School</string>
+    <string name="playground">Playground</string>
+    <string name="shop">Shops</string>
+    <string name="buses">Bus</string>
+    <string name="subway">Subway</string>
+    <string name="park">Park</string>
+    <!-- address form -->
+    <string name="add_form_address">Address</string>
+    <string name="add_form_address_suite">Address, suite, etc.</string>
+    <string name="add_form_city">City</string>
+    <string name="add_address_form_quarter">Quarter</string>
+    <string name="add_address_form_postal_code">ZIP/postal code</string>
+    <!-- -->
+
 </resources>

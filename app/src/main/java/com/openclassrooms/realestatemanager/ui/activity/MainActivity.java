@@ -22,11 +22,11 @@ import com.openclassrooms.realestatemanager.ui.fragments.ListProperty;
 import com.openclassrooms.realestatemanager.ui.fragments.LoanSimulator;
 import com.openclassrooms.realestatemanager.ui.fragments.MapFragment;
 import com.openclassrooms.realestatemanager.ui.fragments.SearchEngine;
-import com.openclassrooms.realestatemanager.util.EFragments;
+import com.openclassrooms.realestatemanager.util.enums.EFragments;
 
 import java.util.Objects;
 
-import static com.openclassrooms.realestatemanager.util.EFragments.*;
+import static com.openclassrooms.realestatemanager.util.enums.EFragments.*;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";

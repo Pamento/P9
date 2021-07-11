@@ -1,4 +1,4 @@
-package com.openclassrooms.realestatemanager.util;
+package com.openclassrooms.realestatemanager.util.enums;
 
 public enum EFragments {
     LIST,

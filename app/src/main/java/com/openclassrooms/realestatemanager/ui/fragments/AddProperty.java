@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.databinding.AmenitiesCheckboxesBinding;
+import com.openclassrooms.realestatemanager.databinding.FormAddressPropertyBinding;
 import com.openclassrooms.realestatemanager.databinding.FragmentAddPropertyBinding;
 
 /**
@@ -23,6 +25,8 @@ public class AddProperty extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private FragmentAddPropertyBinding binding;
+    private AmenitiesCheckboxesBinding amenitiesBinding;
+    private FormAddressPropertyBinding formAddressBinding;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -63,12 +67,22 @@ public class AddProperty extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentAddPropertyBinding.inflate(inflater, container, false);
+        bindIncludesLayouts();
         return binding.getRoot();
+    }
+
+    private void bindIncludesLayouts() {
+        View amenitiesView = binding.addFAmenities.getRoot();
+        View addressFormView = binding.addFFormAddress.getRoot();
+        amenitiesBinding = AmenitiesCheckboxesBinding.bind(amenitiesView);
+        formAddressBinding = FormAddressPropertyBinding.bind(addressFormView);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        formAddressBinding = null;
+        amenitiesBinding = null;
         binding = null;
     }
 }

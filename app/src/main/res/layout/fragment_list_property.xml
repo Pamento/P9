@@ -27,6 +27,7 @@
         android:elevation="6dp"
         android:src="@drawable/ic_map_white_24"
         app:backgroundTint="@color/colorAccent"
+        app:tint="@color/colorWhite"
         app:borderWidth="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

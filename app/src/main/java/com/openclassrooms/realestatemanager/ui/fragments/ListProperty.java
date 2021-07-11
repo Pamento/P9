@@ -18,13 +18,13 @@ import com.openclassrooms.realestatemanager.data.model.SingleProperty;
 import com.openclassrooms.realestatemanager.databinding.FragmentListPropertyBinding;
 import com.openclassrooms.realestatemanager.ui.activity.MainActivity;
 import com.openclassrooms.realestatemanager.ui.adapters.ListPropertyAdapter;
-import com.openclassrooms.realestatemanager.util.EFragments;
+import com.openclassrooms.realestatemanager.util.enums.EFragments;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.openclassrooms.realestatemanager.util.EFragments.DETAIL;
-import static com.openclassrooms.realestatemanager.util.EFragments.MAP;
+import static com.openclassrooms.realestatemanager.util.enums.EFragments.DETAIL;
+import static com.openclassrooms.realestatemanager.util.enums.EFragments.MAP;
 
 /**
  * A simple {@link Fragment} subclass.

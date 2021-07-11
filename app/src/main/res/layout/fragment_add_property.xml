@@ -1,22 +1,488 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorWhite"
     tools:context=".ui.fragments.AddProperty">
 
-    <TextView
-        android:id="@+id/add_date_init_label"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/add_frg_date_init_label"
-        android:labelFor="@+id/add_date_init" />
-    <EditText
-        android:id="@+id/add_date_init"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:autofillHints="2021/01/07"
-        android:inputType="date" />
+        android:orientation="vertical">
 
-</FrameLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/addF_1_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/size_n">
+
+
+            <TextView
+                android:id="@+id/addF_type_title"
+                style="@style/TextAppearance.AppCompat.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/add_type"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/addF_type_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/size_n"
+                android:hint="@string/add_type_dropdown_menu"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/addF_type_title">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/addF_type_dropdown"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <TextView
+                android:id="@+id/addF_description_title"
+                style="@style/TextAppearance.AppCompat.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/size_n"
+                android:text="@string/add_description"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/addF_type_input" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/addF_description_layout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/add_frg_height_of_description_field"
+                android:layout_marginVertical="@dimen/size_n"
+                android:hint="@string/add_description"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/addF_description_title">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/addF_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="textMultiLine" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/addF_2_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/size_b"
+                app:layout_constraintTop_toBottomOf="@+id/addF_description_layout">
+
+                <TextView
+                    android:id="@+id/addF_input_surface_title"
+                    android:layout_width="@dimen/add_frg_numeric_input_title"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_surface_m2"
+                    android:textAlignment="textEnd"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    android:id="@+id/addF_input_surface"
+                    android:layout_width="@dimen/add_frg_numeric_input"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/size_b"
+                    android:autofillHints="@string/add_hint_numeric_1"
+                    android:hint="@string/add_hint_numeric_1"
+                    android:inputType="numberDecimal"
+                    app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                    app:layout_constraintBottom_toBottomOf="@+id/addF_input_surface_title"
+                    app:layout_constraintStart_toEndOf="@+id/addF_input_surface_title"
+                    app:layout_constraintTop_toTopOf="@+id/addF_input_surface_title" />
+
+                <EditText
+                    android:id="@+id/addF_input_price"
+                    android:layout_width="@dimen/add_frg_numeric_input"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/size_b"
+                    android:autofillHints="@string/add_hint_numeric_1"
+                    android:hint="@string/add_hint_numeric_price"
+                    android:inputType="number"
+                    app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                    app:layout_constraintBottom_toBottomOf="@+id/addF_input_price_title"
+                    app:layout_constraintStart_toEndOf="@+id/addF_input_price_title"
+                    app:layout_constraintTop_toTopOf="@+id/addF_input_price_title" />
+
+                <TextView
+                    android:id="@+id/addF_input_price_title"
+                    android:layout_width="@dimen/add_frg_numeric_input_title"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_price_dollar"
+                    android:textAlignment="textEnd"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/addF_input_surface" />
+
+                <EditText
+                    android:id="@+id/addF_input_rooms"
+                    android:layout_width="@dimen/add_frg_numeric_input"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/size_b"
+                    android:autofillHints="@string/add_hint_numeric_1"
+                    android:hint="@string/add_hint_numeric_1"
+                    android:inputType="numberDecimal"
+                    app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                    app:layout_constraintBottom_toBottomOf="@+id/addF_input_rooms_title"
+                    app:layout_constraintStart_toEndOf="@+id/addF_input_rooms_title"
+                    app:layout_constraintTop_toTopOf="@+id/addF_input_rooms_title" />
+
+                <TextView
+                    android:id="@+id/addF_input_rooms_title"
+                    android:layout_width="@dimen/add_frg_numeric_input_title"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_rooms"
+                    android:textAlignment="textEnd"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/addF_input_price" />
+
+                <EditText
+                    android:id="@+id/addF_input_bedrooms"
+                    android:layout_width="@dimen/add_frg_numeric_input"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/size_b"
+                    android:autofillHints="@string/add_hint_numeric_1"
+                    android:hint="@string/add_hint_numeric_1"
+                    android:inputType="numberDecimal"
+                    app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                    app:layout_constraintBottom_toBottomOf="@+id/addF_input_bedrooms_title"
+                    app:layout_constraintStart_toEndOf="@+id/addF_input_bedrooms_title"
+                    app:layout_constraintTop_toTopOf="@+id/addF_input_bedrooms_title" />
+
+                <TextView
+                    android:id="@+id/addF_input_bedrooms_title"
+                    android:layout_width="@dimen/add_frg_numeric_input_title"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_bedrooms"
+                    android:textAlignment="textEnd"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/addF_input_rooms" />
+
+                <EditText
+                    android:id="@+id/addF_input_bathrooms"
+                    android:layout_width="@dimen/add_frg_numeric_input"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/size_b"
+                    android:autofillHints="@string/add_hint_numeric_1"
+                    android:hint="@string/add_hint_numeric_1"
+                    android:inputType="numberDecimal"
+                    app:hintTextAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                    app:layout_constraintBottom_toBottomOf="@+id/addF_input_bathrooms_title"
+                    app:layout_constraintStart_toEndOf="@+id/addF_input_bathrooms_title"
+                    app:layout_constraintTop_toTopOf="@+id/addF_input_bathrooms_title" />
+
+                <TextView
+                    android:id="@+id/addF_input_bathrooms_title"
+                    android:layout_width="@dimen/add_frg_numeric_input_title"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_bathrooms"
+                    android:textAlignment="textEnd"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/addF_input_bedrooms" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <View
+                android:id="@+id/addF_1_separator"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/horizontal_separator"
+                android:layout_marginTop="@dimen/size_n"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/addF_2_layout" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/size_n"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/addF_1_separator">
+
+
+                <TextView
+                    android:id="@+id/addF_location_title"
+                    style="@style/TextAppearance.AppCompat.Title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_location"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <include
+                    android:id="@+id/addF_form_address"
+                    layout="@layout/form_address_property"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/size_n" />
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:id="@+id/addF_2_separator"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/colorPrimaryUltraLight"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/addF_1_layout" />
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/addF_3_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/size_n"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/addF_2_separator">
+
+            <TextView
+                android:id="@+id/addF_nearby_title"
+                style="@style/TextAppearance.AppCompat.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/size_n"
+                android:text="@string/add_nearby"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <include
+                android:id="@+id/addF_amenities"
+                layout="@layout/amenities_checkboxes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/size_s"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/addF_nearby_title" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:id="@+id/addF_3_separator"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/horizontal_separator"
+            android:layout_marginTop="@dimen/size_b"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/addF_3_layout" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/addF_4_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="@dimen/size_n"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/addF_3_separator">
+
+            <TextView
+                android:id="@+id/addF_date_title"
+                style="@style/TextAppearance.AppCompat.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/size_n"
+                android:text="@string/add_date"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/addF_since_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/size_n"
+                android:hint="@string/add_on_market_since"
+                app:layout_constraintTop_toBottomOf="@+id/addF_date_title">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/addF_since"
+                    style="@style/Widget.AppCompat.Spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="date" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/addF_sold_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/size_n"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/addF_since_layout" />
+
+            <TextView
+                android:id="@+id/addF_sold_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/size_n"
+                android:layout_marginEnd="@dimen/size_b"
+                android:text="@string/add_sold"
+                app:layout_constraintBottom_toBottomOf="@id/addF_sold_switch"
+                app:layout_constraintStart_toEndOf="@id/addF_sold_switch"
+                app:layout_constraintTop_toTopOf="@id/addF_sold_switch" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/addF_sold_on_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/size_b"
+                android:hint="@string/add_sold_on"
+                app:layout_constraintBottom_toBottomOf="@id/addF_sold_switch"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/addF_sold_title"
+                app:layout_constraintTop_toBottomOf="@id/addF_since_layout"
+                app:layout_constraintTop_toTopOf="@id/addF_sold_switch">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/addF_sold_on"
+                    style="@style/Widget.AppCompat.Spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="date" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:id="@+id/addF_4_separator"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/horizontal_separator"
+            android:layout_marginVertical="@dimen/size_n"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/addF_4_layout" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/addF_5_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/size_n"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/addF_4_separator">
+
+            <TextView
+                android:id="@+id/addF_add_image_title"
+                style="@style/TextAppearance.AppCompat.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/size_n"
+                android:text="@string/add_add_image_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/addF_btn_add_img_camera"
+                style="@style/ButtonOutline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/size_n"
+                android:text="@string/add_add_img_camera"
+                app:icon="@drawable/ic_add_a_photo_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/addF_btn_add_img_gallery"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/addF_add_image_title" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/addF_btn_add_img_gallery"
+                style="@style/ButtonOutline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/add_add_img_gallery"
+                app:icon="@drawable/ic_add_photo_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/addF_btn_add_img_camera"
+                app:layout_constraintTop_toTopOf="@+id/addF_btn_add_img_camera" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/addF_images_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/size_n"
+            android:layout_marginTop="@dimen/size_n"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/addF_5_layout" />
+
+        <View
+            android:id="@+id/addF_5_separator"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/horizontal_separator"
+            android:layout_marginTop="@dimen/size_n"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/addF_images_recycler" />
+
+
+        <TextView
+            android:id="@+id/addF_agent_title"
+            style="@style/TextAppearance.AppCompat.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/size_n"
+            android:layout_marginTop="@dimen/size_n"
+            android:text="@string/add_manage_by_agent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/addF_5_separator" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/addF_agent_dropdown_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/size_n"
+            android:focusable="false"
+            android:hint="@string/add_manage_by"
+            app:layout_constraintTop_toBottomOf="@id/addF_agent_title">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/addF_agent"
+                style="@style/Widget.AppCompat.Spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:inputType="none" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
+
+</ScrollView>
