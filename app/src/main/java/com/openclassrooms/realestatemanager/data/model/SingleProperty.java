@@ -5,6 +5,7 @@ import androidx.room.PrimaryKey;
 
 public class SingleProperty {
 
+    // Not autoincrement
     @PrimaryKey
     public String id;
     public String type;

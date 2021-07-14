@@ -41,9 +41,9 @@
     <string name="add_sold">Sold</string>
     <string name="add_sold_on">Sold on</string>
     <string name="add_manage_by">Manage by</string>
-    <string name="add_add_image_title">Add image</string>
-    <string name="add_add_img_camera">From camera</string>
-    <string name="add_add_img_gallery">From gallery</string>
+    <string name="add_add_image_title">Add image from</string>
+    <string name="add_add_img_camera">Camera</string>
+    <string name="add_add_img_gallery">Gallery</string>
     <string name="add_hint_numeric_1">1</string>
     <string name="add_hint_numeric_price">100,000,000</string>
     <string name="add_location">Location</string>
