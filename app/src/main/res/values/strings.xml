@@ -33,7 +33,7 @@
     <string name="add_rooms">Rooms</string>
     <string name="add_bedrooms">Bedrooms</string>
     <string name="add_bathrooms">Bathrooms</string>
-    <string name="add_nearby">NearBy</string>
+    <string name="add_nearby">Amenities near this property</string>
     <string name="add_description">Description</string>
     <string name="add_address">Address</string>
     <string name="add_quarter">Quarter</string>
@@ -63,6 +63,9 @@
     <string name="add_form_city">City</string>
     <string name="add_address_form_quarter">Quarter</string>
     <string name="add_address_form_postal_code">ZIP/postal code</string>
+    <string name="add_recycler_new_image">new image for \'add new property\'</string>
+    <string name="drag_image_button">drag image button</string>
+    <string name="add_description_placeholder">Description of added image</string>
     <!-- -->
 
 </resources>

@@ -48,8 +48,9 @@ public class Utils {
      */
     @SuppressWarnings("deprecation")
     public static Boolean isInternetAvailable(Context context) {
-        WifiManager wifi = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        if (wifi.isWifiEnabled()) {
+        // TODO test if is the connectivity on mobil mode non WiFi and vice-versa.
+//        WifiManager wifi = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+//        if (wifi.isWifiEnabled()) {
             ConnectivityManager cm = (ConnectivityManager) context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 return cm.isDefaultNetworkActive();
@@ -58,8 +59,8 @@ public class Utils {
                 NetworkInfo nI = cm.getActiveNetworkInfo();
                 return nI != null && nI.getState() == NetworkInfo.State.CONNECTED;
             }
-        } else {
-            return false;
-        }
+//        } else {
+//            return false;
+//        }
     }
 }

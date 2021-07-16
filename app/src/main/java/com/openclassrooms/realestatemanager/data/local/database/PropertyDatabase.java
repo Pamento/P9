@@ -1,4 +1,4 @@
-package com.openclassrooms.realestatemanager.data.model.local.database;
+package com.openclassrooms.realestatemanager.data.local.database;
 
 import androidx.room.RoomDatabase;
 

@@ -4,12 +4,17 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -18,14 +23,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.openclassrooms.realestatemanager.data.model.ImageOfProperty;
 import com.openclassrooms.realestatemanager.databinding.AmenitiesCheckboxesBinding;
 import com.openclassrooms.realestatemanager.databinding.FormAddressPropertyBinding;
 import com.openclassrooms.realestatemanager.databinding.FragmentAddPropertyBinding;
+import com.openclassrooms.realestatemanager.ui.adapters.ImageListOfAddPropertyAdapter;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import static android.app.Activity.RESULT_OK;
@@ -47,7 +56,8 @@ public class AddProperty extends Fragment {
     private FormAddressPropertyBinding formAddressBinding;
     private File photoFile;
     private String currentPhotoPath;
-    private String FILE_NAME = "photo.jpg";
+    private List<ImageOfProperty> imagesToAdd = new ArrayList<>();
+    private ImageListOfAddPropertyAdapter mImageAdapter;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -85,17 +95,27 @@ public class AddProperty extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentAddPropertyBinding.inflate(inflater, container, false);
         bindIncludesLayouts();
 
         setOnAddImageFromCameraListener();
+        setRecyclerView();
         return binding.getRoot();
     }
 
     private void setOnAddImageFromCameraListener() {
         binding.addFBtnAddImgCamera.setOnClickListener(view -> takePictureIntent());
+    }
+
+    private void setRecyclerView() {
+        RecyclerView rv = binding.addFImagesRecycler;
+        mImageAdapter = new ImageListOfAddPropertyAdapter(imagesToAdd);
+        rv.setAdapter(mImageAdapter);
+        rv.setHasFixedSize(true);
+        rv.setLayoutManager(new LinearLayoutManager(requireContext()));
+        rv.addItemDecoration(new DividerItemDecoration(rv.getContext(), DividerItemDecoration.HORIZONTAL));
     }
 
     // TODO move this function to activity, getExternalFileDir is accessible only from activity
@@ -149,10 +169,13 @@ public class AddProperty extends Fragment {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = null;
             Bitmap imageBitmap = null;
-            if (data != null) {
-                extras = data.getExtras();
-                imageBitmap = (Bitmap) extras.get("data");
-            }
+            // data from startActivityForResult
+//            if (data != null) {
+//                extras = data.getExtras();
+//                imageBitmap = (Bitmap) extras.get("data");
+//            }
+            // to get image from local storage
+            imageBitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
             // TODO save the picture as a image
             if (imageBitmap != null) Log.i(TAG, "onActivityResult: bitmap is ok:: " + imageBitmap.toString());
             else {

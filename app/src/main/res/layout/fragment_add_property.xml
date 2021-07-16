@@ -440,7 +440,8 @@
             android:layout_marginHorizontal="@dimen/size_n"
             android:layout_marginTop="@dimen/size_n"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/addF_5_layout" />
+            app:layout_constraintTop_toBottomOf="@id/addF_5_layout"
+            tools:listitem="@layout/add_image_item"/>
 
         <View
             android:id="@+id/addF_5_separator"

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/size_s">
+
+    <ImageView
+        android:id="@+id/item_addF_image"
+        android:layout_width="@dimen/add_item_image_size"
+        android:layout_height="@dimen/add_item_image_size"
+        android:contentDescription="@string/add_recycler_new_image"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/size_n"
+        android:hint="@string/add_description"
+        app:layout_constraintBottom_toBottomOf="@+id/item_addF_image"
+        app:layout_constraintEnd_toStartOf="@+id/item_addF_drag_btn"
+        app:layout_constraintStart_toEndOf="@+id/item_addF_image"
+        app:layout_constraintTop_toTopOf="@+id/item_addF_image">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/item_addF_input_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="4"
+            android:lines="2"
+            android:scrollbars="vertical"
+            android:inputType="textMultiLine"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <ImageButton
+        android:id="@+id/item_addF_drag_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/size_s"
+        android:background="@drawable/ic_drag_handle_24"
+        android:contentDescription="@string/drag_image_button"
+        app:layout_constraintBottom_toBottomOf="@+id/item_addF_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/item_addF_image" />
+</androidx.constraintlayout.widget.ConstraintLayout>
