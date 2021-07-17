@@ -5,13 +5,17 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.openclassrooms.realestatemanager.data.viewModelFactory.ViewModelFactory;
+import com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM.MapViewModel;
 import com.openclassrooms.realestatemanager.databinding.FragmentMapBinding;
+import com.openclassrooms.realestatemanager.injection.Injection;
 import com.openclassrooms.realestatemanager.ui.activity.MainActivity;
 
 import static com.openclassrooms.realestatemanager.util.enums.EFragments.LIST;
@@ -27,6 +31,7 @@ public class MapFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private MapViewModel mMapViewModel;
     private FragmentMapBinding binding;
 
     // TODO: Rename and change types of parameters
@@ -67,8 +72,14 @@ public class MapFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        initViewModel();
         binding = FragmentMapBinding.inflate(inflater, container, false);
         return binding.getRoot();
+    }
+
+    private void initViewModel() {
+        ViewModelFactory vmF = Injection.sViewModelFactory();
+        mMapViewModel = new ViewModelProvider(requireActivity(),vmF).get(MapViewModel.class);
     }
 
     @Override

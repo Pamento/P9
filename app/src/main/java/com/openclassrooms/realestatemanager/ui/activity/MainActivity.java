@@ -12,9 +12,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.data.viewModelFactory.ViewModelFactory;
+import com.openclassrooms.realestatemanager.data.viewmodel.MainActivityViewModel;
 import com.openclassrooms.realestatemanager.databinding.ActivityMainBinding;
+import com.openclassrooms.realestatemanager.injection.Injection;
 import com.openclassrooms.realestatemanager.ui.fragments.AddProperty;
 import com.openclassrooms.realestatemanager.ui.fragments.DetailFragment;
 import com.openclassrooms.realestatemanager.ui.fragments.EditProperty;
@@ -30,16 +34,23 @@ import static com.openclassrooms.realestatemanager.util.enums.EFragments.*;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
+    private MainActivityViewModel mMainViewModel;
     private ActivityMainBinding binding;
     private EFragments mEFragments = LIST;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initViewModel();
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
         displayListFragment();
+    }
+
+    private void initViewModel() {
+        ViewModelFactory vmF = Injection.sViewModelFactory();
+        mMainViewModel = new ViewModelProvider(this,vmF).get(MainActivityViewModel.class);
     }
 
     private void setToolbarTitle(String toolbarTitle, boolean backUpButton) {

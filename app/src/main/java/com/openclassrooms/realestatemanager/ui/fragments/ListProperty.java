@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,7 +16,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.openclassrooms.realestatemanager.data.model.SingleProperty;
+import com.openclassrooms.realestatemanager.data.viewModelFactory.ViewModelFactory;
+import com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM.ListPropertyViewModel;
 import com.openclassrooms.realestatemanager.databinding.FragmentListPropertyBinding;
+import com.openclassrooms.realestatemanager.injection.Injection;
 import com.openclassrooms.realestatemanager.ui.activity.MainActivity;
 import com.openclassrooms.realestatemanager.ui.adapters.ListPropertyAdapter;
 import com.openclassrooms.realestatemanager.util.enums.EFragments;
@@ -38,6 +42,7 @@ public class ListProperty extends Fragment implements ListPropertyAdapter.OnItem
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private ListPropertyViewModel mListPropertyViewModel;
     private FragmentListPropertyBinding binding;
     private ListPropertyAdapter mAdapter;
     private List<SingleProperty> mProperties = new ArrayList<>();
@@ -80,8 +85,14 @@ public class ListProperty extends Fragment implements ListPropertyAdapter.OnItem
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        initViewModel();
         binding = FragmentListPropertyBinding.inflate(inflater,container,false);
         return binding.getRoot();
+    }
+
+    private void initViewModel() {
+        ViewModelFactory vmF = Injection.sViewModelFactory();
+        mListPropertyViewModel = new ViewModelProvider(requireActivity(),vmF).get(ListPropertyViewModel.class);
     }
 
     @Override

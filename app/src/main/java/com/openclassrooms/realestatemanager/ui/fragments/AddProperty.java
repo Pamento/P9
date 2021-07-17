@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,9 +28,12 @@ import android.widget.ArrayAdapter;
 
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.data.model.ImageOfProperty;
+import com.openclassrooms.realestatemanager.data.viewModelFactory.ViewModelFactory;
+import com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM.AddPropertyViewModel;
 import com.openclassrooms.realestatemanager.databinding.AmenitiesCheckboxesBinding;
 import com.openclassrooms.realestatemanager.databinding.FormAddressPropertyBinding;
 import com.openclassrooms.realestatemanager.databinding.FragmentAddPropertyBinding;
+import com.openclassrooms.realestatemanager.injection.Injection;
 import com.openclassrooms.realestatemanager.ui.adapters.AgentAdapter;
 import com.openclassrooms.realestatemanager.ui.adapters.ImageListOfAddPropertyAdapter;
 import com.openclassrooms.realestatemanager.ui.adapters.PropertyTypeSpinnerAdapter;
@@ -57,6 +61,7 @@ public class AddProperty extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private Context mContext;
+    private AddPropertyViewModel mAddPropertyViewModel;
     private FragmentAddPropertyBinding binding;
     private AmenitiesCheckboxesBinding amenitiesBinding;
     private FormAddressPropertyBinding formAddressBinding;
@@ -103,12 +108,18 @@ public class AddProperty extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        initViewModel();
         binding = FragmentAddPropertyBinding.inflate(inflater, container, false);
         bindIncludesLayouts();
 
         setOnAddImageFromCameraListener();
         setRecyclerView();
         return binding.getRoot();
+    }
+
+    private void initViewModel() {
+        ViewModelFactory vmF = Injection.sViewModelFactory();
+        mAddPropertyViewModel = new ViewModelProvider(requireActivity(),vmF).get(AddPropertyViewModel.class);
     }
 
     @Override

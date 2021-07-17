@@ -4,13 +4,17 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.data.viewModelFactory.ViewModelFactory;
+import com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM.SearchEngineViewModel;
 import com.openclassrooms.realestatemanager.databinding.FragmentSearchEngineBinding;
+import com.openclassrooms.realestatemanager.injection.Injection;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +27,7 @@ public class SearchEngine extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private SearchEngineViewModel mSearchEngineViewModel;
     private FragmentSearchEngineBinding binding;
 
     // TODO: Rename and change types of parameters
@@ -63,8 +68,14 @@ public class SearchEngine extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        initViewModel();
         binding = FragmentSearchEngineBinding.inflate(inflater, container, false);
         return binding.getRoot();
+    }
+
+    private void initViewModel() {
+        ViewModelFactory vmF = Injection.sViewModelFactory();
+        mSearchEngineViewModel = new ViewModelProvider(requireActivity(), vmF).get(SearchEngineViewModel.class);
     }
 
     @Override
