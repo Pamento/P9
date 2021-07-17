@@ -24,55 +24,35 @@
             android:layout_height="wrap_content"
             android:padding="@dimen/size_n">
 
-
-            <TextView
-                android:id="@+id/addF_type_title"
-                style="@style/TextAppearance.AppCompat.Title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/add_type"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/addF_type_input"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/size_n"
                 android:hint="@string/add_type_dropdown_menu"
+                android:labelFor="@+id/addF_type_dropdown"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/addF_type_title">
+                app:layout_constraintTop_toTopOf="parent">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <AutoCompleteTextView
                     android:id="@+id/addF_type_dropdown"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
-
-            <TextView
-                android:id="@+id/addF_description_title"
-                style="@style/TextAppearance.AppCompat.Title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/size_n"
-                android:text="@string/add_description"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/addF_type_input" />
-
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/addF_description_layout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/add_frg_height_of_description_field"
                 android:layout_marginVertical="@dimen/size_n"
                 android:hint="@string/add_description"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/addF_description_title">
+                app:layout_constraintTop_toBottomOf="@id/addF_type_input">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/addF_description"
@@ -441,46 +421,27 @@
             android:layout_marginTop="@dimen/size_n"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/addF_5_layout"
-            tools:listitem="@layout/add_image_item"/>
+            tools:listitem="@layout/add_image_item" />
 
         <View
             android:id="@+id/addF_5_separator"
             android:layout_width="match_parent"
             android:layout_height="@dimen/horizontal_separator"
-            android:layout_marginTop="@dimen/size_n"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/addF_images_recycler" />
-
-
-        <TextView
-            android:id="@+id/addF_agent_title"
-            style="@style/TextAppearance.AppCompat.Title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/size_n"
-            android:layout_marginTop="@dimen/size_n"
-            android:text="@string/add_manage_by_agent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/addF_5_separator" />
+            android:layout_marginTop="@dimen/size_n" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/addF_agent_dropdown_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/size_n"
-            android:focusable="false"
-            android:hint="@string/add_manage_by"
-            app:layout_constraintTop_toBottomOf="@id/addF_agent_title">
+            android:hint="@string/add_manage_by_agent"
+            android:labelFor="@+id/addF_agent">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <AutoCompleteTextView
                 android:id="@+id/addF_agent"
-                style="@style/Widget.AppCompat.Spinner"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:focusable="false"
-                android:inputType="none" />
+                android:layout_height="wrap_content" />
 
         </com.google.android.material.textfield.TextInputLayout>
 

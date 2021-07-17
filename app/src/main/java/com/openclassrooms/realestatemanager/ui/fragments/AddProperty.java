@@ -22,12 +22,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 
+import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.data.model.ImageOfProperty;
 import com.openclassrooms.realestatemanager.databinding.AmenitiesCheckboxesBinding;
 import com.openclassrooms.realestatemanager.databinding.FormAddressPropertyBinding;
 import com.openclassrooms.realestatemanager.databinding.FragmentAddPropertyBinding;
+import com.openclassrooms.realestatemanager.ui.adapters.AgentAdapter;
 import com.openclassrooms.realestatemanager.ui.adapters.ImageListOfAddPropertyAdapter;
+import com.openclassrooms.realestatemanager.ui.adapters.PropertyTypeSpinnerAdapter;
+import com.openclassrooms.realestatemanager.util.resources.AppResources;
 
 import java.io.File;
 import java.io.IOException;
@@ -105,6 +111,51 @@ public class AddProperty extends Fragment {
         return binding.getRoot();
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        setPropertyTypeSpinner();
+        setAgentSpinner();
+    }
+
+    private void setAgentSpinner() {
+        String[] agents = AppResources.getAGENTS();
+        //AgentAdapter adapter = new AgentAdapter(requireContext(),R.layout.type_dropdown_item,agents);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(requireContext(),
+                android.R.layout.simple_dropdown_item_1line, agents);
+        binding.addFAgent.setAdapter(adapter);
+        binding.addFAgent.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.i(TAG, "onItemSelected: AGENT SELECTED");
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+
+    private void setPropertyTypeSpinner() {
+        String[] types = AppResources.getPropertyType();
+        //PropertyTypeSpinnerAdapter adapter = new PropertyTypeSpinnerAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, types);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(requireContext(),
+                android.R.layout.simple_dropdown_item_1line, types);
+        binding.addFTypeDropdown.setAdapter(adapter);
+        binding.addFTypeDropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                //adapterView.getItemAtPosition(i);
+                Log.i(TAG, "onItemSelected: item selected:: " + adapterView.getItemAtPosition(i).toString());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) { /**/ }
+        });
+    }
+
     private void setOnAddImageFromCameraListener() {
         binding.addFBtnAddImgCamera.setOnClickListener(view -> takePictureIntent());
     }
@@ -127,7 +178,7 @@ public class AddProperty extends Fragment {
         File storagePicturesDir = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = null;
         try {
-            image = File.createTempFile(imageFileName,".jpg", storagePicturesDir);
+            image = File.createTempFile(imageFileName, ".jpg", storagePicturesDir);
             currentPhotoPath = image.getAbsolutePath();
         } catch (IOException e) {
             e.printStackTrace();
@@ -147,12 +198,12 @@ public class AddProperty extends Fragment {
     private void takePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-        if (takePictureIntent.resolveActivity(requireContext().getPackageManager())  != null) {
+        if (takePictureIntent.resolveActivity(requireContext().getPackageManager()) != null) {
             photoFile = createImageFile();
 
             if (photoFile != null) {
-                Uri fp = FileProvider.getUriForFile(requireActivity(),"com.openclassrooms.realestatemanager.fileprovider", photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,fp);
+                Uri fp = FileProvider.getUriForFile(requireActivity(), "com.openclassrooms.realestatemanager.fileprovider", photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fp);
 
                 try {
                     startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
@@ -177,7 +228,8 @@ public class AddProperty extends Fragment {
             // to get image from local storage
             imageBitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
             // TODO save the picture as a image
-            if (imageBitmap != null) Log.i(TAG, "onActivityResult: bitmap is ok:: " + imageBitmap.toString());
+            if (imageBitmap != null)
+                Log.i(TAG, "onActivityResult: bitmap is ok:: " + imageBitmap.toString());
             else {
                 super.onActivityResult(requestCode, resultCode, data);
                 Log.i(TAG, "onActivityResult: non image");
