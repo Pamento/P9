@@ -9,7 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.openclassrooms.realestatemanager.data.model.SingleProperty;
+import com.openclassrooms.realestatemanager.data.local.entities.SingleProperty;
 import com.openclassrooms.realestatemanager.databinding.ListItemBinding;
 
 import java.util.List;

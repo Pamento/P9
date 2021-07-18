@@ -74,7 +74,7 @@ public class SearchEngine extends Fragment {
     }
 
     private void initViewModel() {
-        ViewModelFactory vmF = Injection.sViewModelFactory();
+        ViewModelFactory vmF = Injection.sViewModelFactory(requireActivity());
         mSearchEngineViewModel = new ViewModelProvider(requireActivity(), vmF).get(SearchEngineViewModel.class);
     }
 

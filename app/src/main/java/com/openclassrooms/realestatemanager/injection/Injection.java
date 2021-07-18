@@ -1,15 +1,33 @@
 package com.openclassrooms.realestatemanager.injection;
 
-import com.openclassrooms.realestatemanager.data.reposiotries.PropertiesRepository;
+import android.content.Context;
+
+import com.openclassrooms.realestatemanager.data.local.database.RealEstateDatabase;
+import com.openclassrooms.realestatemanager.data.local.reposiotries.ImageRepository;
+import com.openclassrooms.realestatemanager.data.local.reposiotries.PropertiesRepository;
 import com.openclassrooms.realestatemanager.data.viewModelFactory.ViewModelFactory;
+
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class Injection {
 
-    public static PropertiesRepository sPropertiesRepository() {
-        return PropertiesRepository.getInstance();
+    public static PropertiesRepository sPropertiesRepository(Context context) {
+        RealEstateDatabase db = RealEstateDatabase.getInstance(context);
+        return new PropertiesRepository(db.singlePropertyDao());
     }
 
-    public static ViewModelFactory sViewModelFactory() {
-        return new ViewModelFactory(sPropertiesRepository());
+    public static ImageRepository sImageRepository(Context context) {
+        RealEstateDatabase db = RealEstateDatabase.getInstance(context);
+        return new ImageRepository(db.imageOfPropertyDao());
+    }
+
+    public static Executor provideExecutor(){ return Executors.newSingleThreadExecutor(); }
+
+    public static ViewModelFactory sViewModelFactory(Context context) {
+        PropertiesRepository propertiesRepository = sPropertiesRepository(context);
+        ImageRepository imageRepository = sImageRepository(context);
+        Executor executor = provideExecutor();
+        return new ViewModelFactory(propertiesRepository, imageRepository, executor);
     }
 }

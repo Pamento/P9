@@ -78,7 +78,7 @@ public class MapFragment extends Fragment {
     }
 
     private void initViewModel() {
-        ViewModelFactory vmF = Injection.sViewModelFactory();
+        ViewModelFactory vmF = Injection.sViewModelFactory(requireActivity());
         mMapViewModel = new ViewModelProvider(requireActivity(),vmF).get(MapViewModel.class);
     }
 

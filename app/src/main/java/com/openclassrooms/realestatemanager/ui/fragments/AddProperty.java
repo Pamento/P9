@@ -26,17 +26,14 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
-import com.openclassrooms.realestatemanager.R;
-import com.openclassrooms.realestatemanager.data.model.ImageOfProperty;
+import com.openclassrooms.realestatemanager.data.local.entities.ImageOfProperty;
 import com.openclassrooms.realestatemanager.data.viewModelFactory.ViewModelFactory;
 import com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM.AddPropertyViewModel;
 import com.openclassrooms.realestatemanager.databinding.AmenitiesCheckboxesBinding;
 import com.openclassrooms.realestatemanager.databinding.FormAddressPropertyBinding;
 import com.openclassrooms.realestatemanager.databinding.FragmentAddPropertyBinding;
 import com.openclassrooms.realestatemanager.injection.Injection;
-import com.openclassrooms.realestatemanager.ui.adapters.AgentAdapter;
 import com.openclassrooms.realestatemanager.ui.adapters.ImageListOfAddPropertyAdapter;
-import com.openclassrooms.realestatemanager.ui.adapters.PropertyTypeSpinnerAdapter;
 import com.openclassrooms.realestatemanager.util.resources.AppResources;
 
 import java.io.File;
@@ -118,7 +115,7 @@ public class AddProperty extends Fragment {
     }
 
     private void initViewModel() {
-        ViewModelFactory vmF = Injection.sViewModelFactory();
+        ViewModelFactory vmF = Injection.sViewModelFactory(requireActivity());
         mAddPropertyViewModel = new ViewModelProvider(requireActivity(),vmF).get(AddPropertyViewModel.class);
     }
 

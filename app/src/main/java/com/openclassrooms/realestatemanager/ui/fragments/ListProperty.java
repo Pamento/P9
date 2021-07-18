@@ -15,7 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.openclassrooms.realestatemanager.data.model.SingleProperty;
+import com.openclassrooms.realestatemanager.data.local.entities.SingleProperty;
 import com.openclassrooms.realestatemanager.data.viewModelFactory.ViewModelFactory;
 import com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM.ListPropertyViewModel;
 import com.openclassrooms.realestatemanager.databinding.FragmentListPropertyBinding;
@@ -91,7 +91,7 @@ public class ListProperty extends Fragment implements ListPropertyAdapter.OnItem
     }
 
     private void initViewModel() {
-        ViewModelFactory vmF = Injection.sViewModelFactory();
+        ViewModelFactory vmF = Injection.sViewModelFactory(requireActivity());
         mListPropertyViewModel = new ViewModelProvider(requireActivity(),vmF).get(ListPropertyViewModel.class);
     }
 

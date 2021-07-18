@@ -73,7 +73,7 @@ public class EditProperty extends Fragment {
     }
 
     private void initViewModel() {
-        ViewModelFactory vmF = Injection.sViewModelFactory();
+        ViewModelFactory vmF = Injection.sViewModelFactory(requireActivity());
         mEditPropertyViewModel = new ViewModelProvider(requireActivity(),vmF).get(EditPropertyViewModel.class);
     }
 

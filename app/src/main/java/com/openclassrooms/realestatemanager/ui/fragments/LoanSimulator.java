@@ -74,7 +74,7 @@ public class LoanSimulator extends Fragment {
     }
 
     private void initViewModel() {
-        ViewModelFactory vmF = Injection.sViewModelFactory();
+        ViewModelFactory vmF = Injection.sViewModelFactory(requireActivity());
         mLoanSimulatorViewModel = new ViewModelProvider(requireActivity(),vmF).get(LoanSimulatorViewModel.class);
     }
 

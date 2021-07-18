@@ -1,12 +1,20 @@
-package com.openclassrooms.realestatemanager.data.model;
+package com.openclassrooms.realestatemanager.data.local.entities;
 
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+@Entity(tableName = "property",
+        indices = @Index(value = "pid"))
 public class SingleProperty {
 
-    // Not autoincrement
+    // autoincrement = false (default)
     @PrimaryKey
+    @NonNull
+    @ColumnInfo(name = "pid")
     public String id;
     public String type;
     public String description;
@@ -15,17 +23,24 @@ public class SingleProperty {
     public int rooms;
     public int bedroom;
     public int bathroom;
-    public long dateInit;
+    @ColumnInfo(name = "date_register")
+    public long dateRegister;
+    @ColumnInfo(name = "date_sold")
     public long dateSold;
+    @ColumnInfo(name = "address_1")
     public String address1;
+    @ColumnInfo(name = "address_2")
     public String address2;
     public String city;
     public String quarter;
+    @ColumnInfo(name = "postal_code")
     public int postalCode;
     public String amenities;
     public String agent;
 
-    public SingleProperty(String id,
+    public SingleProperty() {/**/}
+
+    public SingleProperty(@NonNull String id,
                           String type,
                           String description,
                           int surface,
@@ -50,7 +65,7 @@ public class SingleProperty {
         this.rooms = rooms;
         this.bedroom = bedroom;
         this.bathroom = bathroom;
-        this.dateInit = dateInit;
+        this.dateRegister = dateInit;
         this.dateSold = dateSold;
         this.address1 = address1;
         this.address2 = address2;
@@ -61,11 +76,12 @@ public class SingleProperty {
         this.agent = agent;
     }
 
+    @NonNull
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(@NonNull String id) {
         this.id = id;
     }
 
@@ -125,12 +141,12 @@ public class SingleProperty {
         this.bathroom = bathroom;
     }
 
-    public long getDateInit() {
-        return dateInit;
+    public long getDateRegister() {
+        return dateRegister;
     }
 
-    public void setDateInit(long dateInit) {
-        this.dateInit = dateInit;
+    public void setDateRegister(long dateRegister) {
+        this.dateRegister = dateRegister;
     }
 
     public long getDateSold() {

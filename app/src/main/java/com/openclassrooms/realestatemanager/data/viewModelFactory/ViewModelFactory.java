@@ -4,7 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.openclassrooms.realestatemanager.data.reposiotries.PropertiesRepository;
+import com.openclassrooms.realestatemanager.data.local.reposiotries.ImageRepository;
+import com.openclassrooms.realestatemanager.data.local.reposiotries.PropertiesRepository;
 import com.openclassrooms.realestatemanager.data.viewmodel.MainActivityViewModel;
 import com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM.AddPropertyViewModel;
 import com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM.DetailViewModel;
@@ -14,12 +15,18 @@ import com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM.LoanSimula
 import com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM.MapViewModel;
 import com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM.SearchEngineViewModel;
 
+import java.util.concurrent.Executor;
+
 public class ViewModelFactory implements ViewModelProvider.Factory {
 
-    PropertiesRepository mPropertiesRepository;
+    private final PropertiesRepository mPropertiesRepository;
+    private final ImageRepository mImageRepository;
+    private Executor mExecutor;
 
-    public ViewModelFactory(PropertiesRepository propertiesRepository) {
+    public ViewModelFactory(PropertiesRepository propertiesRepository, ImageRepository imageRepository, Executor executor) {
         mPropertiesRepository = propertiesRepository;
+        mImageRepository = imageRepository;
+        mExecutor = executor;
     }
 
     @SuppressWarnings("unchecked")
@@ -27,28 +34,28 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(MainActivityViewModel.class)) {
-            return (T) new MainActivityViewModel(mPropertiesRepository);
+            return (T) new MainActivityViewModel(mPropertiesRepository, mImageRepository, mExecutor);
         }
         if (modelClass.isAssignableFrom(AddPropertyViewModel.class)) {
-            return (T) new AddPropertyViewModel(mPropertiesRepository);
+            return (T) new AddPropertyViewModel(mPropertiesRepository, mImageRepository, mExecutor);
         }
         if (modelClass.isAssignableFrom(DetailViewModel.class)) {
-            return (T) new DetailViewModel(mPropertiesRepository);
+            return (T) new DetailViewModel(mPropertiesRepository, mImageRepository);
         }
         if (modelClass.isAssignableFrom(EditPropertyViewModel.class)) {
-            return (T) new EditPropertyViewModel(mPropertiesRepository);
+            return (T) new EditPropertyViewModel(mPropertiesRepository, mImageRepository, mExecutor);
         }
         if (modelClass.isAssignableFrom(ListPropertyViewModel.class)) {
-            return (T) new ListPropertyViewModel(mPropertiesRepository);
+            return (T) new ListPropertyViewModel(mPropertiesRepository, mImageRepository);
         }
         if (modelClass.isAssignableFrom(LoanSimulatorViewModel.class)) {
             return (T) new LoanSimulatorViewModel(mPropertiesRepository);
         }
         if (modelClass.isAssignableFrom(MapViewModel.class)) {
-            return (T) new MapViewModel(mPropertiesRepository);
+            return (T) new MapViewModel(mPropertiesRepository, mImageRepository);
         }
         if (modelClass.isAssignableFrom(SearchEngineViewModel.class)) {
-            return (T) new SearchEngineViewModel(mPropertiesRepository);
+            return (T) new SearchEngineViewModel(mPropertiesRepository, mImageRepository, mExecutor);
         }
         throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
     }

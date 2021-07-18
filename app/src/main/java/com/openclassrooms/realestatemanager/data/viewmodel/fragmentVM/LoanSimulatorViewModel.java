@@ -2,7 +2,7 @@ package com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM;
 
 import androidx.lifecycle.ViewModel;
 
-import com.openclassrooms.realestatemanager.data.reposiotries.PropertiesRepository;
+import com.openclassrooms.realestatemanager.data.local.reposiotries.PropertiesRepository;
 
 public class LoanSimulatorViewModel extends ViewModel {
 

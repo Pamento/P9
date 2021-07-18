@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initViewModel() {
-        ViewModelFactory vmF = Injection.sViewModelFactory();
+        ViewModelFactory vmF = Injection.sViewModelFactory(this);
         mMainViewModel = new ViewModelProvider(this,vmF).get(MainActivityViewModel.class);
     }
 
