@@ -18,24 +18,24 @@ import androidx.room.PrimaryKey;
 public class ImageOfProperty {
 
     @PrimaryKey(autoGenerate = true)
-    public Long id;
+    public Integer id;
     public String path;
     public String description;
     @ColumnInfo(name = "property_id")
     public String propertyId;
 
-    public ImageOfProperty(@Nullable Long id, @NonNull String path, String description, @NonNull String propertyId) {
+    public ImageOfProperty(@Nullable Integer id, @NonNull String path, String description, @NonNull String propertyId) {
         this.id = id;
         this.path = path;
         this.description = description;
         this.propertyId = propertyId;
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

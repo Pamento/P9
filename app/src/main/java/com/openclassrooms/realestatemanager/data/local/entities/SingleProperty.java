@@ -18,15 +18,15 @@ public class SingleProperty {
     public String id;
     public String type;
     public String description;
-    public int surface;
-    public long price;
-    public int rooms;
-    public int bedroom;
-    public int bathroom;
+    public Integer surface;
+    public Integer price;
+    public Integer rooms;
+    public Integer bedroom;
+    public Integer bathroom;
     @ColumnInfo(name = "date_register")
-    public long dateRegister;
+    public Integer dateRegister;
     @ColumnInfo(name = "date_sold")
-    public long dateSold;
+    public Integer dateSold;
     @ColumnInfo(name = "address_1")
     public String address1;
     @ColumnInfo(name = "address_2")
@@ -34,7 +34,7 @@ public class SingleProperty {
     public String city;
     public String quarter;
     @ColumnInfo(name = "postal_code")
-    public int postalCode;
+    public Integer postalCode;
     public String amenities;
     public String agent;
 
@@ -43,18 +43,18 @@ public class SingleProperty {
     public SingleProperty(@NonNull String id,
                           String type,
                           String description,
-                          int surface,
-                          long price,
-                          int rooms,
-                          int bedroom,
-                          int bathroom,
-                          long dateInit,
-                          long dateSold,
+                          Integer surface,
+                          Integer price,
+                          Integer rooms,
+                          Integer bedroom,
+                          Integer bathroom,
+                          Integer dateInit,
+                          Integer dateSold,
                           String address1,
                           String address2,
                           String city,
                           String quarter,
-                          int postalCode,
+                          Integer postalCode,
                           String amenities,
                           String agent) {
         this.id = id;
@@ -101,59 +101,59 @@ public class SingleProperty {
         this.description = description;
     }
 
-    public int getSurface() {
+    public Integer getSurface() {
         return surface;
     }
 
-    public void setSurface(int surface) {
+    public void setSurface(Integer surface) {
         this.surface = surface;
     }
 
-    public long getPrice() {
+    public Integer getPrice() {
         return price;
     }
 
-    public void setPrice(long price) {
+    public void setPrice(Integer price) {
         this.price = price;
     }
 
-    public int getRooms() {
+    public Integer getRooms() {
         return rooms;
     }
 
-    public void setRooms(int rooms) {
+    public void setRooms(Integer rooms) {
         this.rooms = rooms;
     }
 
-    public int getBedroom() {
+    public Integer getBedroom() {
         return bedroom;
     }
 
-    public void setBedroom(int bedroom) {
+    public void setBedroom(Integer bedroom) {
         this.bedroom = bedroom;
     }
 
-    public int getBathroom() {
+    public Integer getBathroom() {
         return bathroom;
     }
 
-    public void setBathroom(int bathroom) {
+    public void setBathroom(Integer bathroom) {
         this.bathroom = bathroom;
     }
 
-    public long getDateRegister() {
+    public Integer getDateRegister() {
         return dateRegister;
     }
 
-    public void setDateRegister(long dateRegister) {
+    public void setDateRegister(Integer dateRegister) {
         this.dateRegister = dateRegister;
     }
 
-    public long getDateSold() {
+    public Integer getDateSold() {
         return dateSold;
     }
 
-    public void setDateSold(long dateSold) {
+    public void setDateSold(Integer dateSold) {
         this.dateSold = dateSold;
     }
 
@@ -189,11 +189,11 @@ public class SingleProperty {
         this.quarter = quarter;
     }
 
-    public int getPostalCode() {
+    public Integer getPostalCode() {
         return postalCode;
     }
 
-    public void setPostalCode(int postalCode) {
+    public void setPostalCode(Integer postalCode) {
         this.postalCode = postalCode;
     }
 

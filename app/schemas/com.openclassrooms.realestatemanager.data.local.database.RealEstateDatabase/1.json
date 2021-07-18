@@ -1,0 +1,198 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "8c220f22484d8d7caba640b99747355b",
+    "entities": [
+      {
+        "tableName": "property",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`pid` TEXT NOT NULL, `type` TEXT, `description` TEXT, `surface` INTEGER, `price` INTEGER, `rooms` INTEGER, `bedroom` INTEGER, `bathroom` INTEGER, `date_register` INTEGER, `date_sold` INTEGER, `address_1` TEXT, `address_2` TEXT, `city` TEXT, `quarter` TEXT, `postal_code` INTEGER, `amenities` TEXT, `agent` TEXT, PRIMARY KEY(`pid`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "pid",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "surface",
+            "columnName": "surface",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "price",
+            "columnName": "price",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "rooms",
+            "columnName": "rooms",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "bedroom",
+            "columnName": "bedroom",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "bathroom",
+            "columnName": "bathroom",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "dateRegister",
+            "columnName": "date_register",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "dateSold",
+            "columnName": "date_sold",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "address1",
+            "columnName": "address_1",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "address2",
+            "columnName": "address_2",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "city",
+            "columnName": "city",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "quarter",
+            "columnName": "quarter",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "postalCode",
+            "columnName": "postal_code",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "amenities",
+            "columnName": "amenities",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "agent",
+            "columnName": "agent",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "pid"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_property_pid",
+            "unique": false,
+            "columnNames": [
+              "pid"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_property_pid` ON `${TABLE_NAME}` (`pid`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "property_image",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `path` TEXT, `description` TEXT, `property_id` TEXT, FOREIGN KEY(`property_id`) REFERENCES `property`(`pid`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "path",
+            "columnName": "path",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "propertyId",
+            "columnName": "property_id",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_property_image_property_id",
+            "unique": false,
+            "columnNames": [
+              "property_id"
+            ],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_property_image_property_id` ON `${TABLE_NAME}` (`property_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "property",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "property_id"
+            ],
+            "referencedColumns": [
+              "pid"
+            ]
+          }
+        ]
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8c220f22484d8d7caba640b99747355b')"
+    ]
+  }
+}

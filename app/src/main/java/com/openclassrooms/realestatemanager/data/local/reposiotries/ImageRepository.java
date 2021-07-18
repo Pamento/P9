@@ -1,5 +1,7 @@
 package com.openclassrooms.realestatemanager.data.local.reposiotries;
 
+import androidx.lifecycle.LiveData;
+
 import com.openclassrooms.realestatemanager.data.local.dao.ImageOfPropertyDao;
 import com.openclassrooms.realestatemanager.data.local.entities.ImageOfProperty;
 
@@ -23,7 +25,7 @@ public class ImageRepository {
         mImageOfPropertyDao.insertImageOfProperty(imageOfProperty);
     }
 
-    public List<ImageOfProperty> getAllImagesOfProperty(String propertyId) {
+    public LiveData<List<ImageOfProperty>> getAllImagesOfProperty(String propertyId) {
         return mImageOfPropertyDao.getAllImageForProperty(propertyId);
     }
 
