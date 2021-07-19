@@ -1,6 +1,8 @@
 package com.openclassrooms.realestatemanager.data.local.entities;
 
 
+import android.content.ContentValues;
+
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -211,5 +213,28 @@ public class SingleProperty {
 
     public void setAgent(String agent) {
         this.agent = agent;
+    }
+
+    @Override
+    public String toString() {
+        return "SingleProperty{" +
+                "id='" + id + '\'' +
+                ", type='" + type + '\'' +
+                ", description='" + description + '\'' +
+                ", surface=" + surface +
+                ", price=" + price +
+                ", rooms=" + rooms +
+                ", bedroom=" + bedroom +
+                ", bathroom=" + bathroom +
+                ", dateRegister=" + dateRegister +
+                ", dateSold=" + dateSold +
+                ", address1='" + address1 + '\'' +
+                ", address2='" + address2 + '\'' +
+                ", city='" + city + '\'' +
+                ", quarter='" + quarter + '\'' +
+                ", postalCode=" + postalCode +
+                ", amenities='" + amenities + '\'' +
+                ", agent='" + agent + '\'' +
+                '}';
     }
 }

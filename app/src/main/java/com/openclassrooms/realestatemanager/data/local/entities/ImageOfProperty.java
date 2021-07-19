@@ -62,4 +62,14 @@ public class ImageOfProperty {
     public void setPropertyId(String propertyId) {
         this.propertyId = propertyId;
     }
+
+    @Override
+    public String toString() {
+        return "ImageOfProperty{" +
+                "id=" + id +
+                ", path='" + path + '\'' +
+                ", description='" + description + '\'' +
+                ", propertyId='" + propertyId + '\'' +
+                '}';
+    }
 }

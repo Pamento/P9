@@ -1,5 +1,7 @@
 package com.openclassrooms.realestatemanager.data.local.dao;
 
+import android.database.Cursor;
+
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
@@ -25,6 +27,9 @@ public interface SinglePropertyDao {
     @Query("SELECT * FROM property WHERE pid = :propertyId")
     public LiveData<SingleProperty> getSingleProperty(String propertyId);
 
+    @Query("SELECT * FROM property WHERE pid = :propertyId")
+    Cursor getSinglePropertyProvider(String propertyId);
+
     // What that return ?
 //    @Query("SELECT pid,type,price FROM property")
 //    public LiveData<List<SingleProperty>> getAllProperties();
@@ -33,4 +38,8 @@ public interface SinglePropertyDao {
     @Transaction
     @Query("SELECT * FROM property")
     public LiveData<List<PropertyWithImages>> getPropertyWithImages();
+
+    @Transaction
+    @Query("SELECT * FROM property")
+    Cursor getPropertyWithImagesProvider();
 }
