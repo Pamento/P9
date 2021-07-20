@@ -129,9 +129,12 @@ public class ListProperty extends Fragment implements ListPropertyAdapter.OnItem
 
     @Override
     public void onItemPropertyListClickListener(int position) {
-        //SingleProperty prop = mProperties.get(position);
-        String id = "prop.getId()";
-        startOtherFragment(DETAIL, id);
-        Log.i(TAG, "LIST__ onItemPropertyListClickListener:");
+        SingleProperty prop = mProperties.get(position);
+        String id = prop.getId();
+        String propertyType = prop.getType();
+        // setPropertyId in local data Repositories for Detail, Edit fragment and others: Loan simulator, ...
+        mListPropertyViewModel.setPropertyId(id);
+        startOtherFragment(DETAIL, propertyType);
+        Log.i(TAG, "LIST__ onItemPropertyListClickListener:: " + propertyType);
     }
 }

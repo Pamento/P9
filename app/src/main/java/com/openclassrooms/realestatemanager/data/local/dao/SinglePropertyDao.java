@@ -19,13 +19,13 @@ import java.util.List;
 public interface SinglePropertyDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    public void createSingleProperty(SingleProperty singleProperty);
+    void createSingleProperty(SingleProperty singleProperty);
 
     @Update
-    public void updateProperty(SingleProperty singleProperty);
+    void updateProperty(SingleProperty singleProperty);
 
     @Query("SELECT * FROM property WHERE pid = :propertyId")
-    public LiveData<SingleProperty> getSingleProperty(String propertyId);
+    LiveData<SingleProperty> getSingleProperty(String propertyId);
 
     @Query("SELECT * FROM property WHERE pid = :propertyId")
     Cursor getSinglePropertyProvider(String propertyId);
@@ -37,7 +37,7 @@ public interface SinglePropertyDao {
     // get two table unified
     @Transaction
     @Query("SELECT * FROM property")
-    public LiveData<List<PropertyWithImages>> getPropertyWithImages();
+    LiveData<List<PropertyWithImages>> getPropertyWithImages();
 
     @Transaction
     @Query("SELECT * FROM property")

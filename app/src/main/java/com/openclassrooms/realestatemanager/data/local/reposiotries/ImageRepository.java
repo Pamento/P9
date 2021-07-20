@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.data.local.reposiotries;
 
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 
 import com.openclassrooms.realestatemanager.data.local.dao.ImageOfPropertyDao;
@@ -9,6 +10,7 @@ import java.util.List;
 
 public class ImageRepository {
 
+    private static String PROPERTY_ID;
     private final ImageOfPropertyDao mImageOfPropertyDao;
     //private final LiveData<List> imagesOfSingleProperty;
 
@@ -25,8 +27,9 @@ public class ImageRepository {
         mImageOfPropertyDao.insertImageOfProperty(imageOfProperty);
     }
 
-    public LiveData<List<ImageOfProperty>> getAllImagesOfProperty(String propertyId) {
-        return mImageOfPropertyDao.getAllImageForProperty(propertyId);
+    public LiveData<List<ImageOfProperty>> getAllImagesOfProperty(@Nullable String propertyId) {
+        if (propertyId == null) return mImageOfPropertyDao.getAllImageForProperty(PROPERTY_ID);
+        else return mImageOfPropertyDao.getAllImageForProperty(propertyId);
     }
 
     // Delete image
@@ -34,4 +37,11 @@ public class ImageRepository {
         mImageOfPropertyDao.deleteImage(id);
     }
 
+    public String getPropertyId() {
+        return PROPERTY_ID;
+    }
+
+    public void setPropertyId(String propertyId) {
+        PROPERTY_ID = propertyId;
+    }
 }
