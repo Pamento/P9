@@ -77,6 +77,10 @@ public class EditProperty extends Fragment {
         mEditPropertyViewModel = new ViewModelProvider(requireActivity(),vmF).get(EditPropertyViewModel.class);
     }
 
+    public void saveChanges() {
+        // TODO save changes
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();

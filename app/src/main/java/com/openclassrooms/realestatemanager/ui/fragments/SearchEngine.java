@@ -78,6 +78,10 @@ public class SearchEngine extends Fragment {
         mSearchEngineViewModel = new ViewModelProvider(requireActivity(), vmF).get(SearchEngineViewModel.class);
     }
 
+    public void searchProperties() {
+        // TODO execute query
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();

@@ -2,6 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_add_property"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorWhite"
@@ -301,6 +302,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/addF_since_layout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/size_n"
@@ -308,8 +310,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/addF_date_title">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/addF_since"
-                    style="@style/Widget.AppCompat.Spinner"
+                    android:id="@+id/addF_date_since"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:inputType="date" />
@@ -337,6 +338,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/addF_sold_on_layout"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/size_b"
@@ -348,8 +350,7 @@
                 app:layout_constraintTop_toTopOf="@id/addF_sold_switch">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/addF_sold_on"
-                    style="@style/Widget.AppCompat.Spinner"
+                    android:id="@+id/addF_date_sold_on"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:inputType="date" />

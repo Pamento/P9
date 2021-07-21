@@ -33,9 +33,10 @@ import java.util.Objects;
 import static com.openclassrooms.realestatemanager.util.enums.EFragments.*;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "NAVIGATING";
     private MainActivityViewModel mMainViewModel;
     private ActivityMainBinding binding;
+    private FragmentManager mFragmentManager;
     private EFragments mEFragments = LIST;
 
     @Override
@@ -44,13 +45,18 @@ public class MainActivity extends AppCompatActivity {
         initViewModel();
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
+        setFragmentManager();
         setContentView(view);
         displayListFragment();
     }
 
+    private void setFragmentManager() {
+        mFragmentManager = getSupportFragmentManager();
+    }
+
     private void initViewModel() {
         ViewModelFactory vmF = Injection.sViewModelFactory(this);
-        mMainViewModel = new ViewModelProvider(this,vmF).get(MainActivityViewModel.class);
+        mMainViewModel = new ViewModelProvider(this, vmF).get(MainActivityViewModel.class);
     }
 
     private void setToolbarTitle(String toolbarTitle, boolean backUpButton) {
@@ -70,59 +76,65 @@ public class MainActivity extends AppCompatActivity {
     private void displayListFragment() {
         ListProperty listProperty = ListProperty.newInstance(null, null);
 
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction fTransaction = fm
-                .beginTransaction();
-        fTransaction.add(R.id.main_activity_fragment_container, listProperty).addToBackStack(null).commit();
+        if (mFragmentManager != null) {
+            FragmentTransaction fTransaction = mFragmentManager
+                    .beginTransaction();
+            fTransaction.add(R.id.main_activity_fragment_container, listProperty).addToBackStack(null).commit();
+        } else {
+            setFragmentManager();
+            displayListFragment();
+        }
     }
 
     public void displayFragm(EFragments fragment, String param) {
         mEFragments = fragment;
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction transaction = fm.beginTransaction();
-        //transaction.setReorderingAllowed(true);
-        switch (fragment) {
-            case LIST:
-                setToolbarTitle(getResources().getString(R.string.app_name), false);
-                ListProperty lp = ListProperty.newInstance(null, null);
-                transaction.replace(R.id.main_activity_fragment_container, lp);
-                break;
-            case MAP:
-                setToolbarTitle("New York", false);
-                MapFragment mf = MapFragment.newInstance(null, null);
-                transaction.replace(R.id.main_activity_fragment_container, mf);
-                break;
-            case DETAIL:
-                setToolbarTitle(param, true);
-                DetailFragment df = DetailFragment.newInstance(param, null);
-                // transaction.add add the fragment as a layer without removing the list
-                transaction.add(R.id.main_activity_fragment_container, df);
-                break;
-            case ADD:
-                setToolbarTitle(param, false);
-                AddProperty ap = AddProperty.newInstance(null, null);
-                transaction.add(R.id.main_activity_fragment_container, ap);
-                break;
-            case SEARCH:
-                setToolbarTitle(param, false);
-                SearchEngine se = SearchEngine.newInstance(null, null);
-                transaction.add(R.id.main_activity_fragment_container, se);
-                break;
-            case SIMULATOR:
-                setToolbarTitle(param,true);
-                LoanSimulator ls = LoanSimulator.newInstance(null, null);
-                transaction.add(R.id.main_activity_fragment_container,ls);
-                break;
-            case EDIT:
-                setToolbarTitle(param, false);
-                EditProperty ep = EditProperty.newInstance(null, null);
-                transaction.add(R.id.main_activity_fragment_container,ep);
-                break;
-            default:
-                break;
+        Log.i(TAG, "MAIN__ displayFragm: is:: " + mEFragments);
+        if (mFragmentManager != null) {
+            FragmentTransaction transaction = mFragmentManager.beginTransaction();
+            //transaction.setReorderingAllowed(true);
+            switch (fragment) {
+                case LIST:
+                    setToolbarTitle(getResources().getString(R.string.app_name), false);
+                    ListProperty lp = ListProperty.newInstance(null, null);
+                    transaction.replace(R.id.main_activity_fragment_container, lp);
+                    break;
+                case MAP:
+                    setToolbarTitle("New York", false);
+                    MapFragment mf = MapFragment.newInstance(null, null);
+                    transaction.replace(R.id.main_activity_fragment_container, mf);
+                    break;
+                case DETAIL:
+                    setToolbarTitle(param, true);
+                    DetailFragment df = DetailFragment.newInstance(param, null);
+                    // transaction.add add the fragment as a layer without removing the list
+                    transaction.add(R.id.main_activity_fragment_container, df);
+                    break;
+                case ADD:
+                    setToolbarTitle(param, false);
+                    AddProperty ap = AddProperty.newInstance(null, null);
+                    transaction.add(R.id.main_activity_fragment_container, ap);
+                    break;
+                case SEARCH:
+                    setToolbarTitle(param, false);
+                    SearchEngine se = SearchEngine.newInstance(null, null);
+                    transaction.add(R.id.main_activity_fragment_container, se);
+                    break;
+                case SIMULATOR:
+                    setToolbarTitle(param, true);
+                    LoanSimulator ls = LoanSimulator.newInstance(null, null);
+                    transaction.add(R.id.main_activity_fragment_container, ls);
+                    break;
+                case EDIT:
+                    setToolbarTitle(param, false);
+                    EditProperty ep = EditProperty.newInstance(null, null);
+                    transaction.add(R.id.main_activity_fragment_container, ep);
+                    break;
+                default:
+                    break;
+            }
+            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            transaction.addToBackStack(param).commit();
         }
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        transaction.addToBackStack(param).commit();
     }
 
     // for manage display of name of fragment like title in the Toolbar
@@ -176,6 +188,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
+        // switch method not allowed for R.id.*
         if (id == R.id.mi_add) {
             displayFragm(ADD, getResources().getString(R.string.frg_add_title));
         } else if (id == R.id.mi_edit) {
@@ -185,8 +198,7 @@ public class MainActivity extends AppCompatActivity {
         } else if (id == R.id.mi_cancel) {
             onBackPressed();
         } else if (id == R.id.mi_save) {
-            // TODO save change ...
-            //  or do researches
+            runCommand();
         } else if (id == R.id.mi_loan_calculator) {
             displayFragm(SIMULATOR, getResources().getString(R.string.frg_simulator_title));
         } else if (id == R.id.mi_dollar_to_euro) {
@@ -195,5 +207,24 @@ public class MainActivity extends AppCompatActivity {
             // TODO manage this change too.
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void runCommand() {
+        switch (mEFragments) {
+            case ADD:
+                AddProperty aF = (AddProperty) mFragmentManager.findFragmentById(R.id.fragment_add_property);
+                if (aF != null) aF.createProperty();
+                break;
+            case EDIT:
+                EditProperty eF = (EditProperty) mFragmentManager.findFragmentById(R.id.fragment_add_property);
+                if (eF != null) eF.saveChanges();
+                break;
+            case SEARCH:
+                SearchEngine sF = (SearchEngine) mFragmentManager.findFragmentById(R.id.fragment_search_engine);
+                if (sF != null) sF.searchProperties();
+                break;
+            default:
+                break;
+        }
     }
 }

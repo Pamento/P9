@@ -1,8 +1,5 @@
 package com.openclassrooms.realestatemanager.data.local.entities;
 
-
-import android.content.ContentValues;
-
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;

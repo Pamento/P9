@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/form_address_property"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/add_form_address_1"
+        android:id="@+id/add_form_address_1_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -13,7 +14,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/add_address_form_address"
+            android:id="@+id/add_address1_form_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/add_form_address" />
@@ -21,15 +22,15 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/add_form_address_2"
+        android:id="@+id/add_form_address_2_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/add_form_address_1">
+        app:layout_constraintTop_toBottomOf="@+id/add_form_address_1_layout">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/add_address_form_address_suite"
+            android:id="@+id/add_address2_form_address_suite"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/add_form_address_suite"/>
@@ -37,12 +38,12 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/add_form_address_3"
+        android:id="@+id/add_form_address_3_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/add_form_address_2">
+        app:layout_constraintTop_toBottomOf="@+id/add_form_address_2_layout">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/add_address_form_city"
@@ -54,12 +55,12 @@
 
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/add_form_address_4"
+        android:id="@+id/add_form_address_4_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/add_form_address_3">
+        app:layout_constraintTop_toBottomOf="@+id/add_form_address_3_layout">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/add_address_form_quarter"
@@ -70,12 +71,12 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/add_form_address_5"
+        android:id="@+id/add_form_address_5_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/add_form_address_4">
+        app:layout_constraintTop_toBottomOf="@+id/add_form_address_4_layout">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/add_address_form_postal_code"

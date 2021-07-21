@@ -44,7 +44,7 @@
         app:layout_row="1" />
 
     <com.google.android.material.checkbox.MaterialCheckBox
-        android:id="@+id/amenities_buses"
+        android:id="@+id/amenities_bus"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/buses"

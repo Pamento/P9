@@ -34,7 +34,9 @@ import com.openclassrooms.realestatemanager.databinding.FormAddressPropertyBindi
 import com.openclassrooms.realestatemanager.databinding.FragmentAddPropertyBinding;
 import com.openclassrooms.realestatemanager.injection.Injection;
 import com.openclassrooms.realestatemanager.ui.adapters.ImageListOfAddPropertyAdapter;
+import com.openclassrooms.realestatemanager.util.Utils;
 import com.openclassrooms.realestatemanager.util.resources.AppResources;
+import com.openclassrooms.realestatemanager.util.texts.StringModifier;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,11 +48,6 @@ import java.util.Locale;
 
 import static android.app.Activity.RESULT_OK;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link AddProperty#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class AddProperty extends Fragment {
     private static final String TAG = "AddProperty";
     // TODO: Rename parameter arguments, choose names that match
@@ -125,12 +122,13 @@ public class AddProperty extends Fragment {
 
         setPropertyTypeSpinner();
         setAgentSpinner();
+        setCreationDate();
     }
 
     private void setAgentSpinner() {
         String[] agents = AppResources.getAGENTS();
         //AgentAdapter adapter = new AgentAdapter(requireContext(),R.layout.type_dropdown_item,agents);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(requireContext(),
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
                 android.R.layout.simple_dropdown_item_1line, agents);
         binding.addFAgent.setAdapter(adapter);
         binding.addFAgent.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -149,7 +147,7 @@ public class AddProperty extends Fragment {
     private void setPropertyTypeSpinner() {
         String[] types = AppResources.getPropertyType();
         //PropertyTypeSpinnerAdapter adapter = new PropertyTypeSpinnerAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, types);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(requireContext(),
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
                 android.R.layout.simple_dropdown_item_1line, types);
         binding.addFTypeDropdown.setAdapter(adapter);
         binding.addFTypeDropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -163,6 +161,13 @@ public class AddProperty extends Fragment {
             public void onNothingSelected(AdapterView<?> adapterView) { /**/ }
         });
     }
+
+    // SET UI
+    private void setCreationDate() {
+        // TODO we need the long value for save in SQLite if user change date, write the new one. Problem ? Convert string date to time milliseconds !
+        binding.addFDateSince.setText(Utils.getTodayDate());
+    }
+
 
     private void setOnAddImageFromCameraListener() {
         binding.addFBtnAddImgCamera.setOnClickListener(view -> takePictureIntent());
@@ -227,7 +232,7 @@ public class AddProperty extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = null;
-            Bitmap imageBitmap = null;
+            Bitmap imageBitmap;
             // data from startActivityForResult
 //            if (data != null) {
 //                extras = data.getExtras();
@@ -243,6 +248,39 @@ public class AddProperty extends Fragment {
                 Log.i(TAG, "onActivityResult: non image");
             }
         }
+    }
+
+    public void createProperty() {
+        // Get inputs values:
+        String type = binding.addFTypeDropdown.getText().toString();
+        String desc = binding.addFDescription.getEditableText().toString();
+        int surface = Integer.parseInt(binding.addFInputSurface.getText().toString());
+        int price = Integer.parseInt(binding.addFInputPrice.getText().toString());
+        int rooms = Integer.parseInt(binding.addFInputRooms.getText().toString());
+        int bedrooms = Integer.parseInt(binding.addFInputBedrooms.getText().toString());
+        int bathrooms = Integer.parseInt(binding.addFInputBathrooms.getText().toString());
+        //TODO add long to this value and string date in input
+        int dateRegister = (int) System.currentTimeMillis();
+        int dateSold = (int) System.currentTimeMillis();
+        String address1 = formAddressBinding.addAddress1FormAddress.getEditableText().toString();
+        String address2 = formAddressBinding.addAddress2FormAddressSuite.getEditableText().toString();
+        String city = formAddressBinding.addAddressFormCity.getEditableText().toString();
+        String quarter = formAddressBinding.addAddressFormQuarter.getEditableText().toString();
+        int codeZip = Integer.parseInt(formAddressBinding.addAddressFormPostalCode.getEditableText().toString());
+        String amenities = getAmenities();
+        String agent = binding.addFAgent.getText().toString();
+        mAddPropertyViewModel.createNewProperty(type,desc,surface,price,rooms,bedrooms,bathrooms,dateRegister,dateSold,address1,address2,city,quarter,codeZip,amenities,agent);
+    }
+
+    private String getAmenities() {
+        String[] amenities = new String[6];
+        amenities[0] = amenitiesBinding.amenitiesShop.isChecked() ? "Shop" : "null";
+        amenities[1] = amenitiesBinding.amenitiesPark.isChecked() ? "Park" : "null";
+        amenities[2] = amenitiesBinding.amenitiesPlayground.isChecked() ? "Playground" : "null";
+        amenities[3] = amenitiesBinding.amenitiesSchool.isChecked() ? "School" : "null";
+        amenities[4] = amenitiesBinding.amenitiesBus.isChecked() ? "Bus" : "null";
+        amenities[5] = amenitiesBinding.amenitiesSubway.isChecked() ? "Subway" : "null";
+        return StringModifier.arrayToSingleString(amenities);
     }
 
     @Override

@@ -49,7 +49,11 @@
     <string name="add_location">Location</string>
     <string name="add_type">Type of property</string>
     <string name="add_date"><![CDATA[Date of put on market & sold]]></string>
+    <string name="add_date_hint_m_d_y">mm/dd/yyyy</string>
     <string name="add_manage_by_agent">Manage by agent</string>
+    <string name="add_recycler_new_image">new image for \'add new property\'</string>
+    <string name="drag_image_button">drag image button</string>
+    <string name="add_description_placeholder">Description of added image</string>
     <!-- amenities -->
     <string name="school">School</string>
     <string name="playground">Playground</string>
@@ -63,9 +67,6 @@
     <string name="add_form_city">City</string>
     <string name="add_address_form_quarter">Quarter</string>
     <string name="add_address_form_postal_code">ZIP/postal code</string>
-    <string name="add_recycler_new_image">new image for \'add new property\'</string>
-    <string name="drag_image_button">drag image button</string>
-    <string name="add_description_placeholder">Description of added image</string>
     <!-- -->
 
 </resources>
