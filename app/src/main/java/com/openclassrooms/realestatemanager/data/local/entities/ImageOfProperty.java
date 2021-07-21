@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
@@ -18,11 +19,15 @@ import androidx.room.PrimaryKey;
 public class ImageOfProperty {
 
     @PrimaryKey(autoGenerate = true)
-    public Integer id;
-    public String path;
-    public String description;
+    private Integer id;
+    private String path;
+    private String description;
     @ColumnInfo(name = "property_id")
-    public String propertyId;
+    private String propertyId;
+
+    @Ignore
+    public ImageOfProperty() {
+    }
 
     public ImageOfProperty(@Nullable Integer id, @NonNull String path, String description, @NonNull String propertyId) {
         this.id = id;

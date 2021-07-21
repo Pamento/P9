@@ -47,6 +47,8 @@ import java.util.List;
 import java.util.Locale;
 
 import static android.app.Activity.RESULT_OK;
+import static com.openclassrooms.realestatemanager.util.Constants.PICK_IMAGE_GALLERY;
+import static com.openclassrooms.realestatemanager.util.Constants.REQUEST_IMAGE_CAPTURE;
 
 public class AddProperty extends Fragment {
     private static final String TAG = "AddProperty";
@@ -63,6 +65,8 @@ public class AddProperty extends Fragment {
     private String currentPhotoPath;
     private List<ImageOfProperty> imagesToAdd = new ArrayList<>();
     private ImageListOfAddPropertyAdapter mImageAdapter;
+    private boolean mIsPropertySold = false;
+    private int mMillisOfRegisterProperty = 0;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -106,7 +110,7 @@ public class AddProperty extends Fragment {
         binding = FragmentAddPropertyBinding.inflate(inflater, container, false);
         bindIncludesLayouts();
 
-        setOnAddImageFromCameraListener();
+        setEventListener();
         setRecyclerView();
         return binding.getRoot();
     }
@@ -114,6 +118,7 @@ public class AddProperty extends Fragment {
     private void initViewModel() {
         ViewModelFactory vmF = Injection.sViewModelFactory(requireActivity());
         mAddPropertyViewModel = new ViewModelProvider(requireActivity(),vmF).get(AddPropertyViewModel.class);
+        mAddPropertyViewModel.init();
     }
 
     @Override
@@ -123,6 +128,7 @@ public class AddProperty extends Fragment {
         setPropertyTypeSpinner();
         setAgentSpinner();
         setCreationDate();
+        handleSoldDateInput();
     }
 
     private void setAgentSpinner() {
@@ -138,9 +144,7 @@ public class AddProperty extends Fragment {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
+            public void onNothingSelected(AdapterView<?> adapterView) {/**/}
         });
     }
 
@@ -165,12 +169,41 @@ public class AddProperty extends Fragment {
     // SET UI
     private void setCreationDate() {
         // TODO we need the long value for save in SQLite if user change date, write the new one. Problem ? Convert string date to time milliseconds !
+        mMillisOfRegisterProperty = (int) System.currentTimeMillis();
         binding.addFDateSince.setText(Utils.getTodayDate());
+        binding.addFDateSince.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // TODO create DatePicker
+                // TODO !!! After add DatePicker, add function to change mMillisOfRegisterProperty
+            }
+        });
     }
 
+    private void handleSoldDateInput() {
+        Log.i(TAG, "handleSoldDateInput: RUN.          - mIsPropertySold:: " + mIsPropertySold);
+        binding.addFDateSoldOn.setEnabled(mIsPropertySold);
+    }
 
-    private void setOnAddImageFromCameraListener() {
+    private void setEventListener() {
         binding.addFBtnAddImgCamera.setOnClickListener(view -> takePictureIntent());
+        binding.addFBtnAddImgGallery.setOnClickListener(view -> openGallery());
+        binding.addFSoldSwitch.setOnClickListener(view -> handleSwitchEvent());
+    }
+
+    private void handleSwitchEvent() {
+        mIsPropertySold = !mIsPropertySold;
+        Log.i(TAG, "handleSwitchEvent: click on 'Switch' button. mIsPropertySold:: " + mIsPropertySold);
+        handleSoldDateInput();
+        if (mIsPropertySold) {
+            binding.addFDateSoldOn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // TODO use DatePicker
+                    // TODO add time millis to property
+                }
+            });
+        }
     }
 
     private void setRecyclerView() {
@@ -206,8 +239,6 @@ public class AddProperty extends Fragment {
         formAddressBinding = FormAddressPropertyBinding.bind(addressFormView);
     }
 
-    static final int REQUEST_IMAGE_CAPTURE = 1;
-
     private void takePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
@@ -227,25 +258,27 @@ public class AddProperty extends Fragment {
             }
         }
     }
+    private void openGallery() {
+        Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+        startActivityForResult(gallery, PICK_IMAGE_GALLERY);
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = null;
-            Bitmap imageBitmap;
-            // data from startActivityForResult
-//            if (data != null) {
-//                extras = data.getExtras();
-//                imageBitmap = (Bitmap) extras.get("data");
-//            }
-            // to get image from local storage
-            imageBitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
-            // TODO save the picture as a image
+            Bitmap imageBitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
+            Log.i(TAG, "onActivityResult: take photo -> uri:: " + photoFile.getAbsolutePath());
+            mAddPropertyViewModel.createOneImageOfProperty(photoFile.getAbsolutePath());
             if (imageBitmap != null)
                 Log.i(TAG, "onActivityResult: bitmap is ok:: " + imageBitmap.toString());
             else {
                 super.onActivityResult(requestCode, resultCode, data);
                 Log.i(TAG, "onActivityResult: non image");
+            }
+        } else if (requestCode == PICK_IMAGE_GALLERY && resultCode == RESULT_OK) {
+            if (data != null) {
+                mAddPropertyViewModel.createOneImageOfProperty(data.getData().toString());
+                Log.i(TAG, "onActivityResult: uri of image:: " + data.getData().toString());
             }
         }
     }
@@ -260,7 +293,7 @@ public class AddProperty extends Fragment {
         int bedrooms = Integer.parseInt(binding.addFInputBedrooms.getText().toString());
         int bathrooms = Integer.parseInt(binding.addFInputBathrooms.getText().toString());
         //TODO add long to this value and string date in input
-        int dateRegister = (int) System.currentTimeMillis();
+        //int dateRegister = (int) System.currentTimeMillis();
         int dateSold = (int) System.currentTimeMillis();
         String address1 = formAddressBinding.addAddress1FormAddress.getEditableText().toString();
         String address2 = formAddressBinding.addAddress2FormAddressSuite.getEditableText().toString();
@@ -269,7 +302,7 @@ public class AddProperty extends Fragment {
         int codeZip = Integer.parseInt(formAddressBinding.addAddressFormPostalCode.getEditableText().toString());
         String amenities = getAmenities();
         String agent = binding.addFAgent.getText().toString();
-        mAddPropertyViewModel.createNewProperty(type,desc,surface,price,rooms,bedrooms,bathrooms,dateRegister,dateSold,address1,address2,city,quarter,codeZip,amenities,agent);
+        mAddPropertyViewModel.createNewProperty(type,desc,surface,price,rooms,bedrooms,bathrooms,mMillisOfRegisterProperty,dateSold,address1,address2,city,quarter,codeZip,amenities,agent);
     }
 
     private String getAmenities() {

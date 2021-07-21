@@ -311,6 +311,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/addF_date_since"
+                    style="@style/Widget.MaterialComponents.TimePicker"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:inputType="date" />
@@ -351,6 +352,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/addF_date_sold_on"
+                    style="@style/Widget.MaterialComponents.TimePicker"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:inputType="date" />

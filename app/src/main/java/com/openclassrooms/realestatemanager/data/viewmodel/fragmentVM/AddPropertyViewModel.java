@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.openclassrooms.realestatemanager.data.local.entities.ImageOfProperty;
@@ -7,6 +8,8 @@ import com.openclassrooms.realestatemanager.data.local.entities.SingleProperty;
 import com.openclassrooms.realestatemanager.data.local.reposiotries.ImageRepository;
 import com.openclassrooms.realestatemanager.data.local.reposiotries.PropertiesRepository;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.Executor;
 
@@ -16,12 +19,18 @@ public class AddPropertyViewModel extends ViewModel {
     private final ImageRepository mImageRepository;
     private final Executor mExecutor;
     private SingleProperty mSingleProperty;
+    private LiveData<List<ImageOfProperty>> mImagesOfProperty;
     private ImageOfProperty mImageOfProperty;
 
     public AddPropertyViewModel(PropertiesRepository propertiesRepository, ImageRepository imageRepository, Executor executor) {
         mPropertiesRepository = propertiesRepository;
         mImageRepository = imageRepository;
         mExecutor = executor;
+    }
+
+    public void init() {
+        mSingleProperty = new SingleProperty();
+        mSingleProperty.setId(UUID.randomUUID().toString());
     }
 
     public SingleProperty getSingleProperty() {
@@ -32,18 +41,8 @@ public class AddPropertyViewModel extends ViewModel {
         mSingleProperty = singleProperty;
     }
 
-    public ImageOfProperty getImageOfProperty() {
-        return mImageOfProperty;
-    }
-
     public void setImageOfProperty(ImageOfProperty imageOfProperty) {
         mImageOfProperty = imageOfProperty;
-    }
-
-    // Handle data
-    public boolean createSingleProperty() {
-        mExecutor.execute(() -> mPropertiesRepository.createSingleProperty(mSingleProperty));
-        return true;
     }
 
     public void createNewProperty(String type,
@@ -53,7 +52,7 @@ public class AddPropertyViewModel extends ViewModel {
                                   Integer rooms,
                                   Integer bedroom,
                                   Integer bathroom,
-                                  Integer dateInit,
+                                  Integer dateRegister,
                                   Integer dateSold,
                                   String address1,
                                   String address2,
@@ -62,24 +61,46 @@ public class AddPropertyViewModel extends ViewModel {
                                   Integer postalCode,
                                   String amenities,
                                   String agent) {
+        mSingleProperty.setType(type.equals("") ? null : type);
+        mSingleProperty.setDescription(description.equals("") ? null : description);
+        mSingleProperty.setSurface(surface);
+        mSingleProperty.setPrice(price);
+        mSingleProperty.setRooms(rooms);
+        mSingleProperty.setBedroom(bedroom);
+        mSingleProperty.setBathroom(bathroom);
+        mSingleProperty.setDateRegister(dateRegister);
+        mSingleProperty.setDateSold(dateSold);
+        mSingleProperty.setAddress1(address1);
+        mSingleProperty.setAddress2(address2);
+        mSingleProperty.setQuarter(quarter.equals("") ? null : quarter);
+        mSingleProperty.setCity(city.equals("") ? null : city);
+        mSingleProperty.setPostalCode(postalCode);
+        mSingleProperty.setAmenities(amenities.equals("") ? null : amenities);
+        mSingleProperty.setAgent(agent);
+    }
 
-        mSingleProperty = new SingleProperty();
-        mSingleProperty.id = UUID.randomUUID().toString();
-        mSingleProperty.type = type.equals("") ? null : type;
-        mSingleProperty.description = description.equals("") ? null : description;
-        mSingleProperty.surface = surface;
-        mSingleProperty.price = price;
-        mSingleProperty.rooms = rooms;
-        mSingleProperty.bedroom = bedroom;
-        mSingleProperty.bathroom = bathroom;
-        mSingleProperty.dateRegister = dateInit;
-        mSingleProperty.dateSold = dateSold;
-        mSingleProperty.address1 = address1;
-        mSingleProperty.address2 = address2;
-        mSingleProperty.quarter = quarter.equals("") ? null : quarter;
-        mSingleProperty.city = city.equals("") ? null : city;
-        mSingleProperty.postalCode = postalCode;
-        mSingleProperty.amenities = amenities.equals("") ? null : amenities;
-        mSingleProperty.agent = agent;
+    public void createOneImageOfProperty(String imageUri) {
+        mImageOfProperty = new ImageOfProperty();
+        mImageOfProperty.setPropertyId(mSingleProperty.getId());
+        mImageOfProperty.setPath(imageUri);
+        Objects.requireNonNull(mImagesOfProperty.getValue()).add(mImageOfProperty);
+        mImageOfProperty = null;
+    }
+
+    public void addDescriptionToImage(int position, String description) {
+        // TODO it is good practice ?
+        Objects.requireNonNull(mImagesOfProperty.getValue()).get(position).setDescription(description);
+    }
+
+
+    // Save data
+    public boolean createSingleProperty() {
+        mExecutor.execute(() -> mPropertiesRepository.createSingleProperty(mSingleProperty));
+        return true;
+    }
+
+    public boolean createImagesOfProperty() {
+        mExecutor.execute(() -> mImageRepository.addPropertyImages(mImagesOfProperty.getValue()));
+        return true;
     }
 }

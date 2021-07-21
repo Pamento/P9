@@ -3,6 +3,7 @@ package com.openclassrooms.realestatemanager.data.local.entities;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
@@ -14,30 +15,28 @@ public class SingleProperty {
     @PrimaryKey
     @NonNull
     @ColumnInfo(name = "pid")
-    public String id;
-    public String type;
-    public String description;
-    public Integer surface;
-    public Integer price;
-    public Integer rooms;
-    public Integer bedroom;
-    public Integer bathroom;
+    private String id;
+    private String type;
+    private String description;
+    private Integer surface;
+    private Integer price;
+    private Integer rooms;
+    private Integer bedroom;
+    private Integer bathroom;
     @ColumnInfo(name = "date_register")
-    public Integer dateRegister;
+    private Integer dateRegister;
     @ColumnInfo(name = "date_sold")
-    public Integer dateSold;
+    private Integer dateSold;
     @ColumnInfo(name = "address_1")
-    public String address1;
+    private String address1;
     @ColumnInfo(name = "address_2")
-    public String address2;
-    public String city;
-    public String quarter;
+    private String address2;
+    private String city;
+    private String quarter;
     @ColumnInfo(name = "postal_code")
-    public Integer postalCode;
-    public String amenities;
-    public String agent;
-
-    public SingleProperty() {/**/}
+    private Integer postalCode;
+    private String amenities;
+    private String agent;
 
     public SingleProperty(@NonNull String id,
                           String type,
@@ -47,7 +46,7 @@ public class SingleProperty {
                           Integer rooms,
                           Integer bedroom,
                           Integer bathroom,
-                          Integer dateInit,
+                          Integer dateRegister,
                           Integer dateSold,
                           String address1,
                           String address2,
@@ -64,7 +63,7 @@ public class SingleProperty {
         this.rooms = rooms;
         this.bedroom = bedroom;
         this.bathroom = bathroom;
-        this.dateRegister = dateInit;
+        this.dateRegister = dateRegister;
         this.dateSold = dateSold;
         this.address1 = address1;
         this.address2 = address2;
@@ -73,6 +72,10 @@ public class SingleProperty {
         this.postalCode = postalCode;
         this.amenities = amenities;
         this.agent = agent;
+    }
+
+    @Ignore
+    public SingleProperty() {
     }
 
     @NonNull
@@ -212,6 +215,7 @@ public class SingleProperty {
         this.agent = agent;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "SingleProperty{" +
