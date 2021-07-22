@@ -3,7 +3,6 @@ package com.openclassrooms.realestatemanager.util;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.wifi.WifiManager;
 import android.os.Build;
 
 import java.text.DateFormat;
@@ -37,6 +36,11 @@ public class Utils {
     public static String getTodayDate() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd", Locale.US);
         return dateFormat.format(new Date());
+    }
+
+    public static String getUSFormatOfDate(Date date) {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd", Locale.US);
+        return dateFormat.format(date);
     }
 
     /**

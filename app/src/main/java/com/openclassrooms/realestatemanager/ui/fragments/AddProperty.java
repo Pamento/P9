@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.ui.fragments;
 
+import android.app.DatePickerDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -23,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 
 import com.openclassrooms.realestatemanager.data.local.entities.ImageOfProperty;
 import com.openclassrooms.realestatemanager.data.viewModelFactory.ViewModelFactory;
@@ -34,12 +36,14 @@ import com.openclassrooms.realestatemanager.injection.Injection;
 import com.openclassrooms.realestatemanager.ui.adapters.ImageListOfAddPropertyAdapter;
 import com.openclassrooms.realestatemanager.util.Utils;
 import com.openclassrooms.realestatemanager.util.resources.AppResources;
+import com.openclassrooms.realestatemanager.util.system.AskOSTo;
 import com.openclassrooms.realestatemanager.util.texts.StringModifier;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -50,7 +54,7 @@ import static android.app.Activity.RESULT_OK;
 import static com.openclassrooms.realestatemanager.util.Constants.PICK_IMAGE_GALLERY;
 import static com.openclassrooms.realestatemanager.util.Constants.REQUEST_IMAGE_CAPTURE;
 
-public class AddProperty extends Fragment {
+public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetListener {
     private static final String TAG = "AddProperty";
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -68,6 +72,8 @@ public class AddProperty extends Fragment {
     private ImageListOfAddPropertyAdapter mImageAdapter;
     private boolean mIsPropertySold = false;
     private int mMillisOfRegisterProperty = 0;
+    private int mMillisOfSoldDate = 0;
+    private boolean isDateRegister;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -195,16 +201,27 @@ public class AddProperty extends Fragment {
 
     // SET UI
     private void setCreationDate() {
-        // TODO we need the long value for save in SQLite if user change date, write the new one. Problem ? Convert string date to time milliseconds !
         mMillisOfRegisterProperty = (int) System.currentTimeMillis();
-        binding.addFDateSince.setText(Utils.getTodayDate());
-        binding.addFDateSince.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // TODO create DatePicker
-                // TODO !!! After add DatePicker, add function to change mMillisOfRegisterProperty
-            }
+        setDateInputField(Utils.getTodayDate(), 0);
+        setListenerDatePicker();
+    }
+
+    private void setListenerDatePicker() {
+        binding.addFDateSince.setOnClickListener(view -> {
+            AskOSTo.hideKeyboard(requireActivity());
+            showDatePickerDialog();
+            isDateRegister = true;
         });
+    }
+
+    private void showDatePickerDialog() {
+        DatePickerDialog datePicker = new DatePickerDialog(
+                requireActivity(), this,
+                Calendar.getInstance().get(Calendar.YEAR),
+                Calendar.getInstance().get(Calendar.MONTH),
+                Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+        );
+        datePicker.show();
     }
 
     private void handleSoldDateInput() {
@@ -220,16 +237,23 @@ public class AddProperty extends Fragment {
 
     private void handleSwitchEvent() {
         mIsPropertySold = !mIsPropertySold;
+        setDateInputField(Utils.getTodayDate(), 1);
+        mMillisOfSoldDate = (int) System.currentTimeMillis();
         Log.i(TAG, "handleSwitchEvent: click on 'Switch' button. mIsPropertySold:: " + mIsPropertySold);
         handleSoldDateInput();
         if (mIsPropertySold) {
-            binding.addFDateSoldOn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    // TODO use DatePicker
-                    // TODO add time millis to property
-                }
+            binding.addFDateSoldOn.setOnClickListener(view -> {
+                isDateRegister = false;
+                showDatePickerDialog();
             });
+        }
+    }
+
+    private void setDateInputField(String date, int mode) {
+        if (mode == 1) {
+            binding.addFDateSoldOn.setText(date);
+        } else {
+            binding.addFDateSince.setText(date);
         }
     }
 
@@ -354,9 +378,8 @@ public class AddProperty extends Fragment {
         int rooms = Integer.parseInt(binding.addFInputRooms.getText().toString());
         int bedrooms = Integer.parseInt(binding.addFInputBedrooms.getText().toString());
         int bathrooms = Integer.parseInt(binding.addFInputBathrooms.getText().toString());
-        //TODO add long to this value and string date in input
-        //int dateRegister = (int) System.currentTimeMillis();
-        int dateSold = (int) System.currentTimeMillis();
+        int dateRegister = mMillisOfRegisterProperty;
+        int dateSold = mMillisOfSoldDate;
         String address1 = formAddressBinding.addAddress1FormAddress.getEditableText().toString();
         String address2 = formAddressBinding.addAddress2FormAddressSuite.getEditableText().toString();
         String city = formAddressBinding.addAddressFormCity.getEditableText().toString();
@@ -384,5 +407,25 @@ public class AddProperty extends Fragment {
         formAddressBinding = null;
         amenitiesBinding = null;
         binding = null;
+    }
+
+    @Override
+    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, i);
+        calendar.set(Calendar.MONTH, i1);
+        calendar.set(Calendar.DAY_OF_MONTH, i2);
+        Date date = calendar.getTime();
+        if (isDateRegister) {
+            mMillisOfRegisterProperty = (int) calendar.getTimeInMillis();
+            setDateInputField(Utils.getUSFormatOfDate(date), 0);
+        } else {
+            mMillisOfSoldDate = (int) calendar.getTimeInMillis();
+            if (mMillisOfSoldDate >= mMillisOfRegisterProperty) {
+                setDateInputField(Utils.getUSFormatOfDate(date), 1);
+            } else {
+                // TODO notify user of incorrect set of date
+            }
+        }
     }
 }
