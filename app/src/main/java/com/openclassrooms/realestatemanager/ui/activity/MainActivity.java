@@ -33,7 +33,7 @@ import java.util.Objects;
 import static com.openclassrooms.realestatemanager.util.enums.EFragments.*;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "NAVIGATING";
+    private static final String TAG = "AddProperty";
     private MainActivityViewModel mMainViewModel;
     private ActivityMainBinding binding;
     private FragmentManager mFragmentManager;
@@ -210,10 +210,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void runCommand() {
+        Log.i(TAG, "runCommand: mEFragments:: " + mEFragments);
         switch (mEFragments) {
             case ADD:
                 AddProperty aF = (AddProperty) mFragmentManager.findFragmentById(R.id.fragment_add_property);
-                if (aF != null) aF.createProperty();
+                if (aF != null) aF.checkFormValidityBeforeSave();
                 break;
             case EDIT:
                 EditProperty eF = (EditProperty) mFragmentManager.findFragmentById(R.id.fragment_add_property);

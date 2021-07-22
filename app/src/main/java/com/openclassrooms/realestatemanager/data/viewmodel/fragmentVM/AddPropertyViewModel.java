@@ -1,6 +1,9 @@
 package com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.openclassrooms.realestatemanager.data.local.entities.ImageOfProperty;
@@ -8,18 +11,20 @@ import com.openclassrooms.realestatemanager.data.local.entities.SingleProperty;
 import com.openclassrooms.realestatemanager.data.local.reposiotries.ImageRepository;
 import com.openclassrooms.realestatemanager.data.local.reposiotries.PropertiesRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.Executor;
 
 public class AddPropertyViewModel extends ViewModel {
-
+    private static final String TAG = "AddProperty";
     private final PropertiesRepository mPropertiesRepository;
     private final ImageRepository mImageRepository;
     private final Executor mExecutor;
     private SingleProperty mSingleProperty;
-    private LiveData<List<ImageOfProperty>> mImagesOfProperty;
+    private List<ImageOfProperty> mImagesOfPropertyList = new ArrayList<>();
+    private MutableLiveData<List<ImageOfProperty>> mImagesOfProperty;
     private ImageOfProperty mImageOfProperty;
 
     public AddPropertyViewModel(PropertiesRepository propertiesRepository, ImageRepository imageRepository, Executor executor) {
@@ -31,6 +36,7 @@ public class AddPropertyViewModel extends ViewModel {
     public void init() {
         mSingleProperty = new SingleProperty();
         mSingleProperty.setId(UUID.randomUUID().toString());
+        mImagesOfProperty = new MutableLiveData<>();
     }
 
     public SingleProperty getSingleProperty() {
@@ -83,13 +89,26 @@ public class AddPropertyViewModel extends ViewModel {
         mImageOfProperty = new ImageOfProperty();
         mImageOfProperty.setPropertyId(mSingleProperty.getId());
         mImageOfProperty.setPath(imageUri);
-        Objects.requireNonNull(mImagesOfProperty.getValue()).add(mImageOfProperty);
-        mImageOfProperty = null;
+        Log.i(TAG, "createOneImageOfProperty: imageUri:: " + imageUri);
+        mImagesOfPropertyList.add(mImageOfProperty);
+        mImagesOfProperty.postValue(mImagesOfPropertyList);
+            mImageOfProperty = null;
+    }
+
+    public void removeOneImageOfProperty(ImageOfProperty imageOfProperty) {
+        mImagesOfPropertyList.remove(imageOfProperty);
+        mImagesOfProperty.postValue(mImagesOfPropertyList);
     }
 
     public void addDescriptionToImage(int position, String description) {
-        // TODO it is good practice ?
-        Objects.requireNonNull(mImagesOfProperty.getValue()).get(position).setDescription(description);
+        ImageOfProperty iOP = mImagesOfPropertyList.get(position);
+        iOP.setDescription(description);
+        mImagesOfPropertyList.set(position, iOP);
+        mImagesOfProperty.setValue(mImagesOfPropertyList);
+    }
+
+    public LiveData<List<ImageOfProperty>> getImagesOfProperty() {
+        return mImagesOfProperty;
     }
 
 
