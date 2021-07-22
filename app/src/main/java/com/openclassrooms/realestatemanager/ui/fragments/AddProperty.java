@@ -321,23 +321,11 @@ public class AddProperty extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            //Bitmap imageBitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
-            //Log.i(TAG, "onActivityResult: take photo -> uri:: " + photoFile.getAbsolutePath());
-
             Uri imageUri = Uri.fromFile(photoFile);
-            Log.i(TAG, "ADD__ onActivityResult: URI::URI::URI:: " + imageUri);
             mAddPropertyViewModel.createOneImageOfProperty(imageUri.toString());
-
-//            if (imageBitmap != null)
-//                Log.i(TAG, "ADD__ onActivityResult: bitmap is ok:: " + imageBitmap.toString());
-//            else {
-//                super.onActivityResult(requestCode, resultCode, data);
-//                Log.i(TAG, "ADD__ onActivityResult: non image");
-//            }
         } else if (requestCode == PICK_IMAGE_GALLERY && resultCode == RESULT_OK) {
             if (data != null) {
                 Uri uri = data.getData();
-                Log.i(TAG, "onActivityResult: uri of image:: " + uri.toString());
                 mAddPropertyViewModel.createOneImageOfProperty(uri.toString());
             }
         }
@@ -345,10 +333,13 @@ public class AddProperty extends Fragment {
 
     public void checkFormValidityBeforeSave() {
         Log.i(TAG, "ADD__ checkFormValidityBeforeSave: check method RUN");
+        mAddPropertyViewModel.setImagesOfPropertyList(mImageAdapter.getImageOfPropertyList());
         // TODO need: 1 picture, agent name
         if (imagesToAdd.size() > 0 && !binding.addFAgent.getText().toString().equals("")) {
             Log.i(TAG, "checkFormValidityBeforeSave: we are ready to create SingleProperty");
             //createProperty();
+        } else {
+            // TODO notify about need to fill the fields
         }
         // after click on save icon, main activity run this function to check if required fields was fill
         // If so, this function run save method

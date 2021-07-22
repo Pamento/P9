@@ -9,8 +9,8 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="15dp"
         android:elevation="6dp"
+        app:cardCornerRadius="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -46,7 +46,8 @@
                     android:id="@+id/item_addF_input_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textMultiLine"
+                    android:imeOptions="actionDone"
+                    android:inputType="textImeMultiLine"
                     android:lines="2"
                     android:maxLines="4"
                     android:scrollbars="vertical" />

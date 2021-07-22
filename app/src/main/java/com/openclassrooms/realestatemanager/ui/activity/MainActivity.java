@@ -30,6 +30,13 @@ import com.openclassrooms.realestatemanager.util.enums.EFragments;
 
 import java.util.Objects;
 
+import static com.openclassrooms.realestatemanager.util.Constants.ADD_FRAGMENT;
+import static com.openclassrooms.realestatemanager.util.Constants.DETAIL_FRAGMENT;
+import static com.openclassrooms.realestatemanager.util.Constants.EDIT_FRAGMENT;
+import static com.openclassrooms.realestatemanager.util.Constants.LIST_FRAGMENT;
+import static com.openclassrooms.realestatemanager.util.Constants.MAP_FRAGMENT;
+import static com.openclassrooms.realestatemanager.util.Constants.SEARCH_FRAGMENT;
+import static com.openclassrooms.realestatemanager.util.Constants.SIMULATOR_FRAGMENT;
 import static com.openclassrooms.realestatemanager.util.enums.EFragments.*;
 
 public class MainActivity extends AppCompatActivity {
@@ -96,33 +103,33 @@ public class MainActivity extends AppCompatActivity {
                 case LIST:
                     setToolbarTitle(getResources().getString(R.string.app_name), false);
                     ListProperty lp = ListProperty.newInstance(null, null);
-                    transaction.replace(R.id.main_activity_fragment_container, lp);
+                    transaction.replace(R.id.main_activity_fragment_container, lp, LIST_FRAGMENT);
                     break;
                 case MAP:
                     setToolbarTitle("New York", false);
                     MapFragment mf = MapFragment.newInstance(null, null);
-                    transaction.replace(R.id.main_activity_fragment_container, mf);
+                    transaction.replace(R.id.main_activity_fragment_container, mf, MAP_FRAGMENT);
                     break;
                 case DETAIL:
                     setToolbarTitle(param, true);
                     DetailFragment df = DetailFragment.newInstance(param, null);
                     // transaction.add add the fragment as a layer without removing the list
-                    transaction.add(R.id.main_activity_fragment_container, df);
+                    transaction.add(R.id.main_activity_fragment_container, df, DETAIL_FRAGMENT);
                     break;
                 case ADD:
                     setToolbarTitle(param, false);
                     AddProperty ap = AddProperty.newInstance(null, null);
-                    transaction.add(R.id.main_activity_fragment_container, ap);
+                    transaction.add(R.id.main_activity_fragment_container, ap, ADD_FRAGMENT);
                     break;
                 case SEARCH:
                     setToolbarTitle(param, false);
                     SearchEngine se = SearchEngine.newInstance(null, null);
-                    transaction.add(R.id.main_activity_fragment_container, se);
+                    transaction.add(R.id.main_activity_fragment_container, se, SEARCH_FRAGMENT);
                     break;
                 case SIMULATOR:
                     setToolbarTitle(param, true);
                     LoanSimulator ls = LoanSimulator.newInstance(null, null);
-                    transaction.add(R.id.main_activity_fragment_container, ls);
+                    transaction.add(R.id.main_activity_fragment_container, ls, SIMULATOR_FRAGMENT);
                     break;
                 case EDIT:
                     setToolbarTitle(param, false);
@@ -213,15 +220,15 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG, "runCommand: mEFragments:: " + mEFragments);
         switch (mEFragments) {
             case ADD:
-                AddProperty aF = (AddProperty) mFragmentManager.findFragmentById(R.id.fragment_add_property);
+                AddProperty aF = (AddProperty) mFragmentManager.findFragmentByTag(ADD_FRAGMENT);
                 if (aF != null) aF.checkFormValidityBeforeSave();
                 break;
             case EDIT:
-                EditProperty eF = (EditProperty) mFragmentManager.findFragmentById(R.id.fragment_add_property);
+                EditProperty eF = (EditProperty) mFragmentManager.findFragmentByTag(EDIT_FRAGMENT);
                 if (eF != null) eF.saveChanges();
                 break;
             case SEARCH:
-                SearchEngine sF = (SearchEngine) mFragmentManager.findFragmentById(R.id.fragment_search_engine);
+                SearchEngine sF = (SearchEngine) mFragmentManager.findFragmentByTag(SEARCH_FRAGMENT);
                 if (sF != null) sF.searchProperties();
                 break;
             default:

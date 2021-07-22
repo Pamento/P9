@@ -13,7 +13,6 @@ import com.openclassrooms.realestatemanager.data.local.reposiotries.PropertiesRe
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.Executor;
 
@@ -23,7 +22,7 @@ public class AddPropertyViewModel extends ViewModel {
     private final ImageRepository mImageRepository;
     private final Executor mExecutor;
     private SingleProperty mSingleProperty;
-    private List<ImageOfProperty> mImagesOfPropertyList = new ArrayList<>();
+    private final List<ImageOfProperty> mImagesOfPropertyList = new ArrayList<>();
     private MutableLiveData<List<ImageOfProperty>> mImagesOfProperty;
     private ImageOfProperty mImageOfProperty;
 
@@ -100,11 +99,15 @@ public class AddPropertyViewModel extends ViewModel {
         mImagesOfProperty.postValue(mImagesOfPropertyList);
     }
 
-    public void addDescriptionToImage(int position, String description) {
-        ImageOfProperty iOP = mImagesOfPropertyList.get(position);
-        iOP.setDescription(description);
-        mImagesOfPropertyList.set(position, iOP);
-        mImagesOfProperty.setValue(mImagesOfPropertyList);
+//    public void addDescriptionToImage(int position, String description) {
+//        ImageOfProperty iOP = mImagesOfPropertyList.get(position);
+//        iOP.setDescription(description);
+//        mImagesOfPropertyList.set(position, iOP);
+//        mImagesOfProperty.setValue(mImagesOfPropertyList);
+//    }
+
+    public void setImagesOfPropertyList(List<ImageOfProperty> imagesOfPropertyList) {
+        mImagesOfPropertyList.addAll(imagesOfPropertyList);
     }
 
     public LiveData<List<ImageOfProperty>> getImagesOfProperty() {

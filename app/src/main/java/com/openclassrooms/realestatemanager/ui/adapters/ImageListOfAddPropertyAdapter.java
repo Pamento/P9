@@ -1,9 +1,12 @@
 package com.openclassrooms.realestatemanager.ui.adapters;
 
 import android.net.Uri;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -11,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.textfield.TextInputEditText;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.data.local.entities.ImageOfProperty;
 import com.openclassrooms.realestatemanager.databinding.AddImageItemBinding;
@@ -60,6 +64,34 @@ public class ImageListOfAddPropertyAdapter extends
                         .transform(new RoundedCornersTransformation(20,1))
                         .into(holder.mImageProperty);
             }
+            TextInputEditText recyclerDescription = holder.mImageDescription;
+            recyclerDescription.setOnEditorActionListener((textView, i, keyEvent) -> {
+                if (i == EditorInfo.IME_ACTION_DONE) {
+                    Log.i(TAG, "onBindViewHolder: text:: " + textView.getText().toString());
+                    Log.i(TAG, "onBindViewHolder: position:: " + position);
+                    Log.i(TAG, "onBindViewHolder: ImageOfProperty.propertyId:: " + mImageOfPropertyList.get(position).getPropertyId());
+                    Log.i(TAG, "onEditorAction: done");
+                    //mImageOfPropertyList.get(position).setDescription(textView.getText().toString());
+                }
+                Log.i(TAG, "onEditorAction: OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+                return false;
+            });
+            recyclerDescription.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                    mImageOfPropertyList.get(position).setDescription(editable.toString());
+                }
+            });
         }
     }
 
@@ -86,7 +118,7 @@ public class ImageListOfAddPropertyAdapter extends
 
     public static class ImageListOfAddPropertyViewHolder extends RecyclerView.ViewHolder {
         ImageView mImageProperty;
-        EditText mImageDescription;
+        TextInputEditText mImageDescription;
 
 
         public ImageListOfAddPropertyViewHolder(@NonNull AddImageItemBinding vBinding) {
@@ -94,5 +126,9 @@ public class ImageListOfAddPropertyAdapter extends
             mImageProperty = vBinding.itemAddFImage;
             mImageDescription = vBinding.itemAddFInputDescription;
         }
+    }
+
+    public List<ImageOfProperty> getImageOfPropertyList() {
+        return mImageOfPropertyList;
     }
 }
