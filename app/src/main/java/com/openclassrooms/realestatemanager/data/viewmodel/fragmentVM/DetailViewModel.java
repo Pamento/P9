@@ -18,7 +18,6 @@ public class DetailViewModel extends ViewModel {
     public DetailViewModel(PropertiesRepository propertiesRepository, ImageRepository imageRepository) {
         mPropertiesRepository = propertiesRepository;
         mImageRepository = imageRepository;
-
     }
 
     public LiveData<SingleProperty> getSingleProperty() {

@@ -11,6 +11,11 @@ public class Constants {
     public static final String VERBOSE_NOTIFICATION_CHANNEL_1_DESCRIPTION =  "Realtime communication with user of important messages.";
     public static final String VERBOSE_NOTIFICATION_CHANNEL_2_DESCRIPTION =  "Realtime communication with user of state of app work.";
 
+    // Message to show to user
+    public static final String SAVE_PROPERTY_OK = "Real Estate was added successfully.";
+    public static final String SAVE_PROPERTY_FAIL = "The register of new Real Estate was fail.";
+    public static final String SAVE_IMAGES_FAIL = "Some of images does not register. Please, verify it in Detail page and Edit if needed.";
+
     // TAGs of fragments
     public static final String LIST_FRAGMENT = "AddFragment";
     public static final String MAP_FRAGMENT = "MapFragment";

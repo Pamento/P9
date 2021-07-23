@@ -18,11 +18,12 @@ import java.util.List;
 @Dao
 public interface SinglePropertyDao {
 
+    // change pour long
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void createSingleProperty(SingleProperty singleProperty);
+    long createSingleProperty(SingleProperty singleProperty);
 
     @Update
-    void updateProperty(SingleProperty singleProperty);
+    int updateProperty(SingleProperty singleProperty);
 
     @Query("SELECT * FROM property WHERE pid = :propertyId")
     LiveData<SingleProperty> getSingleProperty(String propertyId);

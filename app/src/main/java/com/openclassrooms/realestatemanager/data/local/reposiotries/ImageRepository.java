@@ -19,12 +19,12 @@ public class ImageRepository {
     }
 
     // methods
-    public void addPropertyImages(List<ImageOfProperty> imagesOfProperties) {
-        mImageOfPropertyDao.insertImagesOfProperty(imagesOfProperties);
+    public long[] createPropertyImages(List<ImageOfProperty> imagesOfProperties) {
+        return mImageOfPropertyDao.insertImagesOfProperty(imagesOfProperties);
     }
 
-    public void addPropertyImage(ImageOfProperty imageOfProperty) {
-        mImageOfPropertyDao.insertImageOfProperty(imageOfProperty);
+    public long createPropertyImage(ImageOfProperty imageOfProperty) {
+        return mImageOfPropertyDao.insertImageOfProperty(imageOfProperty);
     }
 
     public LiveData<List<ImageOfProperty>> getAllImagesOfProperty(@Nullable String propertyId) {

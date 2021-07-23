@@ -12,7 +12,10 @@ import com.openclassrooms.realestatemanager.data.local.reposiotries.ImageReposit
 import com.openclassrooms.realestatemanager.data.local.reposiotries.PropertiesRepository;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.Executor;
 
@@ -117,12 +120,40 @@ public class AddPropertyViewModel extends ViewModel {
 
     // Save data
     public boolean createSingleProperty() {
-        mExecutor.execute(() -> mPropertiesRepository.createSingleProperty(mSingleProperty));
-        return true;
+        final boolean[] response = new boolean[1];
+        mExecutor.execute(() -> {
+            long res = mPropertiesRepository.createSingleProperty(mSingleProperty);
+            Log.i(TAG, "run: createSingleProperty::rowId -> response:: " + res);
+            response[0] = res == -1;
+        });
+        return response[0];
     }
 
+    // Save list of images
     public boolean createImagesOfProperty() {
-        mExecutor.execute(() -> mImageRepository.addPropertyImages(mImagesOfProperty.getValue()));
-        return true;
+        // If true, the insert method was felt
+        final boolean[] response = new boolean[1];
+        mExecutor.execute(() -> {
+            long[] res = mImageRepository.createPropertyImages(mImagesOfProperty.getValue());
+            Log.i(TAG, "createImagesOfProperty: RUN:-> rowID:: " + Arrays.toString(res));
+            for (long i: res) {
+                if (i == 0) {
+                    response[0] = true;
+                    break;
+                }
+            }
+            response[0] = false;
+        });
+        return response[0];
+    }
+
+    // Save single image
+    public boolean createImageOfProperty() {
+        final boolean[] response = new boolean[1];
+        mExecutor.execute(() -> {
+            long res = mImageRepository.createPropertyImage(Objects.requireNonNull(mImagesOfProperty.getValue()).get(0));
+            response[0] = res == -1;
+        });
+        return response[0];
     }
 }

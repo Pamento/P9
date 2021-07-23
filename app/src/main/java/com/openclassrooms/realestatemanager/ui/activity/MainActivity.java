@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         if (mFragmentManager != null) {
             FragmentTransaction fTransaction = mFragmentManager
                     .beginTransaction();
-            fTransaction.add(R.id.main_activity_fragment_container, listProperty).addToBackStack(null).commit();
+            fTransaction.replace(R.id.main_activity_fragment_container, listProperty).commit();
         } else {
             setFragmentManager();
             displayListFragment();
@@ -112,13 +112,13 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case DETAIL:
                     setToolbarTitle(param, true);
-                    DetailFragment df = DetailFragment.newInstance(param, null);
+                    DetailFragment df = DetailFragment.newInstance();
                     // transaction.add add the fragment as a layer without removing the list
                     transaction.add(R.id.main_activity_fragment_container, df, DETAIL_FRAGMENT);
                     break;
                 case ADD:
                     setToolbarTitle(param, false);
-                    AddProperty ap = AddProperty.newInstance(null, null);
+                    AddProperty ap = AddProperty.newInstance();
                     transaction.add(R.id.main_activity_fragment_container, ap, ADD_FRAGMENT);
                     break;
                 case SEARCH:

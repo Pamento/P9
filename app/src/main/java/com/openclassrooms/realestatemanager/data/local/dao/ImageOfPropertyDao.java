@@ -14,10 +14,10 @@ import java.util.List;
 public interface ImageOfPropertyDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertImagesOfProperty(List<ImageOfProperty> imagesOfProperty);
+    long[] insertImagesOfProperty(List<ImageOfProperty> imagesOfProperty);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    void insertImageOfProperty(ImageOfProperty imageOfProperty);
+    long insertImageOfProperty(ImageOfProperty imageOfProperty);
 
     @Query("SELECT * FROM property_image WHERE property_id = :propertyId")
     LiveData<List<ImageOfProperty>> getAllImageForProperty(String propertyId);

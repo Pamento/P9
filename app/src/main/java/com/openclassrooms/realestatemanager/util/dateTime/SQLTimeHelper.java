@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class sqlTimeHelper {
+public class SQLTimeHelper {
 
     public static String getUSFormDateFromTimeInMillis(long millisecond) {
         Calendar calendar = Calendar.getInstance();

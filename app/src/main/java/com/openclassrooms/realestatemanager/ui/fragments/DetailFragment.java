@@ -2,78 +2,51 @@ package com.openclassrooms.realestatemanager.ui.fragments;
 
 import android.os.Bundle;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 
 import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.data.local.entities.ImageOfProperty;
+import com.openclassrooms.realestatemanager.data.local.entities.SingleProperty;
 import com.openclassrooms.realestatemanager.data.viewModelFactory.ViewModelFactory;
 import com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM.DetailViewModel;
 import com.openclassrooms.realestatemanager.databinding.FragmentDetailBinding;
-import com.openclassrooms.realestatemanager.databinding.FragmentMapBinding;
 import com.openclassrooms.realestatemanager.injection.Injection;
+import com.openclassrooms.realestatemanager.ui.adapters.ImageListOfAddPropertyAdapter;
+import com.openclassrooms.realestatemanager.util.dateTime.SQLTimeHelper;
+import com.openclassrooms.realestatemanager.util.texts.StringModifier;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link DetailFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+import java.util.List;
+
 public class DetailFragment extends Fragment {
     private static final String TAG = "DetailFragment";
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     private DetailViewModel mDetailViewModel;
     private FragmentDetailBinding binding;
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private SingleProperty mSingleProperty;
+    private final List<ImageOfProperty> mImageOfPropertyList = new ArrayList<>();
+    private RecyclerView imagesRecycler;
 
     public DetailFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment DetailFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static DetailFragment newInstance(String param1, String param2) {
-        DetailFragment fragment = new DetailFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    public static DetailFragment newInstance() {
+        return new DetailFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-//        OnBackPressedCallback callback = new OnBackPressedCallback(true) {
-//            @Override
-//            public void handleOnBackPressed() {
-//                Log.i(TAG, "handleOnBackPressed: 1 param:: " + mParam1);
-//                Log.i(TAG, "handleOnBackPressed: 2 param:: " + mParam2);
-//            }
-//        };
-//        requireActivity().getOnBackPressedDispatcher().addCallback(this,callback);
     }
 
     @Override
@@ -83,7 +56,63 @@ public class DetailFragment extends Fragment {
         // Inflate the layout for this fragment
         binding = FragmentDetailBinding.inflate(inflater, container, false);
         return binding.getRoot();
-        //return inflater.inflate(R.layout.fragment_detail, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setOnDataObservers();
+        setUI();
+    }
+
+    private void setOnDataObservers() {
+        mDetailViewModel.getSingleProperty().observe(getViewLifecycleOwner(), singleProperty -> mSingleProperty = singleProperty);
+        mDetailViewModel.getImagesOfProperty().observe(getViewLifecycleOwner(), imagesOfProperty -> {
+            mImageOfPropertyList.addAll(imagesOfProperty);
+            // TODO if mImageOfPropertyList.size() > 1 -> setRecyclerView. else set ImageView
+            setRecyclerView();
+        });
+    }
+
+    private void setRecyclerView() {
+        RecyclerView recyclerV = binding.detailImgRecyclerView;
+        ImageListOfAddPropertyAdapter adapter = new ImageListOfAddPropertyAdapter(mImageOfPropertyList);
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
+        recyclerV.setAdapter(adapter);
+        recyclerV.setLayoutManager(layoutManager);
+    }
+
+    private void setUI() {
+        if (mSingleProperty != null) {
+            if (mSingleProperty.getDateSold()!=null) binding.detailAvailable.setText(R.string.detail_text_sold);
+            binding.detailDateInit.setText(SQLTimeHelper.getUSFormDateFromTimeInMillis(mSingleProperty.getDateRegister()));
+            String surfaceMetre = requireActivity().getResources().getString(R.string.detail_surface_integer, mSingleProperty.getSurface());
+            binding.detailSurface.setText(surfaceMetre);
+            String estatePrice = requireActivity().getResources().getString(R.string.detail_price, mSingleProperty.getPrice());
+            binding.detailPrice.setText(estatePrice);
+            String estateRooms = requireActivity().getResources().getString(R.string.detail_rooms, mSingleProperty.getRooms());
+            binding.detailRoomsNumber.setText(estateRooms);
+            String estateBathroom = requireActivity().getResources().getString(R.string.detail_price, mSingleProperty.getBathroom());
+            binding.detailBathroom.setText(estateBathroom);
+            binding.detailDescription.setText(mSingleProperty.getDescription());
+            // Address form
+            binding.detailAddress1.setText(mSingleProperty.getAddress1());
+            binding.detailAddress2.setText(mSingleProperty.getAddress2());
+            binding.detailAddress3.setText(mSingleProperty.getQuarter());
+            binding.detailAddress4.setText(mSingleProperty.getCity());
+            binding.detailAddress5.setText(mSingleProperty.getPostalCode());
+            String country = requireActivity().getResources().getString(R.string.detail_united_states);
+            binding.detailAddress6.setText(country);
+            setAmenitiesView();
+            binding.detailAgent.setText(mSingleProperty.getAgent());
+        }
+    }
+
+    private void setAmenitiesView() {
+        String[] amenities = StringModifier.singleStringToArrayString(mSingleProperty.getAmenities());
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireActivity(), android.R.layout.simple_dropdown_item_1line, amenities);
+        binding.detailAmenitiesListView.setAdapter(adapter);
     }
 
     private void initViewModel() {

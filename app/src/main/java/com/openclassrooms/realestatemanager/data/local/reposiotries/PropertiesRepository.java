@@ -38,12 +38,12 @@ public class PropertiesRepository {
         else return mSinglePropertyDao.getSingleProperty(PROPERTY_ID);
     }
 
-    public void createSingleProperty(SingleProperty singleProperty) {
-        mSinglePropertyDao.createSingleProperty(singleProperty);
+    public long createSingleProperty(SingleProperty singleProperty) {
+        return mSinglePropertyDao.createSingleProperty(singleProperty);
     }
 
-    public void updateSingleProperty(SingleProperty singleProperty) {
-        mSinglePropertyDao.updateProperty(singleProperty);
+    public int updateSingleProperty(SingleProperty singleProperty) {
+        return mSinglePropertyDao.updateProperty(singleProperty);
     }
 
     public String getPROPERTY_ID() {

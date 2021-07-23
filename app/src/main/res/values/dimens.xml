@@ -25,4 +25,5 @@
     <dimen name="add_frg_height_of_description_field">100dp</dimen>
     <dimen name="add_item_image_btn">40dp</dimen>
     <dimen name="add_item_image_size">80dp</dimen>
+    <dimen name="detail_item_image_view_size">160dp</dimen>
 </resources>

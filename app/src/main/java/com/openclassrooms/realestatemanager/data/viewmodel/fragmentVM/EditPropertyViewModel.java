@@ -29,4 +29,30 @@ public class EditPropertyViewModel extends ViewModel {
     public LiveData<List<ImageOfProperty>> getImagesOfProperty() {
         return mImageRepository.getAllImagesOfProperty(null);
     }
+
+    // Handle data
+    public void deleteImageOfProperty(int imageId) {
+        mImageRepository.deletePropertyImage(imageId);
+    }
+
+    // Insert new image
+    public boolean createImageOfProperty(ImageOfProperty imageOfProperty) {
+        final boolean[] response = new boolean[1];
+        mExecutor.execute(() -> {
+            long res = mImageRepository.createPropertyImage(imageOfProperty);
+            response[0] = res == -1;
+        });
+        return response[0];
+    }
+
+    // Save changes
+    public boolean updateProperty(SingleProperty singleProperty) {
+        final boolean[] response = new boolean[1];
+        mExecutor.execute(() -> {
+            int res = mPropertiesRepository.updateSingleProperty(singleProperty);
+            response[0] = res == 0;
+        });
+        return response[0];
+    }
+
 }

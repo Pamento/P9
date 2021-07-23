@@ -2,7 +2,6 @@ package com.openclassrooms.realestatemanager.ui.fragments;
 
 import android.app.DatePickerDialog;
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -37,6 +36,7 @@ import com.openclassrooms.realestatemanager.injection.Injection;
 import com.openclassrooms.realestatemanager.ui.adapters.ImageListOfAddPropertyAdapter;
 import com.openclassrooms.realestatemanager.util.Utils;
 import com.openclassrooms.realestatemanager.util.notification.NotificationsUtils;
+import com.openclassrooms.realestatemanager.util.notification.NotifyBySnackBar;
 import com.openclassrooms.realestatemanager.util.resources.AppResources;
 import com.openclassrooms.realestatemanager.util.system.AskOSTo;
 import com.openclassrooms.realestatemanager.util.texts.StringModifier;
@@ -55,61 +55,37 @@ import java.util.Objects;
 import static android.app.Activity.RESULT_OK;
 import static com.openclassrooms.realestatemanager.util.Constants.PICK_IMAGE_GALLERY;
 import static com.openclassrooms.realestatemanager.util.Constants.REQUEST_IMAGE_CAPTURE;
+import static com.openclassrooms.realestatemanager.util.Constants.SAVE_IMAGES_FAIL;
+import static com.openclassrooms.realestatemanager.util.Constants.SAVE_PROPERTY_FAIL;
+import static com.openclassrooms.realestatemanager.util.Constants.SAVE_PROPERTY_OK;
 
 public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetListener {
     private static final String TAG = "AddProperty";
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-    private Context mContext;
+    private View mView;
     private AddPropertyViewModel mAddPropertyViewModel;
     private FragmentAddPropertyBinding binding;
     private AmenitiesCheckboxesBinding amenitiesBinding;
     private FormAddressPropertyBinding formAddressBinding;
     private RecyclerView imagesRecycler;
     private File photoFile;
-    private String currentPhotoPath;
-    private List<ImageOfProperty> imagesToAdd = new ArrayList<>();
+    private final List<ImageOfProperty> imagesToAdd = new ArrayList<>();
     private ImageListOfAddPropertyAdapter mImageAdapter;
     private boolean mIsPropertySold = false;
     private int mMillisOfRegisterProperty = 0;
     private int mMillisOfSoldDate = 0;
     private boolean isDateRegister;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     public AddProperty() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AddProperty.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static AddProperty newInstance(String param1, String param2) {
-        AddProperty fragment = new AddProperty();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    public static AddProperty newInstance() {
+        return new AddProperty();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -132,7 +108,7 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        mView = view;
         setRecyclerView();
         setPropertyTypeSpinner();
         setAgentSpinner();
@@ -301,7 +277,6 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
         File image = null;
         try {
             image = File.createTempFile(imageFileName, ".jpg", storagePicturesDir);
-            currentPhotoPath = image.getAbsolutePath();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -359,22 +334,36 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
     // after click on save icon, main activity run this function to check if required fields was fill
     // If so, this function run save method
     public void checkFormValidityBeforeSave() {
-        Log.i(TAG, "ADD__ checkFormValidityBeforeSave: check method RUN");
-        if (imagesToAdd.size() > 0 && !binding.addFAgent.getText().toString().equals("")) {
-            //mAddPropertyViewModel.setImagesOfPropertyList(mImageAdapter.getImageOfPropertyList());
-            Log.i(TAG, "checkFormValidityBeforeSave: we are ready to create SingleProperty");
-            //createProperty();
-        } else {
-            Log.i(TAG, "checkFormValidityBeforeSave: else. Some fields are empty");
-            String msg;
-            boolean img = imagesToAdd.size() == 0;
-            boolean agent = binding.addFAgent.getText().toString().equals("");
-            if (img && agent) msg = String.format(requireActivity().getResources().getString(R.string.warning_missing_2_fields), "image", "agent");
-            else if (img) msg = String.format(requireActivity().getResources().getString(R.string.warning_missing_1_fields), "image");
-            else msg = String.format(requireActivity().getResources().getString(R.string.warning_missing_1_fields), "agent");
+        int checked = 0;
+        final boolean[] requiredValues = new boolean[8];
+        // image
+        requiredValues[0] = imagesToAdd.size() == 0;
+        // type
+        requiredValues[1] = binding.addFTypeDropdown.getText().toString().equals("");
+        // price
+        requiredValues[2] = binding.addFInputPrice.getText().toString().equals("");
+        // address1
+        requiredValues[3] = Objects.requireNonNull(binding.addFFormAddress.addAddress1FormAddress.getText()).toString().equals("");
+        // quarter
+        requiredValues[4] = Objects.requireNonNull(binding.addFFormAddress.addAddressFormQuarter.getText()).toString().equals("");
+        // city
+        requiredValues[5] = Objects.requireNonNull(binding.addFFormAddress.addAddressFormCity.getText()).toString().equals("");
+        // postalCode
+        requiredValues[6] = Objects.requireNonNull(binding.addFFormAddress.addAddressFormPostalCode.getText()).toString().equals("");
+        // agent
+        requiredValues[7] = binding.addFAgent.getText().toString().equals("");
 
-            NotificationsUtils notify = new NotificationsUtils(requireContext());
-            notify.showWarning(requireContext(),msg);
+        for (boolean value : requiredValues) {
+            if (value) checked++;
+        }
+
+        if (checked == 0) {
+            mAddPropertyViewModel.setImagesOfPropertyList(mImageAdapter.getImageOfPropertyList());
+            createProperty();
+        } else {
+            Log.i(TAG, "checkFormValidityBeforeSave: we are ready to create SingleProperty:: checked:: " + checked);
+            String msg = requireActivity().getResources().getString(R.string.warning_missing_fields);
+            NotifyBySnackBar.showSnackBar(1, mView, msg);
         }
     }
 
@@ -387,8 +376,6 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
         int rooms = Integer.parseInt(binding.addFInputRooms.getText().toString());
         int bedrooms = Integer.parseInt(binding.addFInputBedrooms.getText().toString());
         int bathrooms = Integer.parseInt(binding.addFInputBathrooms.getText().toString());
-        int dateRegister = mMillisOfRegisterProperty;
-        int dateSold = mMillisOfSoldDate;
         String address1 = formAddressBinding.addAddress1FormAddress.getEditableText().toString();
         String address2 = formAddressBinding.addAddress2FormAddressSuite.getEditableText().toString();
         String city = formAddressBinding.addAddressFormCity.getEditableText().toString();
@@ -396,7 +383,23 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
         int codeZip = Integer.parseInt(formAddressBinding.addAddressFormPostalCode.getEditableText().toString());
         String amenities = getAmenities();
         String agent = binding.addFAgent.getText().toString();
-        mAddPropertyViewModel.createNewProperty(type, desc, surface, price, rooms, bedrooms, bathrooms, mMillisOfRegisterProperty, dateSold, address1, address2, city, quarter, codeZip, amenities, agent);
+        mAddPropertyViewModel.createNewProperty(type, desc, surface, price, rooms, bedrooms, bathrooms, mMillisOfRegisterProperty, mMillisOfSoldDate, address1, address2, city, quarter, codeZip, amenities, agent);
+        saveDataAndNotifyUser();
+    }
+
+    private void saveDataAndNotifyUser() {
+        boolean res = mAddPropertyViewModel.createSingleProperty();
+        boolean resImg = mAddPropertyViewModel.createImagesOfProperty();
+        Log.i(TAG, "saveDataAndNotifyUser: res & resImg:: " + res + " _:: " + resImg);
+        NotificationsUtils notify = new NotificationsUtils(requireContext());
+        // fail if res = true
+        // success if res = false
+        if (res)
+            notify.showWarning(requireContext(), SAVE_PROPERTY_FAIL);
+        else if (resImg)
+            notify.showWarning(requireContext(), SAVE_IMAGES_FAIL);
+        else
+            notify.showWarning(requireContext(), SAVE_PROPERTY_OK);
     }
 
     private String getAmenities() {
@@ -408,14 +411,6 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
         amenities[4] = amenitiesBinding.amenitiesBus.isChecked() ? "Bus" : "null";
         amenities[5] = amenitiesBinding.amenitiesSubway.isChecked() ? "Subway" : "null";
         return StringModifier.arrayToSingleString(amenities);
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        formAddressBinding = null;
-        amenitiesBinding = null;
-        binding = null;
     }
 
     @Override
@@ -433,10 +428,17 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
             if (mMillisOfSoldDate >= mMillisOfRegisterProperty) {
                 setDateInputField(Utils.getUSFormatOfDate(date), 1);
             } else {
-                NotificationsUtils notify = new NotificationsUtils(requireContext());
                 String msg = requireActivity().getResources().getString(R.string.warning_date_sold_smaller_than_register);
-                notify.showWarning(requireActivity(),msg);
+                NotifyBySnackBar.showSnackBar(1, mView, msg);
             }
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        formAddressBinding = null;
+        amenitiesBinding = null;
+        binding = null;
     }
 }
