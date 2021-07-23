@@ -26,6 +26,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 
+import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.data.local.entities.ImageOfProperty;
 import com.openclassrooms.realestatemanager.data.viewModelFactory.ViewModelFactory;
 import com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM.AddPropertyViewModel;
@@ -35,6 +36,7 @@ import com.openclassrooms.realestatemanager.databinding.FragmentAddPropertyBindi
 import com.openclassrooms.realestatemanager.injection.Injection;
 import com.openclassrooms.realestatemanager.ui.adapters.ImageListOfAddPropertyAdapter;
 import com.openclassrooms.realestatemanager.util.Utils;
+import com.openclassrooms.realestatemanager.util.notification.NotificationsUtils;
 import com.openclassrooms.realestatemanager.util.resources.AppResources;
 import com.openclassrooms.realestatemanager.util.system.AskOSTo;
 import com.openclassrooms.realestatemanager.util.texts.StringModifier;
@@ -290,7 +292,6 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
         }
     };
 
-    // TODO move this function to activity, getExternalFileDir is accessible only from activity
     private File createImageFile() {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
         String imageFileName = "JPEG" + timeStamp + "_";
@@ -355,18 +356,26 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
         }
     }
 
+    // after click on save icon, main activity run this function to check if required fields was fill
+    // If so, this function run save method
     public void checkFormValidityBeforeSave() {
         Log.i(TAG, "ADD__ checkFormValidityBeforeSave: check method RUN");
-        mAddPropertyViewModel.setImagesOfPropertyList(mImageAdapter.getImageOfPropertyList());
-        // TODO need: 1 picture, agent name
         if (imagesToAdd.size() > 0 && !binding.addFAgent.getText().toString().equals("")) {
+            //mAddPropertyViewModel.setImagesOfPropertyList(mImageAdapter.getImageOfPropertyList());
             Log.i(TAG, "checkFormValidityBeforeSave: we are ready to create SingleProperty");
             //createProperty();
         } else {
-            // TODO notify about need to fill the fields
+            Log.i(TAG, "checkFormValidityBeforeSave: else. Some fields are empty");
+            String msg;
+            boolean img = imagesToAdd.size() == 0;
+            boolean agent = binding.addFAgent.getText().toString().equals("");
+            if (img && agent) msg = String.format(requireActivity().getResources().getString(R.string.warning_missing_2_fields), "image", "agent");
+            else if (img) msg = String.format(requireActivity().getResources().getString(R.string.warning_missing_1_fields), "image");
+            else msg = String.format(requireActivity().getResources().getString(R.string.warning_missing_1_fields), "agent");
+
+            NotificationsUtils notify = new NotificationsUtils(requireContext());
+            notify.showWarning(requireContext(),msg);
         }
-        // after click on save icon, main activity run this function to check if required fields was fill
-        // If so, this function run save method
     }
 
     public void createProperty() {
@@ -424,7 +433,9 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
             if (mMillisOfSoldDate >= mMillisOfRegisterProperty) {
                 setDateInputField(Utils.getUSFormatOfDate(date), 1);
             } else {
-                // TODO notify user of incorrect set of date
+                NotificationsUtils notify = new NotificationsUtils(requireContext());
+                String msg = requireActivity().getResources().getString(R.string.warning_date_sold_smaller_than_register);
+                notify.showWarning(requireActivity(),msg);
             }
         }
     }

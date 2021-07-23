@@ -54,6 +54,11 @@
     <string name="add_recycler_new_image">new image for \'add new property\'</string>
     <string name="drag_image_button">drag image button</string>
     <string name="add_description_placeholder">Description of added image</string>
+    <!-- add fragment message -->
+    <string name="warning_date_sold_smaller_than_register">The register date on market is greater than sold date ? How so ?</string>
+    <string name="warning_missing_1_fields">Please fill in the "%s" field</string>
+    <string name="warning_missing_2_fields">Please fill in the %1s, and %2s fields</string>
+    <string name="warning_missing_3_fields">Please fill in the %1s, %2s, and %3s fields</string>
     <!-- amenities -->
     <string name="school">School</string>
     <string name="playground">Playground</string>
