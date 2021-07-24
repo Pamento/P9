@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -26,7 +25,7 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 public class ImageListOfAddPropertyAdapter extends
         RecyclerView.Adapter<ImageListOfAddPropertyAdapter.ImageListOfAddPropertyViewHolder> {
     private static final String TAG = "AddProperty";
-    private List<ImageOfProperty> mImageOfPropertyList;
+    private final List<ImageOfProperty> mImageOfPropertyList;
 
     public ImageListOfAddPropertyAdapter(List<ImageOfProperty> imageOfPropertyList) {
         Log.i(TAG, "ADAPTER__ CONSTRUCTOR// ImageListOfAddPropertyAdapter: imageOfPropertyList.size():: " + imageOfPropertyList);
@@ -66,15 +65,8 @@ public class ImageListOfAddPropertyAdapter extends
             }
             TextInputEditText recyclerDescription = holder.mImageDescription;
             recyclerDescription.setOnEditorActionListener((textView, i, keyEvent) -> {
-                if (i == EditorInfo.IME_ACTION_DONE) {
-                    Log.i(TAG, "onBindViewHolder: text:: " + textView.getText().toString());
-                    Log.i(TAG, "onBindViewHolder: position:: " + position);
-                    Log.i(TAG, "onBindViewHolder: ImageOfProperty.propertyId:: " + mImageOfPropertyList.get(position).getPropertyId());
-                    Log.i(TAG, "onEditorAction: done");
-                    //mImageOfPropertyList.get(position).setDescription(textView.getText().toString());
-                }
-                Log.i(TAG, "onEditorAction: OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
-                return false;
+                // OnEditorActionListener give the "Done" button in keyboard
+                return i == EditorInfo.IME_ACTION_DONE;
             });
             recyclerDescription.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -85,6 +77,7 @@ public class ImageListOfAddPropertyAdapter extends
 
                 @Override
                 public void afterTextChanged(Editable editable) {
+                    // TODO for EditFragment we need to manage change of description in other manner.
                     mImageOfPropertyList.get(position).setDescription(editable.toString());
                 }
             });
@@ -126,5 +119,13 @@ public class ImageListOfAddPropertyAdapter extends
 
     public List<ImageOfProperty> getImageOfPropertyList() {
         return mImageOfPropertyList;
+    }
+
+    public void addNewImage(ImageOfProperty imageOfProperty) {
+        this.mImageOfPropertyList.add(imageOfProperty);
+    }
+
+    public void removeDeletedImageFromList(ImageOfProperty imageOfProperty) {
+        mImageOfPropertyList.remove(imageOfProperty);
     }
 }

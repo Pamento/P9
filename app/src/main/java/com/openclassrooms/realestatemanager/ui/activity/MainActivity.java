@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case EDIT:
                     setToolbarTitle(param, false);
-                    EditProperty ep = EditProperty.newInstance(null, null);
+                    EditProperty ep = EditProperty.newInstance();
                     transaction.add(R.id.main_activity_fragment_container, ep);
                     break;
                 default:
@@ -225,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case EDIT:
                 EditProperty eF = (EditProperty) mFragmentManager.findFragmentByTag(EDIT_FRAGMENT);
-                if (eF != null) eF.saveChanges();
+                if (eF != null) eF.updateProperty();
                 break;
             case SEARCH:
                 SearchEngine sF = (SearchEngine) mFragmentManager.findFragmentByTag(SEARCH_FRAGMENT);

@@ -290,22 +290,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/addF_since_layout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/addF_date_since"
+                style="@style/DateTextView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/size_n"
-                android:hint="@string/add_on_market_since"
-                app:layout_constraintTop_toBottomOf="@+id/addF_date_title">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/addF_date_since"
-                    style="@style/Widget.MaterialComponents.TimePicker"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:inputType="date" />
-            </com.google.android.material.textfield.TextInputLayout>
+                app:icon="@drawable/ic_date_range_24"
+                app:layout_constraintTop_toBottomOf="@+id/addF_date_title" />
 
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/addF_sold_switch"
@@ -313,7 +305,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/size_n"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/addF_since_layout" />
+                app:layout_constraintTop_toBottomOf="@id/addF_date_since" />
 
             <TextView
                 android:id="@+id/addF_sold_title"
@@ -326,26 +318,18 @@
                 app:layout_constraintStart_toEndOf="@id/addF_sold_switch"
                 app:layout_constraintTop_toTopOf="@id/addF_sold_switch" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/addF_sold_on_layout"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/addF_date_sold_on"
+                style="@style/DateTextView"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/size_b"
-                android:hint="@string/add_sold_on"
-                app:layout_constraintBottom_toBottomOf="@id/addF_sold_switch"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/size_m"
+                android:text="@string/add_sold_on"
+                app:icon="@drawable/ic_date_range_24"
+                app:layout_constraintBottom_toBottomOf="@id/addF_sold_title"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/addF_sold_title"
-                app:layout_constraintTop_toBottomOf="@id/addF_since_layout"
-                app:layout_constraintTop_toTopOf="@id/addF_sold_switch">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/addF_date_sold_on"
-                    style="@style/Widget.MaterialComponents.TimePicker"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:inputType="date" />
-            </com.google.android.material.textfield.TextInputLayout>
+                app:layout_constraintTop_toTopOf="@id/addF_sold_title" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <View

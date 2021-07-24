@@ -31,6 +31,14 @@ public class EditPropertyViewModel extends ViewModel {
     }
 
     // Handle data
+    public boolean updateImageOfProperty(ImageOfProperty imageOfProperty) {
+        final boolean[] response = new boolean[1];
+        mExecutor.execute(()->{
+            int res = mImageRepository.updateImageOfProperty(imageOfProperty);
+            response[0] = res == 0;
+        });
+        return response[0];
+    }
     public void deleteImageOfProperty(int imageId) {
         mImageRepository.deletePropertyImage(imageId);
     }

@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +40,7 @@ import com.openclassrooms.realestatemanager.util.notification.NotificationsUtils
 import com.openclassrooms.realestatemanager.util.notification.NotifyBySnackBar;
 import com.openclassrooms.realestatemanager.util.resources.AppResources;
 import com.openclassrooms.realestatemanager.util.system.AskOSTo;
+import com.openclassrooms.realestatemanager.util.system.ImageFileUtils;
 import com.openclassrooms.realestatemanager.util.texts.StringModifier;
 
 import java.io.File;
@@ -53,11 +55,18 @@ import java.util.Locale;
 import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
+import static com.openclassrooms.realestatemanager.util.Constants.BUS;
+import static com.openclassrooms.realestatemanager.util.Constants.NULL;
+import static com.openclassrooms.realestatemanager.util.Constants.PARK;
 import static com.openclassrooms.realestatemanager.util.Constants.PICK_IMAGE_GALLERY;
+import static com.openclassrooms.realestatemanager.util.Constants.PLAYGROUND;
 import static com.openclassrooms.realestatemanager.util.Constants.REQUEST_IMAGE_CAPTURE;
 import static com.openclassrooms.realestatemanager.util.Constants.SAVE_IMAGES_FAIL;
 import static com.openclassrooms.realestatemanager.util.Constants.SAVE_PROPERTY_FAIL;
 import static com.openclassrooms.realestatemanager.util.Constants.SAVE_PROPERTY_OK;
+import static com.openclassrooms.realestatemanager.util.Constants.SCHOOL;
+import static com.openclassrooms.realestatemanager.util.Constants.SHOP;
+import static com.openclassrooms.realestatemanager.util.Constants.SUBWAY;
 
 public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetListener {
     private static final String TAG = "AddProperty";
@@ -144,22 +153,6 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
         mImageAdapter.updateImagesList(ipsum);
     }
 
-    private void setAgentSpinner() {
-        String[] agents = AppResources.getAGENTS();
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
-                android.R.layout.simple_dropdown_item_1line, agents);
-        binding.addFAgent.setAdapter(adapter);
-        binding.addFAgent.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.i(TAG, "onItemSelected: AGENT SELECTED");
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {/**/}
-        });
-    }
-
     private void setPropertyTypeSpinner() {
         String[] types = AppResources.getPropertyType();
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
@@ -177,6 +170,22 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
         });
     }
 
+    private void setAgentSpinner() {
+        String[] agents = AppResources.getAGENTS();
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
+                android.R.layout.simple_dropdown_item_1line, agents);
+        binding.addFAgent.setAdapter(adapter);
+        binding.addFAgent.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.i(TAG, "onItemSelected: AGENT SELECTED");
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {/**/}
+        });
+    }
+
     // SET UI
     private void setCreationDate() {
         mMillisOfRegisterProperty = (int) System.currentTimeMillis();
@@ -186,7 +195,6 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
 
     private void setListenerDatePicker() {
         binding.addFDateSince.setOnClickListener(view -> {
-            AskOSTo.hideKeyboard(requireActivity());
             showDatePickerDialog();
             isDateRegister = true;
         });
@@ -215,16 +223,22 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
 
     private void handleSwitchEvent() {
         mIsPropertySold = !mIsPropertySold;
-        setDateInputField(Utils.getTodayDate(), 1);
-        mMillisOfSoldDate = (int) System.currentTimeMillis();
-        Log.i(TAG, "handleSwitchEvent: click on 'Switch' button. mIsPropertySold:: " + mIsPropertySold);
-        handleSoldDateInput();
         if (mIsPropertySold) {
+            setDateInputField(Utils.getTodayDate(), 1);
+            mMillisOfSoldDate = (int) System.currentTimeMillis();
             binding.addFDateSoldOn.setOnClickListener(view -> {
                 isDateRegister = false;
                 showDatePickerDialog();
             });
+        } else {
+            setDateInputField(requireActivity().getResources().getString(R.string.add_sold_on), 1);
+            mMillisOfSoldDate = 0;
+            if (binding.addFDateSoldOn.hasOnClickListeners()) {
+                binding.addFDateSoldOn.setOnClickListener(null);
+            }
         }
+        Log.i(TAG, "handleSwitchEvent: click on 'Switch' button. mIsPropertySold:: " + mIsPropertySold);
+        handleSoldDateInput();
     }
 
     private void setDateInputField(String date, int mode) {
@@ -242,7 +256,6 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
         imagesRecycler.setAdapter(mImageAdapter);
         //imagesRecycler.setHasFixedSize(true);
         imagesRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
-        //imagesRecycler.addItemDecoration(new DividerItemDecoration(imagesRecycler.getContext(), DividerItemDecoration.VERTICAL));
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(mSimpleCallback);
         itemTouchHelper.attachToRecyclerView(imagesRecycler);
     }
@@ -268,21 +281,6 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
         }
     };
 
-    private File createImageFile() {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
-        String imageFileName = "JPEG" + timeStamp + "_";
-        // In lifecycle, requireContext must by called after OnResume,
-        // for to be sur that the fragment is well attached to his host
-        File storagePicturesDir = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = null;
-        try {
-            image = File.createTempFile(imageFileName, ".jpg", storagePicturesDir);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return image;
-    }
-
     private void bindIncludesLayouts() {
         View amenitiesView = binding.addFAmenities.getRoot();
         View addressFormView = binding.addFFormAddress.getRoot();
@@ -294,7 +292,7 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
         if (takePictureIntent.resolveActivity(requireContext().getPackageManager()) != null) {
-            photoFile = createImageFile();
+            photoFile = ImageFileUtils.createImageFile();
 
             if (photoFile != null) {
                 Uri fp = FileProvider.getUriForFile(
@@ -371,19 +369,25 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
         // Get inputs values:
         String type = binding.addFTypeDropdown.getText().toString();
         String desc = binding.addFDescription.getEditableText().toString();
-        int surface = Integer.parseInt(binding.addFInputSurface.getText().toString());
-        int price = Integer.parseInt(binding.addFInputPrice.getText().toString());
-        int rooms = Integer.parseInt(binding.addFInputRooms.getText().toString());
-        int bedrooms = Integer.parseInt(binding.addFInputBedrooms.getText().toString());
-        int bathrooms = Integer.parseInt(binding.addFInputBathrooms.getText().toString());
+        String surfaceStr = binding.addFInputSurface.getText().toString();
+        int surface = TextUtils.isEmpty(surfaceStr) ? 0 : Integer.parseInt(surfaceStr);
+        String priceStr = binding.addFInputPrice.getText().toString();
+        int price = TextUtils.isEmpty(priceStr) ? 0 : Integer.parseInt(priceStr);
+        String roomsStr = binding.addFInputRooms.getText().toString();
+        int rooms = TextUtils.isEmpty(roomsStr) ? 0 : Integer.parseInt(roomsStr);
+        String bedroomsStr = binding.addFInputBedrooms.getText().toString();
+        int bedrooms = TextUtils.isEmpty(bedroomsStr) ? 0 : Integer.parseInt(bedroomsStr);
+        String bathroomsStr = binding.addFInputBathrooms.getText().toString();
+        int bathrooms = TextUtils.isEmpty(bathroomsStr) ? 0 : Integer.parseInt(bathroomsStr);
         String address1 = formAddressBinding.addAddress1FormAddress.getEditableText().toString();
         String address2 = formAddressBinding.addAddress2FormAddressSuite.getEditableText().toString();
         String city = formAddressBinding.addAddressFormCity.getEditableText().toString();
         String quarter = formAddressBinding.addAddressFormQuarter.getEditableText().toString();
-        int codeZip = Integer.parseInt(formAddressBinding.addAddressFormPostalCode.getEditableText().toString());
+        String postalCodeStr = formAddressBinding.addAddressFormPostalCode.getEditableText().toString();
+        int postalCode = TextUtils.isEmpty(postalCodeStr) ? 0 : Integer.parseInt(postalCodeStr);
         String amenities = getAmenities();
         String agent = binding.addFAgent.getText().toString();
-        mAddPropertyViewModel.createNewProperty(type, desc, surface, price, rooms, bedrooms, bathrooms, mMillisOfRegisterProperty, mMillisOfSoldDate, address1, address2, city, quarter, codeZip, amenities, agent);
+        mAddPropertyViewModel.createNewProperty(type, desc, surface, price, rooms, bedrooms, bathrooms, mMillisOfRegisterProperty, mMillisOfSoldDate, address1, address2, city, quarter, postalCode, amenities, agent);
         saveDataAndNotifyUser();
     }
 
@@ -404,12 +408,12 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
 
     private String getAmenities() {
         String[] amenities = new String[6];
-        amenities[0] = amenitiesBinding.amenitiesShop.isChecked() ? "Shop" : "null";
-        amenities[1] = amenitiesBinding.amenitiesPark.isChecked() ? "Park" : "null";
-        amenities[2] = amenitiesBinding.amenitiesPlayground.isChecked() ? "Playground" : "null";
-        amenities[3] = amenitiesBinding.amenitiesSchool.isChecked() ? "School" : "null";
-        amenities[4] = amenitiesBinding.amenitiesBus.isChecked() ? "Bus" : "null";
-        amenities[5] = amenitiesBinding.amenitiesSubway.isChecked() ? "Subway" : "null";
+        amenities[0] = amenitiesBinding.amenitiesShop.isChecked() ? SHOP : NULL;
+        amenities[1] = amenitiesBinding.amenitiesPark.isChecked() ? PARK : NULL;
+        amenities[2] = amenitiesBinding.amenitiesPlayground.isChecked() ? PLAYGROUND : NULL;
+        amenities[3] = amenitiesBinding.amenitiesSchool.isChecked() ? SCHOOL : NULL;
+        amenities[4] = amenitiesBinding.amenitiesBus.isChecked() ? BUS : NULL;
+        amenities[5] = amenitiesBinding.amenitiesSubway.isChecked() ? SUBWAY : NULL;
         return StringModifier.arrayToSingleString(amenities);
     }
 

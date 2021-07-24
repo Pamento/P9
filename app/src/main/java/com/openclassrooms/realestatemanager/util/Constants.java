@@ -24,4 +24,13 @@ public class Constants {
     public static final String EDIT_FRAGMENT = "EditFragment";
     public static final String SEARCH_FRAGMENT = "SearchFragment";
     public static final String SIMULATOR_FRAGMENT = "SimulatorFragment";
+
+    // Amenities
+    public static final String SHOP = "Shop";
+    public static final String PARK = "Park";
+    public static final String PLAYGROUND = "Playground";
+    public static final String SCHOOL = "School";
+    public static final String BUS = "Bus";
+    public static final String SUBWAY = "Subway";
+    public static final String NULL = "null";
 }

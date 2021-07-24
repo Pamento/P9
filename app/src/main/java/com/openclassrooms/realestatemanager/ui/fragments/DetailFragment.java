@@ -21,7 +21,7 @@ import com.openclassrooms.realestatemanager.data.viewModelFactory.ViewModelFacto
 import com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM.DetailViewModel;
 import com.openclassrooms.realestatemanager.databinding.FragmentDetailBinding;
 import com.openclassrooms.realestatemanager.injection.Injection;
-import com.openclassrooms.realestatemanager.ui.adapters.ImageListOfAddPropertyAdapter;
+import com.openclassrooms.realestatemanager.ui.adapters.ImageListOfDetailAdapter;
 import com.openclassrooms.realestatemanager.util.dateTime.SQLTimeHelper;
 import com.openclassrooms.realestatemanager.util.texts.StringModifier;
 
@@ -34,7 +34,6 @@ public class DetailFragment extends Fragment {
     private FragmentDetailBinding binding;
     private SingleProperty mSingleProperty;
     private final List<ImageOfProperty> mImageOfPropertyList = new ArrayList<>();
-    private RecyclerView imagesRecycler;
 
     public DetailFragment() {
         // Required empty public constructor
@@ -76,7 +75,7 @@ public class DetailFragment extends Fragment {
 
     private void setRecyclerView() {
         RecyclerView recyclerV = binding.detailImgRecyclerView;
-        ImageListOfAddPropertyAdapter adapter = new ImageListOfAddPropertyAdapter(mImageOfPropertyList);
+        ImageListOfDetailAdapter adapter = new ImageListOfDetailAdapter(mImageOfPropertyList);
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerV.setAdapter(adapter);
@@ -85,8 +84,12 @@ public class DetailFragment extends Fragment {
 
     private void setUI() {
         if (mSingleProperty != null) {
-            if (mSingleProperty.getDateSold()!=null) binding.detailAvailable.setText(R.string.detail_text_sold);
-            binding.detailDateInit.setText(SQLTimeHelper.getUSFormDateFromTimeInMillis(mSingleProperty.getDateRegister()));
+            if (mSingleProperty.getDateSold() != null)
+                binding.detailAvailable.setText(R.string.detail_text_sold);
+            else
+                binding.detailAvailable.setText(R.string.detail_estate_available);
+            // continue
+            binding.detailDateRegister.setText(SQLTimeHelper.getUSFormDateFromTimeInMillis(mSingleProperty.getDateRegister()));
             String surfaceMetre = requireActivity().getResources().getString(R.string.detail_surface_integer, mSingleProperty.getSurface());
             binding.detailSurface.setText(surfaceMetre);
             String estatePrice = requireActivity().getResources().getString(R.string.detail_price, mSingleProperty.getPrice());
@@ -117,7 +120,7 @@ public class DetailFragment extends Fragment {
 
     private void initViewModel() {
         ViewModelFactory vmF = Injection.sViewModelFactory(requireActivity());
-        mDetailViewModel = new ViewModelProvider(requireActivity(),vmF).get(DetailViewModel.class);
+        mDetailViewModel = new ViewModelProvider(requireActivity(), vmF).get(DetailViewModel.class);
     }
 
     @Override

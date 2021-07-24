@@ -80,4 +80,5 @@
     <string name="detail_near_by">Near by:</string>
     <!-- -->
     <string name="snack_action_btn">OK</string>
+    <string name="detail_estate_available">Estate is available</string>
 </resources>

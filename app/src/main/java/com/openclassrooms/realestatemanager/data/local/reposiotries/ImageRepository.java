@@ -32,6 +32,11 @@ public class ImageRepository {
         else return mImageOfPropertyDao.getAllImageForProperty(propertyId);
     }
 
+    // Update image
+    public int updateImageOfProperty(ImageOfProperty imageOfProperty) {
+        return mImageOfPropertyDao.updateImageOfProperty(imageOfProperty);
+    }
+
     // Delete image
     public void deletePropertyImage(int id) {
         mImageOfPropertyDao.deleteImage(id);
