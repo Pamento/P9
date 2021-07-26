@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.data.local.entities.ImageOfProperty;
-import com.openclassrooms.realestatemanager.databinding.DetailImageItemBinding;
+import com.openclassrooms.realestatemanager.databinding.ItemDetailImageBinding;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class ImageListOfDetailAdapter extends RecyclerView.Adapter<ImageListOfDetailAdapter.DetailImageViewHolder> {
 
-    private List<ImageOfProperty> mImageOfPropertyList;
+    private final List<ImageOfProperty> mImageOfPropertyList;
 
     public ImageListOfDetailAdapter(List<ImageOfProperty> imageOfPropertyList) {
         mImageOfPropertyList = imageOfPropertyList;
@@ -28,7 +29,7 @@ public class ImageListOfDetailAdapter extends RecyclerView.Adapter<ImageListOfDe
     @NonNull
     @Override
     public DetailImageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        DetailImageItemBinding binding = DetailImageItemBinding
+        ItemDetailImageBinding binding = ItemDetailImageBinding
                 .inflate(LayoutInflater.from(parent.getContext()), parent, false);
         return new DetailImageViewHolder(binding);
     }
@@ -42,9 +43,11 @@ public class ImageListOfDetailAdapter extends RecyclerView.Adapter<ImageListOfDe
                     .load(uri)
                     .error(R.drawable.image_not_found_square)
                     .placeholder(R.drawable.image_placeholder)
-                    .transform(new RoundedCornersTransformation(20,16))
+                    .transform(new RoundedCornersTransformation(20, 16))
                     .into(holder.mDetailImgItem);
         }
+        if (propertyImg.getDescription() != null)
+            holder.mImageDescription.setText(propertyImg.getDescription());
     }
 
     @Override
@@ -54,10 +57,12 @@ public class ImageListOfDetailAdapter extends RecyclerView.Adapter<ImageListOfDe
 
     public static class DetailImageViewHolder extends RecyclerView.ViewHolder {
         ImageView mDetailImgItem;
+        TextView mImageDescription;
 
-        public DetailImageViewHolder(@NonNull DetailImageItemBinding vBinding) {
+        public DetailImageViewHolder(@NonNull ItemDetailImageBinding vBinding) {
             super(vBinding.getRoot());
-            mDetailImgItem = vBinding.detailImgItemRecyclerView;
+            mDetailImgItem = vBinding.detailItemRecyclerImage;
+            mImageDescription = vBinding.detailImgRecyclerViewDescription;
         }
     }
 }

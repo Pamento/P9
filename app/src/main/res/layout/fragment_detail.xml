@@ -89,7 +89,7 @@
                 android:id="@+id/detail_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/detail_price"
+                android:text="@string/price_dollar"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -123,7 +123,7 @@
                 style="@style/TextAppearance.AppCompat.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/detail_description" />
+                android:text="@string/description" />
 
             <TextView
                 android:id="@+id/detail_description"

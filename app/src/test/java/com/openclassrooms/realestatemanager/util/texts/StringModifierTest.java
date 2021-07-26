@@ -9,6 +9,8 @@ public class StringModifierTest {
     final String[] arrayString = {"one", "null", "three", "four", "null", "null"};
     final String oneString = "one-null-three-four-null-null-";
     final String[] arrayStringWithoutNullTextString = {"one", "three", "four"};
+    final String strToTest = "1234567";
+    final String strToTestResult = "1,234,567";
 
     @Test
     public void arrayToSingleString() {
@@ -20,5 +22,11 @@ public class StringModifierTest {
     public void singleStringToArrayString() {
         String[] convertedStingToArray = StringModifier.singleStringToArrayString(oneString);
         assertArrayEquals(arrayStringWithoutNullTextString, convertedStingToArray);
+    }
+
+    @Test
+    public void addComaInPriceTest() {
+        String res = StringModifier.addComaInPrice(strToTest);
+        assertEquals(strToTestResult, res);
     }
 }

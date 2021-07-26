@@ -92,11 +92,11 @@ public class DetailFragment extends Fragment {
             binding.detailDateRegister.setText(SQLTimeHelper.getUSFormDateFromTimeInMillis(mSingleProperty.getDateRegister()));
             String surfaceMetre = requireActivity().getResources().getString(R.string.detail_surface_integer, mSingleProperty.getSurface());
             binding.detailSurface.setText(surfaceMetre);
-            String estatePrice = requireActivity().getResources().getString(R.string.detail_price, mSingleProperty.getPrice());
+            String estatePrice = requireActivity().getResources().getString(R.string.price_dollar, String.valueOf(mSingleProperty.getPrice()));
             binding.detailPrice.setText(estatePrice);
             String estateRooms = requireActivity().getResources().getString(R.string.detail_rooms, mSingleProperty.getRooms());
             binding.detailRoomsNumber.setText(estateRooms);
-            String estateBathroom = requireActivity().getResources().getString(R.string.detail_price, mSingleProperty.getBathroom());
+            String estateBathroom = requireActivity().getResources().getString(R.string.price_dollar, String.valueOf(mSingleProperty.getBathroom()));
             binding.detailBathroom.setText(estateBathroom);
             binding.detailDescription.setText(mSingleProperty.getDescription());
             // Address form

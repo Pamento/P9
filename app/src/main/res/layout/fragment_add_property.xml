@@ -44,7 +44,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/add_frg_height_of_description_field"
                 android:layout_marginVertical="@dimen/size_n"
-                android:hint="@string/add_description"
+                android:hint="@string/description"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/addF_type_input">

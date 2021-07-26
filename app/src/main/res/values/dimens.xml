@@ -18,6 +18,7 @@
     <dimen name="size_text_n">16sp</dimen>
     <dimen name="size_text_nn">18sp</dimen>
     <dimen name="size_text_m">24sp</dimen>
+    <dimen name="size_text_b">32sp</dimen>
 
     <!-- Dimensions specific -->
     <dimen name="add_frg_numeric_input">120dp</dimen>

@@ -36,7 +36,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/size_n"
-                android:hint="@string/add_description"
+                android:hint="@string/description"
                 app:layout_constraintBottom_toBottomOf="@+id/item_addF_image"
                 app:layout_constraintEnd_toStartOf="@+id/item_addF_drag_btn"
                 app:layout_constraintStart_toEndOf="@+id/item_addF_image"

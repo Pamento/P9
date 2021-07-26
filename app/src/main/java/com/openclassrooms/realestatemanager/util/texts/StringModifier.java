@@ -21,4 +21,24 @@ public class StringModifier {
         }
         return newStringList.toArray(new String[0]);
     }
+
+    public static String addComaInPrice(String priceToAddComa) {
+        //final String strToTest = "1234567";
+        String[] s = priceToAddComa.split("");
+        int r = s.length % 3;
+        StringBuilder comaPrice = new StringBuilder();
+        for (String irs: s) {
+            if (r == 0 && (comaPrice.length() == 0)) {
+                comaPrice.append(irs);
+                r = 2;
+            } else if (r == 0 && comaPrice.length() != (s.length -1)) {
+                comaPrice.append(",").append(irs);
+                r = 2;
+            } else {
+                comaPrice.append(irs);
+                r--;
+            }
+        }
+        return comaPrice.toString();
+    }
 }

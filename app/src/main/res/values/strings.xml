@@ -18,12 +18,15 @@
     <string name="mi_title_euro_to_dollar"><![CDATA[€ → $]]></string>
     <string name="mi_title_loan_calculator">Loan calculator</string>
     <string name="add_frg_date_init_label">Date of take of the property in manage:</string>
+    <!-- commons strings -->
+    <string name="description">Description</string>
+    <string name="price_dollar">%s $</string>
+    <string name="price_euro">%s €</string>
     <!-- detail fragment -->
     <string name="img_description_about_property_image">about property image</string>
     <string name="detail_prop_available">Available</string>
     <string name="since">Since</string>
     <string name="detail_date_init">2021/01/06</string>
-    <string name="detail_description">Description</string>
     <string name="img_description_small_static_map">small static map</string>
     <string name="detail_rooms">%d rooms</string>
     <!-- add fragment -->
@@ -34,7 +37,6 @@
     <string name="add_bedrooms">Bedrooms</string>
     <string name="add_bathrooms">Bathrooms</string>
     <string name="add_nearby">Amenities near this property</string>
-    <string name="add_description">Description</string>
     <string name="add_address">Address</string>
     <string name="add_quarter">Quarter</string>
     <string name="add_on_market_since">On Market since</string>
@@ -49,7 +51,6 @@
     <string name="add_location">Location</string>
     <string name="add_type">Type of property</string>
     <string name="add_date"><![CDATA[Date of put on market & sold]]></string>
-    <string name="add_date_hint_m_d_y">mm/dd/yyyy</string>
     <string name="add_manage_by_agent">Manage by agent</string>
     <string name="add_recycler_new_image">new image for \'add new property\'</string>
     <string name="drag_image_button">drag image button</string>
@@ -73,12 +74,19 @@
     <!-- detail fragment -->
     <string name="detail_text_sold">Sold</string>
     <string name="detail_surface_integer">surface: %dm²</string>
-    <string name="detail_price">%d $</string>
     <string name="detail_bathroom">%d bathroom</string>
     <string name="detail_united_states">United States</string>
     <string name="detail_managed_by">Managed by:</string>
     <string name="detail_near_by">Near by:</string>
-    <!-- -->
-    <string name="snack_action_btn">OK</string>
     <string name="detail_estate_available">Estate is available</string>
+    <!-- divers -->
+    <string name="snack_action_btn">OK</string>
+    <!-- loan fragment -->
+    <string name="loan_calc_contribution">Contribution</string>
+    <string name="loan_interest_rate">Interest Rate (%)</string>
+    <string name="loan_duration">Duration of loan</string>
+    <string name="loan_per_month_dollar">%s $ / month</string>
+    <string name="loan_per_month_euro">%s € / month</string>
+    <string name="loan_years">Years</string>
+    <string name="loan_months">Months</string>
 </resources>

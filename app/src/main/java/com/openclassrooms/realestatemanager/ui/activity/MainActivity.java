@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -128,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case SIMULATOR:
                     setToolbarTitle(param, true);
-                    LoanSimulator ls = LoanSimulator.newInstance(null, null);
+                    LoanSimulator ls = LoanSimulator.newInstance();
                     transaction.add(R.id.main_activity_fragment_container, ls, SIMULATOR_FRAGMENT);
                     break;
                 case EDIT:
@@ -205,18 +206,18 @@ public class MainActivity extends AppCompatActivity {
         } else if (id == R.id.mi_cancel) {
             onBackPressed();
         } else if (id == R.id.mi_save) {
-            runCommand();
+            runCommand(0);
         } else if (id == R.id.mi_loan_calculator) {
             displayFragm(SIMULATOR, getResources().getString(R.string.frg_simulator_title));
         } else if (id == R.id.mi_dollar_to_euro) {
-            // TODO manage this change
+            runCommand(2);
         } else if (id == R.id.mi_euro_to_dollar) {
-            // TODO manage this change too.
+            runCommand(1);
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void runCommand() {
+    private void runCommand(int commandCode) {
         Log.i(TAG, "runCommand: mEFragments:: " + mEFragments);
         switch (mEFragments) {
             case ADD:
@@ -231,6 +232,9 @@ public class MainActivity extends AppCompatActivity {
                 SearchEngine sF = (SearchEngine) mFragmentManager.findFragmentByTag(SEARCH_FRAGMENT);
                 if (sF != null) sF.searchProperties();
                 break;
+            case SIMULATOR:
+                LoanSimulator lF = (LoanSimulator) mFragmentManager.findFragmentByTag(SIMULATOR_FRAGMENT);
+                if (lF != null) lF.handleCurrency(commandCode);
             default:
                 break;
         }

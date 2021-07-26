@@ -33,4 +33,10 @@ public class Constants {
     public static final String BUS = "Bus";
     public static final String SUBWAY = "Subway";
     public static final String NULL = "null";
+
+    // Interest of loan
+    public static final double THIRTY_YEAR_RATE = 2.94;
+    public static final double TWENTY_YEAR_RATE = 2.72;
+    public static final double FIFTEEN_YEAR_RATE = 2.24;
+    public static final double THEN_YEAR_RATE = 2.04;
 }

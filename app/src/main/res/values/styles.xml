@@ -18,12 +18,25 @@
         <item name="textInputStyle">@style/TextInputLayout</item>
     </style>
 
+    <style name="InputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="strokeWidth">1dp</item>
+        <item name="strokeColor">@color/colorAccentDark</item>
+    </style>
+
     <style name="ButtonOutline" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="strokeWidth">2dp</item>
         <item name="strokeColor">?attr/colorSecondary</item>
         <item name="android:textColor">?attr/colorSecondary</item>
         <item name="iconTint">?attr/colorSecondary</item>
         <item name="rippleColor">?attr/colorOnSecondary</item>
+    </style>
+
+    <style name="ButtonOutlineGray" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="strokeWidth">1dp</item>
+        <item name="strokeColor">@color/colorPrimary</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:paddingTop">@dimen/size_s</item>
+        <item name="android:paddingBottom">@dimen/size_s</item>
     </style>
 
     <style name="DateTextView" parent="Widget.MaterialComponents.Button.TextButton">
