@@ -36,11 +36,25 @@ public abstract class AppResources {
     }
 
     public static Double getInterestFixedRate(int months) {
-        if (months == 0)
-            return 0.0;
+        if (months == 0) return THIRTY_YEAR_RATE;
         else if (months >= 360) return THIRTY_YEAR_RATE;
         else if (months >= 240) return TWENTY_YEAR_RATE;
         else if (months >= 180) return FIFTEEN_YEAR_RATE;
         else return THEN_YEAR_RATE;
+    }
+
+    public static Double getInterestFixedRate(String interest) {
+        switch (interest) {
+            case "2.94":
+                return THIRTY_YEAR_RATE;
+            case "2.72":
+                return TWENTY_YEAR_RATE;
+            case "2.24":
+                return FIFTEEN_YEAR_RATE;
+            case "2.04":
+                return THEN_YEAR_RATE;
+            default:
+                return null;
+        }
     }
 }
