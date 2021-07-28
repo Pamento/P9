@@ -1,4 +1,12 @@
+plugins {
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+}
 apply plugin: 'com.android.application'
+//apply plugin: 'com.google.gms.google-services'
+
+
+def localProperties = new Properties()
+localProperties.load(new FileInputStream(rootProject.file("local.properties")))
 
 android {
     compileSdkVersion 30
@@ -8,6 +16,7 @@ android {
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         javaCompileOptions {
             annotationProcessorOptions {
@@ -15,8 +24,13 @@ android {
                                       "$projectDir/schemas".toString()]
             }
         }
+        resValue "string", "google_maps_key", (project.findProperty("MAPS_API_KEY") ?: "")
     }
     buildTypes {
+        debug {
+            buildConfigField("String", "MAPS_API_KEY", "\"" + localProperties['MAPS_API_KEY'] + "\"")
+            resValue("string", "google_maps_key_api", localProperties['MAPS_API_KEY'])
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -43,6 +57,9 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
+    implementation "androidx.multidex:multidex:2.0.1"
+    // permissions
+    implementation 'com.nabinbhandari.android:permissions:3.8'
     // room
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
@@ -61,4 +78,28 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+    // RETROFIT
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.9.0'
+    // GSON
+    implementation 'com.google.code.gson:gson:2.8.6'
+    // RXJAVA
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.21'
+    implementation("com.squareup.okhttp3:okhttp:3.12.12") {
+        //force = true //API 19 support
+        version {
+            strictly("3.12.12")//API 19 - 21 support
+        }
+    }
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.12.12'
+    // Google services
+    implementation 'com.google.android.gms:play-services-maps:17.0.1'
+    // Google maps
+    // GOOGLE MAPS
+    implementation 'com.google.android.gms:play-services-maps:17.0.1'
+    implementation 'com.google.android.gms:play-services-location:18.0.0'
+    implementation "androidx.work:work-runtime:2.7.0-alpha05"
 }

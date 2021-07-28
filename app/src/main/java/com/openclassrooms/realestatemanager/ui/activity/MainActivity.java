@@ -1,5 +1,6 @@
 package com.openclassrooms.realestatemanager.ui.activity;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -8,13 +9,14 @@ import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.data.viewModelFactory.ViewModelFactory;
 import com.openclassrooms.realestatemanager.data.viewmodel.MainActivityViewModel;
@@ -27,7 +29,9 @@ import com.openclassrooms.realestatemanager.ui.fragments.ListProperty;
 import com.openclassrooms.realestatemanager.ui.fragments.LoanSimulator;
 import com.openclassrooms.realestatemanager.ui.fragments.MapFragment;
 import com.openclassrooms.realestatemanager.ui.fragments.SearchEngine;
+import com.openclassrooms.realestatemanager.util.Constants;
 import com.openclassrooms.realestatemanager.util.enums.EFragments;
+import com.openclassrooms.realestatemanager.util.notification.NotifyBySnackBar;
 
 import java.util.Objects;
 
@@ -43,6 +47,7 @@ import static com.openclassrooms.realestatemanager.util.enums.EFragments.*;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "AddProperty";
     private MainActivityViewModel mMainViewModel;
+    private View view;
     private ActivityMainBinding binding;
     private FragmentManager mFragmentManager;
     private EFragments mEFragments = LIST;
@@ -52,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         initViewModel();
         binding = ActivityMainBinding.inflate(getLayoutInflater());
-        View view = binding.getRoot();
+        view = binding.getRoot();
         setFragmentManager();
         setContentView(view);
         displayListFragment();
@@ -107,9 +112,14 @@ public class MainActivity extends AppCompatActivity {
                     transaction.replace(R.id.main_activity_fragment_container, lp, LIST_FRAGMENT);
                     break;
                 case MAP:
-                    setToolbarTitle("New York", false);
-                    MapFragment mf = MapFragment.newInstance(null, null);
-                    transaction.replace(R.id.main_activity_fragment_container, mf, MAP_FRAGMENT);
+                    if (isMapsServiceOk()) {
+                        setToolbarTitle("New York", false);
+                        MapFragment mf = MapFragment.newInstance(null, null);
+                        transaction.replace(R.id.main_activity_fragment_container, mf, MAP_FRAGMENT);
+                    } else {
+                        String msg = getResources().getString(R.string.error_msg_map_service_not_available);
+                        NotifyBySnackBar.showSnackBar(1,view,msg);
+                    }
                     break;
                 case DETAIL:
                     setToolbarTitle(param, true);
@@ -143,6 +153,20 @@ public class MainActivity extends AppCompatActivity {
             transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             transaction.addToBackStack(param).commit();
         }
+    }
+
+    // Check if service Google Maps is available
+    public boolean isMapsServiceOk() {
+        int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(MainActivity.this);
+        if (available == ConnectionResult.SUCCESS) {
+            return true;
+        } else if (GoogleApiAvailability.getInstance().isUserResolvableError(available)) {
+            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(MainActivity.this, available, Constants.ERROR_DIALOG_REQUEST);
+            if (dialog != null) dialog.show();
+        } else {
+            return false;
+        }
+        return false;
     }
 
     // for manage display of name of fragment like title in the Toolbar

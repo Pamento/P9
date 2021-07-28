@@ -1,10 +1,13 @@
 package com.openclassrooms.realestatemanager.ui.fragments;
 
+import android.annotation.SuppressLint;
+import android.location.Location;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
@@ -12,61 +15,52 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.nabinbhandari.android.permissions.PermissionHandler;
+import com.nabinbhandari.android.permissions.Permissions;
+import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.data.local.entities.PropertyWithImages;
 import com.openclassrooms.realestatemanager.data.viewModelFactory.ViewModelFactory;
 import com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM.MapViewModel;
 import com.openclassrooms.realestatemanager.databinding.FragmentMapBinding;
 import com.openclassrooms.realestatemanager.injection.Injection;
 import com.openclassrooms.realestatemanager.ui.activity.MainActivity;
+import com.openclassrooms.realestatemanager.util.Constants;
+import com.openclassrooms.realestatemanager.util.Utils;
+import com.openclassrooms.realestatemanager.util.system.LocationUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 import static com.openclassrooms.realestatemanager.util.enums.EFragments.LIST;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link MapFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class MapFragment extends Fragment {
+public class MapFragment extends Fragment implements OnMapReadyCallback,
+        GoogleMap.OnMarkerClickListener {
+
     private static final String TAG = "MapFragment";
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     private MapViewModel mMapViewModel;
     private FragmentMapBinding binding;
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private GoogleMap mGoogleMaps;
+    private List<PropertyWithImages> mPropertyWithImages = new ArrayList<>();
 
     public MapFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MapFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static MapFragment newInstance(String param1, String param2) {
-        MapFragment fragment = new MapFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+        return new MapFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -74,23 +68,129 @@ public class MapFragment extends Fragment {
                              Bundle savedInstanceState) {
         initViewModel();
         binding = FragmentMapBinding.inflate(inflater, container, false);
+        initMap();
+        setPropertyWithImages();
+        getCurrentUserLocation();
         return binding.getRoot();
     }
 
     private void initViewModel() {
         ViewModelFactory vmF = Injection.sViewModelFactory(requireActivity());
-        mMapViewModel = new ViewModelProvider(requireActivity(),vmF).get(MapViewModel.class);
+        mMapViewModel = new ViewModelProvider(requireActivity(), vmF).get(MapViewModel.class);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         setFabListener();
     }
+
+    private void initMap() {
+        if (Utils.isInternetAvailable(requireContext())) {
+            SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+            if (supportMapFragment != null) {
+                supportMapFragment.getMapAsync(MapFragment.this);
+            }
+        }
+    }
+
+    @Override
+    public boolean onMarkerClick(@NonNull Marker marker) {
+        if (marker.getTag() != null) {
+            mMapViewModel.setPropertyId(marker.getTag().toString());
+        }
+        return false;
+    }
+
+    @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+        this.mGoogleMaps = googleMap;
+        mGoogleMaps.setOnMarkerClickListener(this);
+        mMapViewModel.setGoogleMap(googleMap);
+        Permissions.check(requireContext(), Constants.PERMISSIONS, null, null, new PermissionHandler() {
+            @Override
+            public void onGranted() {
+                Log.i(TAG, "MVF__ onGranted: PERMISSIONS");
+                setMap();
+            }
+        });
+    }
+
+    private void setMap() {
+        Permissions.check(requireContext(), Constants.PERMISSIONS, null, null, new PermissionHandler() {
+            @SuppressLint("MissingPermission")
+            @Override
+            public void onGranted() {
+                if (mMapViewModel.getCurrentUserLocation() != null) {
+                    moveCamera(mMapViewModel.getCurrentUserLocation());
+                    // display point bleu on the map
+                    mGoogleMaps.setMyLocationEnabled(true);
+                }
+            }
+        });
+    }
+
+    private void setPropertiesMarkersOnMap() {
+        if (mGoogleMaps == null) mGoogleMaps = mMapViewModel.getGoogleMap();
+        if (mGoogleMaps != null) mGoogleMaps.clear();
+        if (mPropertyWithImages.size() != 0) {
+            for (PropertyWithImages sp : mPropertyWithImages) {
+                Marker marker;
+                if (sp != null) {
+                    String[] latLang = sp.mSingleProperty.getLocation().split(",");
+                    LatLng latLng = new LatLng(Double.parseDouble(latLang[0]), Double.parseDouble(latLang[1]));
+                    marker = mGoogleMaps.addMarker(new MarkerOptions()
+                            .position(latLng)
+                            .title(sp.mSingleProperty.getAddress1()));
+
+                    marker.setTag(sp.mSingleProperty.getId());
+                }
+            }
+        }
+    }
+
+    private void setPropertyWithImages() {
+        mMapViewModel.getPropertyWithImages().observe(getViewLifecycleOwner(), getPropertyWithImages);
+    }
+
+    private final Observer<List<PropertyWithImages>> getPropertyWithImages =
+            propertyWithImages -> {
+                if (propertyWithImages != null) mPropertyWithImages = propertyWithImages;
+                setPropertiesMarkersOnMap();
+            };
+
+    private void getCurrentUserLocation() {
+        Permissions.check(requireContext(), Constants.PERMISSIONS, null, null, new PermissionHandler() {
+            @Override
+            public void onGranted() {
+                if (LocationUtils.isDeviceLocationEnabled()) {
+                    Objects.requireNonNull(LocationUtils.getCurrentDeviceLocation()).observe(getViewLifecycleOwner(), getLocation);
+                } else {
+                    // TODO display message
+                }
+            }
+        });
+    }
+
+    private final Observer<Location> getLocation = new Observer<Location>() {
+        @Override
+        public void onChanged(Location location) {
+            if (location != null) {
+                mMapViewModel.setCurrentUserLocation(location);
+                // TODO update user position on map
+            }
+        }
+    };
+
+    private void moveCamera(Location loc) {
+        LatLng latLng = new LatLng(loc.getLatitude(), loc.getLongitude());
+        mGoogleMaps.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, Constants.DEFAULT_MAPS_ZOOM));
+    }
+
     private void setFabListener() {
         binding.fabList.setOnClickListener(view -> {
             Log.i(TAG, "onClick: LIST _ fab;;");
             MainActivity ma = (MainActivity) requireActivity();
-            ma.displayFragm(LIST,"");
+            ma.displayFragm(LIST, "");
         });
     }
 

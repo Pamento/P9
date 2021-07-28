@@ -11,9 +11,6 @@ import com.openclassrooms.realestatemanager.data.local.dao.SinglePropertyDao;
 import com.openclassrooms.realestatemanager.data.local.entities.ImageOfProperty;
 import com.openclassrooms.realestatemanager.data.local.entities.SingleProperty;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 @Database(entities = {SingleProperty.class, ImageOfProperty.class}, version = 1)
 public abstract class RealEstateDatabase extends RoomDatabase {
 
@@ -30,7 +27,7 @@ public abstract class RealEstateDatabase extends RoomDatabase {
         if (INSTANCE == null) {
             INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                     RealEstateDatabase.class, "real_estate_manager_database")
-                    .fallbackToDestructiveMigration().build();
+                    .fallbackToDestructiveMigration().allowMainThreadQueries().build();
         }
         return INSTANCE;
     }

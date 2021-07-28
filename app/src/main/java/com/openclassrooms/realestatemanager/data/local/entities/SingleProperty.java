@@ -35,6 +35,7 @@ public class SingleProperty {
     private String quarter;
     @ColumnInfo(name = "postal_code")
     private Integer postalCode;
+    private String location;
     private String amenities;
     private String agent;
 
@@ -53,6 +54,7 @@ public class SingleProperty {
                           String city,
                           String quarter,
                           Integer postalCode,
+                          String location,
                           String amenities,
                           String agent) {
         this.id = id;
@@ -70,6 +72,7 @@ public class SingleProperty {
         this.city = city;
         this.quarter = quarter;
         this.postalCode = postalCode;
+        this.location = location;
         this.amenities = amenities;
         this.agent = agent;
     }
@@ -199,6 +202,14 @@ public class SingleProperty {
         this.postalCode = postalCode;
     }
 
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
     public String getAmenities() {
         return amenities;
     }
@@ -215,7 +226,6 @@ public class SingleProperty {
         this.agent = agent;
     }
 
-    @NonNull
     @Override
     public String toString() {
         return "SingleProperty{" +
@@ -234,6 +244,7 @@ public class SingleProperty {
                 ", city='" + city + '\'' +
                 ", quarter='" + quarter + '\'' +
                 ", postalCode=" + postalCode +
+                ", location='" + location + '\'' +
                 ", amenities='" + amenities + '\'' +
                 ", agent='" + agent + '\'' +
                 '}';

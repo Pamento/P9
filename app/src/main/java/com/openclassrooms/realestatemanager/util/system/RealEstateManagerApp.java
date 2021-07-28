@@ -1,14 +1,15 @@
 package com.openclassrooms.realestatemanager.util.system;
 
-import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Build;
 
+import androidx.multidex.MultiDexApplication;
+
 import com.openclassrooms.realestatemanager.util.Constants;
 
-public class RealEstateManagerApp extends Application {
+public class RealEstateManagerApp extends MultiDexApplication {
 
     private static Context sContext;
 

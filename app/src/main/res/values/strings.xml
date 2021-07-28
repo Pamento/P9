@@ -22,6 +22,10 @@
     <string name="description">Description</string>
     <string name="price_dollar">%s $</string>
     <string name="price_euro">%s €</string>
+    <!-- Map fragment -->
+    <string name="error_msg_map_service_not_available">Sorry, Your phone don\'t have Google Map Service.</string>
+    <string name="ask_location_account_title">Localisation permissions.</string>
+    <string name="ask_location_account_message">To find the restaurant near by you, the app needs access to your location.\nYou can set the location in System Settings globally or in part of Real Estate Manager app.</string>
     <!-- detail fragment -->
     <string name="img_description_about_property_image">about property image</string>
     <string name="detail_prop_available">Available</string>
