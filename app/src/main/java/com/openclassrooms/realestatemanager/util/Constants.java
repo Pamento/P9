@@ -8,13 +8,19 @@ public class Constants {
     public static final int ERROR_DIALOG_REQUEST = 3881;
     public static final String GOOGLE_BASE_URL = "https://maps.googleapis.com/maps/api/";
     public static final float DEFAULT_MAPS_ZOOM = 15f;
+
     // Permissions
     public static final String[] PERMISSIONS = {
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION
     };
+
+    // Handle file
     public static final int REQUEST_IMAGE_CAPTURE = 1;
     public static final int PICK_IMAGE_GALLERY = 2;
+    public static final String AUTHORITY_FILE_PROVIDER = "com.openclassrooms.realestatemanager.fileprovider";
+
+    // Notification
     public static final String CHANNEL_ID_1 = "NOTIFICATION_CHANNEL_1";
     public static final String CHANNEL_ID_2 = "NOTIFICATION_CHANNEL_2";
     public static final CharSequence VERBOSE_NOTIFICATION_CHANNEL_1_NAME = "Sey_to_user_the_truth_high_level_with_sound";

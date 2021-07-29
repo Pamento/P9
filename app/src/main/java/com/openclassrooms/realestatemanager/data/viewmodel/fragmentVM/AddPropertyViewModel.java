@@ -10,6 +10,9 @@ import com.openclassrooms.realestatemanager.data.local.entities.ImageOfProperty;
 import com.openclassrooms.realestatemanager.data.local.entities.SingleProperty;
 import com.openclassrooms.realestatemanager.data.local.reposiotries.ImageRepository;
 import com.openclassrooms.realestatemanager.data.local.reposiotries.PropertiesRepository;
+import com.openclassrooms.realestatemanager.data.remote.models.geocode.Location;
+import com.openclassrooms.realestatemanager.data.remote.models.geocode.Result;
+import com.openclassrooms.realestatemanager.data.remote.repository.GoogleMapsRepository;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,19 +22,33 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.Executor;
 
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
 public class AddPropertyViewModel extends ViewModel {
     private static final String TAG = "AddProperty";
     private final PropertiesRepository mPropertiesRepository;
     private final ImageRepository mImageRepository;
+    private final GoogleMapsRepository mGoogleMapsRepository;
     private final Executor mExecutor;
+    private final CompositeDisposable mDisposable = new CompositeDisposable();
     private SingleProperty mSingleProperty;
     private final List<ImageOfProperty> mImagesOfPropertyList = new ArrayList<>();
     private MutableLiveData<List<ImageOfProperty>> mImagesOfProperty;
     private ImageOfProperty mImageOfProperty;
+    private MutableLiveData<com.openclassrooms.realestatemanager.data.remote.models.geocode.Location> mLocationOfAddress;
 
-    public AddPropertyViewModel(PropertiesRepository propertiesRepository, ImageRepository imageRepository, Executor executor) {
+    public AddPropertyViewModel(PropertiesRepository propertiesRepository,
+                                ImageRepository imageRepository,
+                                GoogleMapsRepository googleMapsRepository,
+                                Executor executor) {
         mPropertiesRepository = propertiesRepository;
         mImageRepository = imageRepository;
+        mGoogleMapsRepository = googleMapsRepository;
         mExecutor = executor;
     }
 
@@ -39,6 +56,7 @@ public class AddPropertyViewModel extends ViewModel {
         mSingleProperty = new SingleProperty();
         mSingleProperty.setId(UUID.randomUUID().toString());
         mImagesOfProperty = new MutableLiveData<>();
+        mLocationOfAddress = new MutableLiveData<>();
     }
 
     public SingleProperty getSingleProperty() {
@@ -67,6 +85,7 @@ public class AddPropertyViewModel extends ViewModel {
                                   String city,
                                   String quarter,
                                   Integer postalCode,
+                                  String location,
                                   String amenities,
                                   String agent) {
         mSingleProperty.setType(type.equals("") ? null : type);
@@ -83,6 +102,7 @@ public class AddPropertyViewModel extends ViewModel {
         mSingleProperty.setQuarter(quarter.equals("") ? null : quarter);
         mSingleProperty.setCity(city.equals("") ? null : city);
         mSingleProperty.setPostalCode(postalCode);
+        mSingleProperty.setLocation(location);
         mSingleProperty.setAmenities(amenities.equals("") ? null : amenities);
         mSingleProperty.setAgent(agent);
     }
@@ -117,6 +137,34 @@ public class AddPropertyViewModel extends ViewModel {
         return mImagesOfProperty;
     }
 
+
+
+    public void getLocationFromAddress(String address) {
+        mGoogleMapsRepository.getGoogleGeoCodeOfAddress(address)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Result>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+                        mDisposable.add(d);
+                    }
+
+                    @Override
+                    public void onNext(@NonNull Result result) {
+                        mLocationOfAddress.setValue(result.getGeometry().getLocation());
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {/**/}
+
+                    @Override
+                    public void onComplete() {/**/}
+                });
+    }
+
+    public LiveData<Location> getGeoLocationOfProperty() {
+        return mLocationOfAddress;
+    }
 
     // Save data
     public boolean createSingleProperty() {

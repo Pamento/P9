@@ -7,6 +7,7 @@ import com.openclassrooms.realestatemanager.data.local.entities.ImageOfProperty;
 import com.openclassrooms.realestatemanager.data.local.entities.SingleProperty;
 import com.openclassrooms.realestatemanager.data.local.reposiotries.ImageRepository;
 import com.openclassrooms.realestatemanager.data.local.reposiotries.PropertiesRepository;
+import com.openclassrooms.realestatemanager.data.remote.repository.GoogleMapsRepository;
 
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -15,11 +16,16 @@ public class EditPropertyViewModel extends ViewModel {
 
     private final PropertiesRepository mPropertiesRepository;
     private final ImageRepository mImageRepository;
+    private final GoogleMapsRepository mGoogleMapsRepository;
     private final Executor mExecutor;
 
-    public EditPropertyViewModel(PropertiesRepository propertiesRepository, ImageRepository imageRepository, Executor executor) {
+    public EditPropertyViewModel(PropertiesRepository propertiesRepository,
+                                 ImageRepository imageRepository,
+                                 GoogleMapsRepository googleMapsRepository,
+                                 Executor executor) {
         mPropertiesRepository = propertiesRepository;
         mImageRepository = imageRepository;
+        mGoogleMapsRepository = googleMapsRepository;
         mExecutor = executor;
     }
 

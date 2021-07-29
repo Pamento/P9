@@ -5,6 +5,7 @@ import android.content.Context;
 import com.openclassrooms.realestatemanager.data.local.database.RealEstateDatabase;
 import com.openclassrooms.realestatemanager.data.local.reposiotries.ImageRepository;
 import com.openclassrooms.realestatemanager.data.local.reposiotries.PropertiesRepository;
+import com.openclassrooms.realestatemanager.data.remote.repository.GoogleMapsRepository;
 import com.openclassrooms.realestatemanager.data.viewModelFactory.ViewModelFactory;
 
 import java.util.concurrent.Executor;
@@ -22,12 +23,17 @@ public class Injection {
         return new ImageRepository(db.imageOfPropertyDao());
     }
 
+    public static GoogleMapsRepository sGoogleMapsRepository() {
+        return GoogleMapsRepository.getInstance();
+    }
+
     public static Executor provideExecutor(){ return Executors.newSingleThreadExecutor(); }
 
     public static ViewModelFactory sViewModelFactory(Context context) {
         PropertiesRepository propertiesRepository = sPropertiesRepository(context);
         ImageRepository imageRepository = sImageRepository(context);
+        GoogleMapsRepository googleMapsRepository = sGoogleMapsRepository();
         Executor executor = provideExecutor();
-        return new ViewModelFactory(propertiesRepository, imageRepository, executor);
+        return new ViewModelFactory(propertiesRepository, imageRepository, googleMapsRepository, executor);
     }
 }

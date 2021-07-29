@@ -1,5 +1,8 @@
 package com.openclassrooms.realestatemanager.util.texts;
 
+import android.os.Build;
+import android.text.TextUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,5 +43,22 @@ public class StringModifier {
             }
         }
         return comaPrice.toString();
+    }
+
+    public static String formatAddressToGeocoding(String address1, String city, String quarter) {
+        StringBuilder aB = new StringBuilder();
+        aB.append(replaceWhitespaceWithPlus(address1)).append(",");
+        aB.append(replaceWhitespaceWithPlus(quarter)).append(",");
+        aB.append(replaceWhitespaceWithPlus(city)).append(",");
+
+        return aB.toString();
+    }
+
+    private static String replaceWhitespaceWithPlus(String s) {
+        String[] t = s.split(" ");
+        if (t.length == 1) return t[0];
+        else {
+            return TextUtils.join("+",t);
+        }
     }
 }

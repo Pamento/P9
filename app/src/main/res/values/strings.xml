@@ -81,7 +81,7 @@
     <string name="detail_bathroom">%d bathroom</string>
     <string name="detail_united_states">United States</string>
     <string name="detail_managed_by">Managed by:</string>
-    <string name="detail_near_by">Near by:</string>
+    <string name="detail_near_by">Amenities:</string>
     <string name="detail_estate_available">Estate is available</string>
     <!-- divers -->
     <string name="snack_action_btn">OK</string>

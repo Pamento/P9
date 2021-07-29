@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
+import com.bumptech.glide.Glide;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.data.local.entities.ImageOfProperty;
 import com.openclassrooms.realestatemanager.data.local.entities.SingleProperty;
@@ -27,6 +28,8 @@ import com.openclassrooms.realestatemanager.util.texts.StringModifier;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class DetailFragment extends Fragment {
     private static final String TAG = "DetailFragment";
@@ -65,7 +68,10 @@ public class DetailFragment extends Fragment {
     }
 
     private void setOnDataObservers() {
-        mDetailViewModel.getSingleProperty().observe(getViewLifecycleOwner(), singleProperty -> mSingleProperty = singleProperty);
+        mDetailViewModel.getSingleProperty().observe(getViewLifecycleOwner(), singleProperty -> {
+            mSingleProperty = singleProperty;
+            mDetailViewModel.setUrlOfStaticMapOfProperty(singleProperty.getLocation());
+        });
         mDetailViewModel.getImagesOfProperty().observe(getViewLifecycleOwner(), imagesOfProperty -> {
             mImageOfPropertyList.addAll(imagesOfProperty);
             // TODO if mImageOfPropertyList.size() > 1 -> setRecyclerView. else set ImageView
@@ -107,9 +113,17 @@ public class DetailFragment extends Fragment {
             binding.detailAddress5.setText(mSingleProperty.getPostalCode());
             String country = requireActivity().getResources().getString(R.string.detail_united_states);
             binding.detailAddress6.setText(country);
+            setStaticMapOfProperty();
             setAmenitiesView();
             binding.detailAgent.setText(mSingleProperty.getAgent());
         }
+    }
+
+    private void setStaticMapOfProperty() {
+        Glide.with(requireContext())
+                .load(mDetailViewModel.getUrlOfStaticMapOfProperty())
+                .error(R.drawable.image_not_found_square)
+                .into(binding.detailSmallStaticMap);
     }
 
     private void setAmenitiesView() {

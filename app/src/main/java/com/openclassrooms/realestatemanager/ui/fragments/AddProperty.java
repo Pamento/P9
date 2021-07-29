@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -28,6 +29,7 @@ import android.widget.DatePicker;
 
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.data.local.entities.ImageOfProperty;
+import com.openclassrooms.realestatemanager.data.remote.models.geocode.Location;
 import com.openclassrooms.realestatemanager.data.viewModelFactory.ViewModelFactory;
 import com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM.AddPropertyViewModel;
 import com.openclassrooms.realestatemanager.databinding.AmenitiesCheckboxesBinding;
@@ -55,6 +57,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
+import static com.openclassrooms.realestatemanager.util.Constants.AUTHORITY_FILE_PROVIDER;
 import static com.openclassrooms.realestatemanager.util.Constants.BUS;
 import static com.openclassrooms.realestatemanager.util.Constants.NULL;
 import static com.openclassrooms.realestatemanager.util.Constants.PARK;
@@ -83,6 +86,7 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
     private int mMillisOfRegisterProperty = 0;
     private int mMillisOfSoldDate = 0;
     private boolean isDateRegister;
+    private Location mLocation;
 
     public AddProperty() {
         // Required empty public constructor
@@ -297,7 +301,7 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
             if (photoFile != null) {
                 Uri fp = FileProvider.getUriForFile(
                         requireActivity(),
-                        "com.openclassrooms.realestatemanager.fileprovider",
+                        AUTHORITY_FILE_PROVIDER,
                         photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fp);
 
@@ -357,12 +361,31 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
 
         if (checked == 0) {
             mAddPropertyViewModel.setImagesOfPropertyList(mImageAdapter.getImageOfPropertyList());
-            createProperty();
+            getGeoLocationOfProperty();
         } else {
             Log.i(TAG, "checkFormValidityBeforeSave: we are ready to create SingleProperty:: checked:: " + checked);
             String msg = requireActivity().getResources().getString(R.string.warning_missing_fields);
             NotifyBySnackBar.showSnackBar(1, mView, msg);
         }
+    }
+
+    private void getGeoLocationOfProperty() {
+        String address1 = formAddressBinding.addAddress1FormAddress.getEditableText().toString();
+        String city = formAddressBinding.addAddressFormCity.getEditableText().toString();
+        String quarter = formAddressBinding.addAddressFormQuarter.getEditableText().toString();
+        String address = StringModifier.formatAddressToGeocoding(address1,city,quarter);
+        mAddPropertyViewModel.getLocationFromAddress(address);
+        setOnResponseObserver();
+    }
+
+    private void setOnResponseObserver() {
+        mAddPropertyViewModel.getGeoLocationOfProperty().observe(getViewLifecycleOwner(), new Observer<Location>() {
+            @Override
+            public void onChanged(Location location) {
+                if (location != null) mLocation = location;
+                createProperty();
+            }
+        });
     }
 
     public void createProperty() {
@@ -383,12 +406,18 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
         String address2 = formAddressBinding.addAddress2FormAddressSuite.getEditableText().toString();
         String city = formAddressBinding.addAddressFormCity.getEditableText().toString();
         String quarter = formAddressBinding.addAddressFormQuarter.getEditableText().toString();
+        String location = formatLocationInString();
         String postalCodeStr = formAddressBinding.addAddressFormPostalCode.getEditableText().toString();
         int postalCode = TextUtils.isEmpty(postalCodeStr) ? 0 : Integer.parseInt(postalCodeStr);
         String amenities = getAmenities();
         String agent = binding.addFAgent.getText().toString();
-        mAddPropertyViewModel.createNewProperty(type, desc, surface, price, rooms, bedrooms, bathrooms, mMillisOfRegisterProperty, mMillisOfSoldDate, address1, address2, city, quarter, postalCode, amenities, agent);
+        mAddPropertyViewModel.createNewProperty(type, desc, surface, price, rooms, bedrooms, bathrooms, mMillisOfRegisterProperty, mMillisOfSoldDate, address1, address2, city, quarter, postalCode, location, amenities, agent);
+        // TODO save it from here ?
         saveDataAndNotifyUser();
+    }
+
+    private String formatLocationInString() {
+        return String.valueOf(mLocation.getLat()) + "," + String.valueOf(mLocation.getLng());
     }
 
     private void saveDataAndNotifyUser() {

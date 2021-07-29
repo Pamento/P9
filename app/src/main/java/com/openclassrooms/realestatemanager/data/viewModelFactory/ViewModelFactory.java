@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.openclassrooms.realestatemanager.data.local.reposiotries.ImageRepository;
 import com.openclassrooms.realestatemanager.data.local.reposiotries.PropertiesRepository;
+import com.openclassrooms.realestatemanager.data.remote.repository.GoogleMapsRepository;
 import com.openclassrooms.realestatemanager.data.viewmodel.MainActivityViewModel;
 import com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM.AddPropertyViewModel;
 import com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM.DetailViewModel;
@@ -21,11 +22,16 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
 
     private final PropertiesRepository mPropertiesRepository;
     private final ImageRepository mImageRepository;
-    private Executor mExecutor;
+    private final GoogleMapsRepository mGoogleMapsRepository;
+    private final Executor mExecutor;
 
-    public ViewModelFactory(PropertiesRepository propertiesRepository, ImageRepository imageRepository, Executor executor) {
+    public ViewModelFactory(PropertiesRepository propertiesRepository,
+                            ImageRepository imageRepository,
+                            GoogleMapsRepository googleMapsRepository,
+                            Executor executor) {
         mPropertiesRepository = propertiesRepository;
         mImageRepository = imageRepository;
+        mGoogleMapsRepository = googleMapsRepository;
         mExecutor = executor;
     }
 
@@ -37,13 +43,13 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             return (T) new MainActivityViewModel(mPropertiesRepository, mImageRepository, mExecutor);
         }
         if (modelClass.isAssignableFrom(AddPropertyViewModel.class)) {
-            return (T) new AddPropertyViewModel(mPropertiesRepository, mImageRepository, mExecutor);
+            return (T) new AddPropertyViewModel(mPropertiesRepository, mImageRepository, mGoogleMapsRepository, mExecutor);
         }
         if (modelClass.isAssignableFrom(DetailViewModel.class)) {
             return (T) new DetailViewModel(mPropertiesRepository, mImageRepository);
         }
         if (modelClass.isAssignableFrom(EditPropertyViewModel.class)) {
-            return (T) new EditPropertyViewModel(mPropertiesRepository, mImageRepository, mExecutor);
+            return (T) new EditPropertyViewModel(mPropertiesRepository, mImageRepository, mGoogleMapsRepository, mExecutor);
         }
         if (modelClass.isAssignableFrom(ListPropertyViewModel.class)) {
             return (T) new ListPropertyViewModel(mPropertiesRepository, mImageRepository);

@@ -27,7 +27,7 @@ public interface GoogleMapsAPI {
      * ex:
      *     //https://maps.googleapis.com/maps/api/geocode/outputFormat?parameters
      */
-    @GET("geocode/json?region=us" + KEY)
+    @GET("geocode/json?region=us&key=" + KEY)
     Observable<GeoResponse> getLocationOfAddress(@Query("address") String address);
 
     /*
