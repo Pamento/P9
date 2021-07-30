@@ -24,9 +24,9 @@ public class SingleProperty {
     private Integer bedroom;
     private Integer bathroom;
     @ColumnInfo(name = "date_register")
-    private Integer dateRegister;
+    private String dateRegister;
     @ColumnInfo(name = "date_sold")
-    private Integer dateSold;
+    private String dateSold;
     @ColumnInfo(name = "address_1")
     private String address1;
     @ColumnInfo(name = "address_2")
@@ -47,8 +47,8 @@ public class SingleProperty {
                           Integer rooms,
                           Integer bedroom,
                           Integer bathroom,
-                          Integer dateRegister,
-                          Integer dateSold,
+                          String dateRegister,
+                          String dateSold,
                           String address1,
                           String address2,
                           String city,
@@ -146,19 +146,19 @@ public class SingleProperty {
         this.bathroom = bathroom;
     }
 
-    public Integer getDateRegister() {
+    public String getDateRegister() {
         return dateRegister;
     }
 
-    public void setDateRegister(Integer dateRegister) {
+    public void setDateRegister(String dateRegister) {
         this.dateRegister = dateRegister;
     }
 
-    public Integer getDateSold() {
+    public String getDateSold() {
         return dateSold;
     }
 
-    public void setDateSold(Integer dateSold) {
+    public void setDateSold(String dateSold) {
         this.dateSold = dateSold;
     }
 

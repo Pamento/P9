@@ -1,5 +1,7 @@
 package com.openclassrooms.realestatemanager.ui.adapters;
 
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,17 +11,24 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.openclassrooms.realestatemanager.R;
+import com.openclassrooms.realestatemanager.data.local.entities.PropertyWithImages;
 import com.openclassrooms.realestatemanager.data.local.entities.SingleProperty;
 import com.openclassrooms.realestatemanager.databinding.ListItemBinding;
+import com.openclassrooms.realestatemanager.util.texts.StringModifier;
 
 import java.util.List;
 
-public class ListPropertyAdapter extends RecyclerView.Adapter<ListPropertyAdapter.ListPropertyViewHolder> {
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
-    private final List<SingleProperty> mProperties;
+public class ListPropertyAdapter extends RecyclerView.Adapter<ListPropertyAdapter.ListPropertyViewHolder> {
+    private static final String TAG = "AddProperty";
+    private final List<PropertyWithImages> mProperties;
     private final OnItemPropertyListClickListener mListClickListener;
 
-    public ListPropertyAdapter(List<SingleProperty> properties, OnItemPropertyListClickListener listClickListener) {
+    public ListPropertyAdapter(List<PropertyWithImages> properties, OnItemPropertyListClickListener listClickListener) {
         mProperties = properties;
         mListClickListener = listClickListener;
     }
@@ -33,16 +42,34 @@ public class ListPropertyAdapter extends RecyclerView.Adapter<ListPropertyAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ListPropertyViewHolder holder, int position) {
-        holder.type.setText("HOUSE");
-        holder.address.setText("147 avenue Adams Family");
-        holder.price.setText("1,000,000 $");
+        if (mProperties.size() > 0) {
+            PropertyWithImages one = mProperties.get(position);
+            String price = StringModifier.addComaInPrice(String.valueOf(one.mSingleProperty.getPrice()));
+            String priceDollar = holder.itemView.getContext().getString(R.string.price_dollar);
+            Uri uri = Uri.parse(one.ImagesOfProperty.get(0).getPath());
+            Log.i(TAG, "onBindViewHolder:  URI__URI__URI:: " + one.ImagesOfProperty.get(0).getPath());
+            holder.type.setText(one.mSingleProperty.getType());
+            holder.address.setText(one.mSingleProperty.getQuarter());
+            holder.price.setText(String.format(priceDollar, price));
+            Glide.with(holder.image.getContext())
+                    .load(uri)
+                    .error(R.drawable.image_not_found_square)
+                    .transform(new RoundedCornersTransformation(15, 0))
+                    .apply(RequestOptions.centerCropTransform())
+                    .into(holder.image);
+        } else {
+            holder.type.setText("Type of estate");
+            holder.address.setText("Quarter");
+            holder.price.setText("Price: 1,000,000 $");
+        }
 
     }
 
     @Override
     public int getItemCount() {
-        //return mProperties.size();
-        return 3;
+        if (mProperties.size() > 0)
+            return mProperties.size();
+        else return 3;
     }
 
     public static class ListPropertyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

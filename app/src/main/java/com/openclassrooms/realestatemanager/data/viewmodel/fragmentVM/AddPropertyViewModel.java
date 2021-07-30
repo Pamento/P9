@@ -16,7 +16,6 @@ import com.openclassrooms.realestatemanager.data.remote.repository.GoogleMapsRep
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -39,7 +38,7 @@ public class AddPropertyViewModel extends ViewModel {
     private SingleProperty mSingleProperty;
     private final List<ImageOfProperty> mImagesOfPropertyList = new ArrayList<>();
     private MutableLiveData<List<ImageOfProperty>> mImagesOfProperty;
-    private ImageOfProperty mImageOfProperty;
+    private ImageOfProperty mImgOfProperty;
     private MutableLiveData<com.openclassrooms.realestatemanager.data.remote.models.geocode.Location> mLocationOfAddress;
 
     public AddPropertyViewModel(PropertiesRepository propertiesRepository,
@@ -67,8 +66,8 @@ public class AddPropertyViewModel extends ViewModel {
         mSingleProperty = singleProperty;
     }
 
-    public void setImageOfProperty(ImageOfProperty imageOfProperty) {
-        mImageOfProperty = imageOfProperty;
+    public void setImgOfProperty(ImageOfProperty imgOfProperty) {
+        mImgOfProperty = imgOfProperty;
     }
 
     public void createNewProperty(String type,
@@ -78,8 +77,8 @@ public class AddPropertyViewModel extends ViewModel {
                                   Integer rooms,
                                   Integer bedroom,
                                   Integer bathroom,
-                                  Integer dateRegister,
-                                  Integer dateSold,
+                                  String dateRegister,
+                                  String dateSold,
                                   String address1,
                                   String address2,
                                   String city,
@@ -108,17 +107,19 @@ public class AddPropertyViewModel extends ViewModel {
     }
 
     public void createOneImageOfProperty(String imageUri) {
-        mImageOfProperty = new ImageOfProperty();
-        mImageOfProperty.setPropertyId(mSingleProperty.getId());
-        mImageOfProperty.setPath(imageUri);
+        mImgOfProperty = new ImageOfProperty();
+        mImgOfProperty.setPropertyId(mSingleProperty.getId());
+        mImgOfProperty.setPath(imageUri);
         Log.i(TAG, "createOneImageOfProperty: imageUri:: " + imageUri);
-        mImagesOfPropertyList.add(mImageOfProperty);
+        mImagesOfPropertyList.add(mImgOfProperty);
+        mImagesOfProperty = new MutableLiveData<>();
         mImagesOfProperty.postValue(mImagesOfPropertyList);
-            mImageOfProperty = null;
+            mImgOfProperty = null;
     }
 
     public void removeOneImageOfProperty(ImageOfProperty imageOfProperty) {
         mImagesOfPropertyList.remove(imageOfProperty);
+        mImagesOfProperty = new MutableLiveData<>();
         mImagesOfProperty.postValue(mImagesOfPropertyList);
     }
 

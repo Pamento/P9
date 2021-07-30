@@ -178,22 +178,22 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
         if (mSingleProperty.getDescription() != null)
             binding.addFDescription.setText(mSingleProperty.getDescription());
         if (mSingleProperty.getSurface() != null)
-            binding.addFInputSurface.setText(mSingleProperty.getSurface());
+            binding.addFInputSurface.setText(String.valueOf(mSingleProperty.getSurface()));
         if (mSingleProperty.getPrice() != null)
-            binding.addFInputPrice.setText(mSingleProperty.getPrice());
+            binding.addFInputPrice.setText(String.valueOf(mSingleProperty.getPrice()));
         if (mSingleProperty.getRooms() != null)
-            binding.addFInputRooms.setText(mSingleProperty.getRooms());
+            binding.addFInputRooms.setText(String.valueOf(mSingleProperty.getRooms()));
         if (mSingleProperty.getBedroom() != null)
-            binding.addFInputBedrooms.setText(mSingleProperty.getBedroom());
+            binding.addFInputBedrooms.setText(String.valueOf(mSingleProperty.getBedroom()));
         if (mSingleProperty.getBathroom() != null)
-            binding.addFInputBathrooms.setText(mSingleProperty.getBathroom());
+            binding.addFInputBathrooms.setText(String.valueOf(mSingleProperty.getBathroom()));
         if (mSingleProperty.getDateRegister() != null) {
-            String dateRegister = SQLTimeHelper.getUSFormDateFromTimeInMillis(mSingleProperty.getDateRegister());
+            String dateRegister = SQLTimeHelper.getUSFormDateFromTimeInMillis(Long.parseLong(mSingleProperty.getDateRegister()));
             binding.addFDateSince.setText(dateRegister);
         }
-        if (mSingleProperty.getDateSold() != null) {
+        if (!mSingleProperty.getDateSold().equals("")) {
             binding.addFSoldSwitch.setChecked(true);
-            String dateSold = SQLTimeHelper.getUSFormDateFromTimeInMillis(mSingleProperty.getDateSold());
+            String dateSold = SQLTimeHelper.getUSFormDateFromTimeInMillis(Long.parseLong(mSingleProperty.getDateSold()));
             binding.addFDateSoldOn.setText(dateSold);
             binding.addFDateSoldOn.setEnabled(false);
         }
@@ -211,7 +211,7 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
         if (mSingleProperty.getQuarter() != null)
             formAddressBinding.addAddressFormQuarter.setText(mSingleProperty.getQuarter());
         if (mSingleProperty.getPostalCode() != null)
-            formAddressBinding.addAddressFormPostalCode.setText(mSingleProperty.getPostalCode());
+            formAddressBinding.addAddressFormPostalCode.setText(String.valueOf(mSingleProperty.getPostalCode()));
     }
 
     private void updateUIAmenities() {
@@ -363,7 +363,7 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
         String amenities = getAmenities();
         mSingleProperty.setAmenities(amenities);
         if (mMillisOfRegisterProperty > 0)
-            mSingleProperty.setDateRegister(mMillisOfRegisterProperty);
+            mSingleProperty.setDateRegister(String.valueOf(mMillisOfRegisterProperty));
         String agent = binding.addFAgent.getText().toString();
         if (!agent.equals("")) mSingleProperty.setAgent(agent);
         saveDataAndNotifyUser();

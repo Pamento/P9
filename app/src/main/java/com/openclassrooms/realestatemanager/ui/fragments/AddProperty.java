@@ -10,15 +10,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,24 +37,23 @@ import com.openclassrooms.realestatemanager.databinding.AmenitiesCheckboxesBindi
 import com.openclassrooms.realestatemanager.databinding.FormAddressPropertyBinding;
 import com.openclassrooms.realestatemanager.databinding.FragmentAddPropertyBinding;
 import com.openclassrooms.realestatemanager.injection.Injection;
+import com.openclassrooms.realestatemanager.ui.activity.MainActivity;
 import com.openclassrooms.realestatemanager.ui.adapters.ImageListOfAddPropertyAdapter;
 import com.openclassrooms.realestatemanager.util.Utils;
+import com.openclassrooms.realestatemanager.util.enums.EFragments;
 import com.openclassrooms.realestatemanager.util.notification.NotificationsUtils;
 import com.openclassrooms.realestatemanager.util.notification.NotifyBySnackBar;
 import com.openclassrooms.realestatemanager.util.resources.AppResources;
-import com.openclassrooms.realestatemanager.util.system.AskOSTo;
+import com.openclassrooms.realestatemanager.util.system.ImageFilePathUtil;
 import com.openclassrooms.realestatemanager.util.system.ImageFileUtils;
 import com.openclassrooms.realestatemanager.util.texts.StringModifier;
 
 import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
@@ -83,8 +83,8 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
     private final List<ImageOfProperty> imagesToAdd = new ArrayList<>();
     private ImageListOfAddPropertyAdapter mImageAdapter;
     private boolean mIsPropertySold = false;
-    private int mMillisOfRegisterProperty = 0;
-    private int mMillisOfSoldDate = 0;
+    private long mMillisOfRegisterProperty = 0;
+    private long mMillisOfSoldDate = 0;
     private boolean isDateRegister;
     private Location mLocation;
 
@@ -128,6 +128,7 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
         setCreationDate();
         handleSoldDateInput();
         setRecyclerViewObserver();
+        setOnPriceInputListener();
     }
 
     private void setRecyclerViewObserver() {
@@ -192,7 +193,9 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
 
     // SET UI
     private void setCreationDate() {
-        mMillisOfRegisterProperty = (int) System.currentTimeMillis();
+        mMillisOfRegisterProperty = System.currentTimeMillis();
+        Log.i(TAG, "setCreationDate: mMillisOfRegisterProperty:: " + System.currentTimeMillis());
+        Log.i(TAG, "setCreationDate: mMillisOfRegisterProperty:: " + mMillisOfRegisterProperty);
         setDateInputField(Utils.getTodayDate(), 0);
         setListenerDatePicker();
     }
@@ -229,7 +232,7 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
         mIsPropertySold = !mIsPropertySold;
         if (mIsPropertySold) {
             setDateInputField(Utils.getTodayDate(), 1);
-            mMillisOfSoldDate = (int) System.currentTimeMillis();
+            mMillisOfSoldDate = System.currentTimeMillis();
             binding.addFDateSoldOn.setOnClickListener(view -> {
                 isDateRegister = false;
                 showDatePickerDialog();
@@ -316,7 +319,7 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
     }
 
     private void openGallery() {
-        Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+        Intent gallery = new Intent(Intent.ACTION_OPEN_DOCUMENT, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
         startActivityForResult(gallery, PICK_IMAGE_GALLERY);
     }
 
@@ -324,7 +327,8 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Uri imageUri = Uri.fromFile(photoFile);
-            mAddPropertyViewModel.createOneImageOfProperty(imageUri.toString());
+            String uri = ImageFilePathUtil.getRealPathFromURI_API19(requireContext(), imageUri);
+            mAddPropertyViewModel.createOneImageOfProperty(uri);
         } else if (requestCode == PICK_IMAGE_GALLERY && resultCode == RESULT_OK) {
             if (data != null) {
                 Uri uri = data.getData();
@@ -332,6 +336,27 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
             }
         }
     }
+
+    // Add coma to price during put in input
+    private void setOnPriceInputListener() {
+        binding.addFInputPrice.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {/**/}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {/**/
+                Log.i(TAG, "ADD__ onTextChanged: text:: " + charSequence.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {/**/
+                Log.i(TAG, "ADD__ afterTextChanged: text:: " + editable.toString());
+                editable.setFilters(new InputFilter[]{priceFilter});
+            }
+        });
+    }
+
+    private final InputFilter priceFilter = (source, start, end, dest, dstart, dend) -> StringModifier.addComaInPrice(source.toString());
 
     // after click on save icon, main activity run this function to check if required fields was fill
     // If so, this function run save method
@@ -379,10 +404,9 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
     }
 
     private void setOnResponseObserver() {
-        mAddPropertyViewModel.getGeoLocationOfProperty().observe(getViewLifecycleOwner(), new Observer<Location>() {
-            @Override
-            public void onChanged(Location location) {
-                if (location != null) mLocation = location;
+        mAddPropertyViewModel.getGeoLocationOfProperty().observe(getViewLifecycleOwner(), location -> {
+            if (location != null) {
+                mLocation = location;
                 createProperty();
             }
         });
@@ -411,7 +435,11 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
         int postalCode = TextUtils.isEmpty(postalCodeStr) ? 0 : Integer.parseInt(postalCodeStr);
         String amenities = getAmenities();
         String agent = binding.addFAgent.getText().toString();
-        mAddPropertyViewModel.createNewProperty(type, desc, surface, price, rooms, bedrooms, bathrooms, mMillisOfRegisterProperty, mMillisOfSoldDate, address1, address2, city, quarter, postalCode, location, amenities, agent);
+        Log.i(TAG, "createProperty: location:: " + location);
+        Log.i(TAG, "createProperty: dateRegister:: " + mMillisOfRegisterProperty);
+        String dateR = String.valueOf(mMillisOfRegisterProperty);
+        String dateSold = mMillisOfSoldDate == 0 ? "" : String.valueOf(mMillisOfSoldDate);
+        mAddPropertyViewModel.createNewProperty(type, desc, surface, price, rooms, bedrooms, bathrooms, dateR, dateSold, address1, address2, city, quarter, postalCode, location, amenities, agent);
         // TODO save it from here ?
         saveDataAndNotifyUser();
     }
@@ -433,6 +461,14 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
             notify.showWarning(requireContext(), SAVE_IMAGES_FAIL);
         else
             notify.showWarning(requireContext(), SAVE_PROPERTY_OK);
+
+        // TODO destroy AddProperty fragment and display ListProperty fragment.
+        goBackToList();
+    }
+
+    private void goBackToList() {
+        MainActivity ma = (MainActivity) requireActivity();
+        ma.displayFragm(EFragments.LIST,"");
     }
 
     private String getAmenities() {

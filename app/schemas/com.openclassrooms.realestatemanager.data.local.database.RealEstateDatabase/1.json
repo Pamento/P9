@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "5ecfdd4108cc635f3aa613c158d6ca10",
+    "identityHash": "e86e8a680ee1b2feff76be2c27b0c6e2",
     "entities": [
       {
         "tableName": "property",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`pid` TEXT NOT NULL, `type` TEXT, `description` TEXT, `surface` INTEGER, `price` INTEGER, `rooms` INTEGER, `bedroom` INTEGER, `bathroom` INTEGER, `date_register` INTEGER, `date_sold` INTEGER, `address_1` TEXT, `address_2` TEXT, `city` TEXT, `quarter` TEXT, `postal_code` INTEGER, `location` TEXT, `amenities` TEXT, `agent` TEXT, PRIMARY KEY(`pid`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`pid` TEXT NOT NULL, `type` TEXT, `description` TEXT, `surface` INTEGER, `price` INTEGER, `rooms` INTEGER, `bedroom` INTEGER, `bathroom` INTEGER, `date_register` TEXT, `date_sold` TEXT, `address_1` TEXT, `address_2` TEXT, `city` TEXT, `quarter` TEXT, `postal_code` INTEGER, `location` TEXT, `amenities` TEXT, `agent` TEXT, PRIMARY KEY(`pid`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -59,13 +59,13 @@
           {
             "fieldPath": "dateRegister",
             "columnName": "date_register",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": false
           },
           {
             "fieldPath": "dateSold",
             "columnName": "date_sold",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": false
           },
           {
@@ -198,7 +198,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5ecfdd4108cc635f3aa613c158d6ca10')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e86e8a680ee1b2feff76be2c27b0c6e2')"
     ]
   }
 }

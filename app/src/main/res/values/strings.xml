@@ -78,7 +78,8 @@
     <!-- detail fragment -->
     <string name="detail_text_sold">Sold</string>
     <string name="detail_surface_integer">surface: %dm²</string>
-    <string name="detail_bathroom">%d bathroom</string>
+    <string name="detail_bathroom">%d bathrooms</string>
+    <string name="detail_bedroom">%d bedrooms</string>
     <string name="detail_united_states">United States</string>
     <string name="detail_managed_by">Managed by:</string>
     <string name="detail_near_by">Amenities:</string>

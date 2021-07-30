@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.data.local.entities.ImageOfProperty;
 import com.openclassrooms.realestatemanager.databinding.ItemDetailImageBinding;
@@ -44,6 +45,7 @@ public class ImageListOfDetailAdapter extends RecyclerView.Adapter<ImageListOfDe
                     .error(R.drawable.image_not_found_square)
                     .placeholder(R.drawable.image_placeholder)
                     .transform(new RoundedCornersTransformation(20, 16))
+                    .apply(RequestOptions.centerCropTransform())
                     .into(holder.mDetailImgItem);
         }
         if (propertyImg.getDescription() != null)

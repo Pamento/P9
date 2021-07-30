@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void displayListFragment() {
-        ListProperty listProperty = ListProperty.newInstance(null, null);
+        ListProperty listProperty = ListProperty.newInstance();
 
         if (mFragmentManager != null) {
             FragmentTransaction fTransaction = mFragmentManager
@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void displayFragm(EFragments fragment, String param) {
+    public void displayFragm(EFragments fragment, String toolbarTitle) {
         mEFragments = fragment;
         Log.i(TAG, "MAIN__ displayFragm: is:: " + mEFragments);
         if (mFragmentManager != null) {
@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
             switch (fragment) {
                 case LIST:
                     setToolbarTitle(getResources().getString(R.string.app_name), false);
-                    ListProperty lp = ListProperty.newInstance(null, null);
+                    ListProperty lp = ListProperty.newInstance();
                     transaction.replace(R.id.main_activity_fragment_container, lp, LIST_FRAGMENT);
                     break;
                 case MAP:
@@ -122,28 +122,28 @@ public class MainActivity extends AppCompatActivity {
                     }
                     break;
                 case DETAIL:
-                    setToolbarTitle(param, true);
+                    setToolbarTitle(toolbarTitle, true);
                     DetailFragment df = DetailFragment.newInstance();
                     // transaction.add add the fragment as a layer without removing the list
                     transaction.add(R.id.main_activity_fragment_container, df, DETAIL_FRAGMENT);
                     break;
                 case ADD:
-                    setToolbarTitle(param, false);
+                    setToolbarTitle(toolbarTitle, false);
                     AddProperty ap = AddProperty.newInstance();
                     transaction.add(R.id.main_activity_fragment_container, ap, ADD_FRAGMENT);
                     break;
                 case SEARCH:
-                    setToolbarTitle(param, false);
+                    setToolbarTitle(toolbarTitle, false);
                     SearchEngine se = SearchEngine.newInstance(null, null);
                     transaction.add(R.id.main_activity_fragment_container, se, SEARCH_FRAGMENT);
                     break;
                 case SIMULATOR:
-                    setToolbarTitle(param, true);
+                    setToolbarTitle(toolbarTitle, true);
                     LoanSimulator ls = LoanSimulator.newInstance();
                     transaction.add(R.id.main_activity_fragment_container, ls, SIMULATOR_FRAGMENT);
                     break;
                 case EDIT:
-                    setToolbarTitle(param, false);
+                    setToolbarTitle(toolbarTitle, false);
                     EditProperty ep = EditProperty.newInstance();
                     transaction.add(R.id.main_activity_fragment_container, ep);
                     break;
@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
             transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-            transaction.addToBackStack(param).commit();
+            transaction.addToBackStack(toolbarTitle).commit();
         }
     }
 
@@ -173,21 +173,38 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Fragment fragment = this.getSupportFragmentManager().findFragmentById(R.id.main_activity_fragment_container);
-        if (fragment instanceof ListProperty) {
-            mEFragments = LIST;
-            Log.i(TAG, "onBackPressed: " + getResources().getString(R.string.app_name));
-            setToolbarTitle(getResources().getString(R.string.app_name), false);
-        } else if (fragment instanceof MapFragment) {
-            mEFragments = MAP;
-            Log.i(TAG, "onBackPressed: NEW YORK");
-        } else if (fragment instanceof DetailFragment) {
-            mEFragments = DETAIL;
-            // TODO need to manage this case when the action of edit is cancel and we back to Detail Fragment.
-            //  Which of item from LIST was chosen to Edit (To display his name in Toolbar title) ?
-            Log.i(TAG, "onBackPressed: From ...");
-            setToolbarTitle("Detail is back", true);
+        mEFragments = findFragmentItIs();
+
+        switch (mEFragments) {
+            case LIST:
+                setToolbarTitle(getResources().getString(R.string.app_name), false);
+                break;
+            case MAP:
+                Log.i(TAG, "onBackPressed: NEW YORK");
+                break;
+            case DETAIL:
+                // TODO need to manage this case when the action of edit is cancel and we back to Detail Fragment.
+                //  Which of item from LIST was chosen to Edit (To display his name in Toolbar title) ?
+                setToolbarTitle("Detail is back", true);
+                break;
         }
+    }
+
+    private EFragments findFragmentItIs() {
+        Fragment fragment = this.getSupportFragmentManager().findFragmentById(R.id.main_activity_fragment_container);
+        if (fragment instanceof ListProperty)
+            return LIST;
+        else if (fragment instanceof MapFragment)
+            return MAP;
+        else if (fragment instanceof DetailFragment)
+            return DETAIL;
+        else if (fragment instanceof EditProperty)
+            return EDIT;
+        else if (fragment instanceof LoanSimulator)
+            return SIMULATOR;
+        else if (fragment instanceof SearchEngine)
+            return SEARCH;
+        else return ADD;
     }
 
     // enable/display the flesh of backUp button

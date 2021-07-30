@@ -24,16 +24,19 @@
 
             <TextView
                 android:id="@+id/detail_available"
+                style="@style/TextAppearance.AppCompat.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="@string/detail_prop_available"
+                android:layout_margin="@dimen/size_n"
+                android:textColor="@color/colorAccent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="@string/detail_prop_available" />
 
             <TextView
                 android:id="@+id/detail_since"
+                style="@style/TextAppearance.AppCompat.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
@@ -44,13 +47,14 @@
 
             <TextView
                 android:id="@+id/detail_date_register"
+                style="@style/TextAppearance.AppCompat.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:text="@string/detail_date_init"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="@string/detail_date_init" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -72,8 +76,8 @@
             android:id="@+id/detail_3_Layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="48dp"
-            android:layout_marginVertical="16dp"
+            android:layout_marginHorizontal="@dimen/size_b"
+            android:layout_marginVertical="@dimen/size_n"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/detail_2_layout">
 
@@ -81,33 +85,58 @@
                 android:id="@+id/detail_surface"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/detail_surface_integer"
+                android:drawablePadding="@dimen/size_n"
+                android:textSize="@dimen/size_text_n"
+                app:drawableStartCompat="@drawable/ic_settings_overscan_24"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="@string/detail_surface_integer" />
 
             <TextView
                 android:id="@+id/detail_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/price_dollar"
+                android:textSize="@dimen/size_text_m"
+                android:textColor="@color/colorAccent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/detail_bathroom"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/detail_rooms"
-                app:layout_constraintStart_toStartOf="@+id/detail_surface"
-                app:layout_constraintTop_toBottomOf="@+id/detail_surface" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="@string/price_dollar" />
 
             <TextView
                 android:id="@+id/detail_rooms_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/detail_bathroom"
-                app:layout_constraintStart_toStartOf="@+id/detail_bathroom"
-                app:layout_constraintTop_toBottomOf="@+id/detail_bathroom" />
+                android:drawablePadding="@dimen/size_n"
+                android:textSize="@dimen/size_text_n"
+                android:layout_marginTop="@dimen/size_s"
+                app:drawableStartCompat="@drawable/ic_other_houses_24"
+                app:layout_constraintStart_toStartOf="@+id/detail_surface"
+                app:layout_constraintTop_toBottomOf="@+id/detail_surface"
+                tools:text="@string/detail_rooms" />
+
+            <TextView
+                android:id="@+id/detail_bathrooms_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/size_text_n"
+                android:drawablePadding="@dimen/size_n"
+                android:layout_marginTop="@dimen/size_s"
+                app:drawableStartCompat="@drawable/ic_bathtub_24"
+                app:layout_constraintStart_toStartOf="@+id/detail_rooms_number"
+                app:layout_constraintTop_toBottomOf="@+id/detail_rooms_number"
+                tools:text="@string/detail_bathroom" />
+
+            <TextView
+                android:id="@+id/detail_bedroom_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/size_text_n"
+                android:layout_marginTop="@dimen/size_s"
+                android:drawablePadding="@dimen/size_n"
+                app:drawableStartCompat="@drawable/ic_local_hotel_24"
+                app:layout_constraintTop_toBottomOf="@+id/detail_bathrooms_number"
+                app:layout_constraintStart_toStartOf="@+id/detail_bathrooms_number"
+                tools:text="@string/detail_bedroom"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -115,7 +144,7 @@
             android:id="@+id/detail_4_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
+            android:layout_margin="@dimen/size_n"
             android:orientation="vertical">
 
             <TextView
@@ -123,6 +152,7 @@
                 style="@style/TextAppearance.AppCompat.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/size_s"
                 android:text="@string/description" />
 
             <TextView
@@ -139,42 +169,56 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:orientation="vertical"
-            android:paddingHorizontal="48dp">
+            android:paddingHorizontal="@dimen/size_n">
+
+            <TextView
+                android:id="@+id/detail_address_title"
+                style="@style/TextAppearance.AppCompat.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/size_s"
+                android:text="Address" />
 
             <TextView
                 android:id="@+id/detail_address_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/size_b"
                 tools:text="740 Park Avenue" />
 
             <TextView
                 android:id="@+id/detail_address_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/size_b"
                 tools:text="Apt 6/7 A" />
 
             <TextView
-                android:id="@+id/detail_address_3"
+                android:id="@+id/detail_address_quarter"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/size_b"
                 tools:text="Quarter" />
 
             <TextView
-                android:id="@+id/detail_address_4"
+                android:id="@+id/detail_address_city"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/size_b"
                 tools:text="New York" />
 
             <TextView
-                android:id="@+id/detail_address_5"
+                android:id="@+id/detail_address_postal_code"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/size_b"
                 tools:text="NY 10021" />
 
             <TextView
                 android:id="@+id/detail_address_6"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/size_b"
                 tools:text="United States" />
         </LinearLayout>
 
@@ -192,9 +236,9 @@
                 android:layout_width="250dp"
                 android:layout_height="250dp"
                 android:layout_gravity="center"
-                android:elevation="@dimen/size_s"
                 android:contentDescription="@string/img_description_small_static_map"
-                android:src="@drawable/staticmap_new_york" />
+                android:elevation="@dimen/size_s"
+                tools:src="@drawable/staticmap_new_york" />
         </LinearLayout>
 
         <LinearLayout
@@ -215,7 +259,7 @@
                 android:id="@+id/detail_amenities_list_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/size_b"/>
+                android:layout_marginHorizontal="@dimen/size_b" />
 
         </LinearLayout>
 

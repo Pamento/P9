@@ -7,22 +7,19 @@
 
     <ImageView
         android:id="@+id/list_img"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/list_image_size"
+        android:layout_height="@dimen/list_image_size"
         android:contentDescription="@string/img_description_about_property_image"
-        android:paddingVertical="5dp"
-        android:paddingStart="10dp"
-        android:paddingEnd="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars" />
 
     <LinearLayout
         android:id="@+id/list_linear_layout"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_margin="10dp"
+        android:layout_marginHorizontal="@dimen/size_n"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/list_img"
@@ -30,20 +27,25 @@
 
         <TextView
             android:id="@+id/list_type"
+            style="@style/TextAppearance.AppCompat.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="@dimen/size_text_m"
             tools:text="House" />
 
         <TextView
             android:id="@+id/list_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="@dimen/size_text_m"
             tools:text="147 sesame street" />
 
         <TextView
             android:id="@+id/list_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="@dimen/size_text_m"
+            android:textColor="@color/colorAccent"
             tools:text="1,000,000 $" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

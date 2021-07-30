@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,13 +30,13 @@ import com.openclassrooms.realestatemanager.util.texts.StringModifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
-
 public class DetailFragment extends Fragment {
     private static final String TAG = "DetailFragment";
     private DetailViewModel mDetailViewModel;
     private FragmentDetailBinding binding;
     private SingleProperty mSingleProperty;
+    private RecyclerView recyclerV;
+    private ImageListOfDetailAdapter mAdapter;
     private final List<ImageOfProperty> mImageOfPropertyList = new ArrayList<>();
 
     public DetailFragment() {
@@ -57,6 +58,7 @@ public class DetailFragment extends Fragment {
         initViewModel();
         // Inflate the layout for this fragment
         binding = FragmentDetailBinding.inflate(inflater, container, false);
+        setDetailRecyclerView();
         return binding.getRoot();
     }
 
@@ -64,53 +66,66 @@ public class DetailFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setOnDataObservers();
-        setUI();
     }
 
     private void setOnDataObservers() {
+        Log.i(TAG, "DETAIL__ setOnDataObservers: run");
         mDetailViewModel.getSingleProperty().observe(getViewLifecycleOwner(), singleProperty -> {
-            mSingleProperty = singleProperty;
-            mDetailViewModel.setUrlOfStaticMapOfProperty(singleProperty.getLocation());
+            if (singleProperty != null) {
+                mSingleProperty = singleProperty;
+                mDetailViewModel.setUrlOfStaticMapOfProperty(singleProperty.getLocation());
+            }
+            setUI();
         });
         mDetailViewModel.getImagesOfProperty().observe(getViewLifecycleOwner(), imagesOfProperty -> {
             mImageOfPropertyList.addAll(imagesOfProperty);
-            // TODO if mImageOfPropertyList.size() > 1 -> setRecyclerView. else set ImageView
-            setRecyclerView();
+            // TODO if mImageOfPropertyList.size() > 1 -> setDetailRecyclerView. else set ImageView
+            displayDataOnRecyclerView();
         });
     }
 
-    private void setRecyclerView() {
-        RecyclerView recyclerV = binding.detailImgRecyclerView;
-        ImageListOfDetailAdapter adapter = new ImageListOfDetailAdapter(mImageOfPropertyList);
+    private void setDetailRecyclerView() {
+        Log.i(TAG, "DETAIL__ setDetailRecyclerView: adapter _____________adapter");
+        recyclerV = binding.detailImgRecyclerView;
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
-        recyclerV.setAdapter(adapter);
+        recyclerV.setHasFixedSize(true);
         recyclerV.setLayoutManager(layoutManager);
+    }
+
+    private void displayDataOnRecyclerView() {
+        mAdapter = new ImageListOfDetailAdapter(mImageOfPropertyList);
+        recyclerV.setAdapter(mAdapter);
     }
 
     private void setUI() {
         if (mSingleProperty != null) {
-            if (mSingleProperty.getDateSold() != null)
+            Log.i(TAG, "DETAIL__ setUI: ");
+            if (!mSingleProperty.getDateSold().equals(""))
                 binding.detailAvailable.setText(R.string.detail_text_sold);
             else
                 binding.detailAvailable.setText(R.string.detail_estate_available);
             // continue
-            binding.detailDateRegister.setText(SQLTimeHelper.getUSFormDateFromTimeInMillis(mSingleProperty.getDateRegister()));
-            String surfaceMetre = requireActivity().getResources().getString(R.string.detail_surface_integer, mSingleProperty.getSurface());
-            binding.detailSurface.setText(surfaceMetre);
-            String estatePrice = requireActivity().getResources().getString(R.string.price_dollar, String.valueOf(mSingleProperty.getPrice()));
-            binding.detailPrice.setText(estatePrice);
-            String estateRooms = requireActivity().getResources().getString(R.string.detail_rooms, mSingleProperty.getRooms());
-            binding.detailRoomsNumber.setText(estateRooms);
-            String estateBathroom = requireActivity().getResources().getString(R.string.price_dollar, String.valueOf(mSingleProperty.getBathroom()));
-            binding.detailBathroom.setText(estateBathroom);
+            Log.i(TAG, "setUI: time::: " + mSingleProperty.getDateRegister());
+            binding.detailDateRegister.setText(SQLTimeHelper.getUSFormDateFromTimeInMillis(Long.parseLong(mSingleProperty.getDateRegister())));
+            String surfaceMetre = requireActivity().getResources().getString(R.string.detail_surface_integer);
+            binding.detailSurface.setText(String.format(surfaceMetre, mSingleProperty.getSurface()));
+            String estatePrice = requireActivity().getResources().getString(R.string.price_dollar);
+            String priceComa = StringModifier.addComaInPrice(String.valueOf(mSingleProperty.getPrice()));
+            binding.detailPrice.setText(String.format(estatePrice, priceComa));
+            String estateRooms = requireActivity().getResources().getString(R.string.detail_rooms);
+            binding.detailRoomsNumber.setText(String.format(estateRooms, mSingleProperty.getRooms()));
+            String estateBathroom = requireActivity().getResources().getString(R.string.detail_bathroom);
+            binding.detailBathroomsNumber.setText(String.format(estateBathroom,mSingleProperty.getBathroom()));
+            String estateBedroom = requireActivity().getResources().getString(R.string.detail_bedroom);
+            binding.detailBedroomNumber.setText(String.format(estateBedroom, mSingleProperty.getBedroom()));
             binding.detailDescription.setText(mSingleProperty.getDescription());
             // Address form
             binding.detailAddress1.setText(mSingleProperty.getAddress1());
             binding.detailAddress2.setText(mSingleProperty.getAddress2());
-            binding.detailAddress3.setText(mSingleProperty.getQuarter());
-            binding.detailAddress4.setText(mSingleProperty.getCity());
-            binding.detailAddress5.setText(mSingleProperty.getPostalCode());
+            binding.detailAddressQuarter.setText(mSingleProperty.getQuarter());
+            binding.detailAddressCity.setText(mSingleProperty.getCity());
+            binding.detailAddressPostalCode.setText(String.valueOf(mSingleProperty.getPostalCode()));
             String country = requireActivity().getResources().getString(R.string.detail_united_states);
             binding.detailAddress6.setText(country);
             setStaticMapOfProperty();
@@ -120,6 +135,7 @@ public class DetailFragment extends Fragment {
     }
 
     private void setStaticMapOfProperty() {
+        Log.i(TAG, "DETAIL__ setStaticMapOfProperty: GLIDE run");
         Glide.with(requireContext())
                 .load(mDetailViewModel.getUrlOfStaticMapOfProperty())
                 .error(R.drawable.image_not_found_square)

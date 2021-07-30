@@ -1,5 +1,7 @@
 package com.openclassrooms.realestatemanager.data.local.reposiotries;
 
+import android.util.Log;
+
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 
@@ -28,6 +30,8 @@ public class ImageRepository {
     }
 
     public LiveData<List<ImageOfProperty>> getAllImagesOfProperty(@Nullable String propertyId) {
+        Log.i("AddProperty", "getAllImagesOfProperty: id:: " + propertyId);
+        Log.i("AddProperty", "getAllImagesOfProperty: id:: " + PROPERTY_ID);
         if (propertyId == null) return mImageOfPropertyDao.getAllImageForProperty(PROPERTY_ID);
         else return mImageOfPropertyDao.getAllImageForProperty(propertyId);
     }

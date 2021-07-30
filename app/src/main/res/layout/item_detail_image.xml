@@ -7,8 +7,8 @@
 
     <ImageView
         android:id="@+id/detail_item_recycler_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/list_image_size"
+        android:layout_height="@dimen/list_image_size"
         android:maxHeight="@dimen/detail_item_image_view_size"
         android:maxWidth="@dimen/detail_item_image_view_size"
         tools:src="@tools:sample/avatars"
