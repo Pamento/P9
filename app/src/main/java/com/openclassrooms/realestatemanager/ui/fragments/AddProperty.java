@@ -492,10 +492,10 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
         calendar.set(Calendar.DAY_OF_MONTH, i2);
         Date date = calendar.getTime();
         if (isDateRegister) {
-            mMillisOfRegisterProperty = (int) calendar.getTimeInMillis();
+            mMillisOfRegisterProperty = calendar.getTimeInMillis();
             setDateInputField(Utils.getUSFormatOfDate(date), 0);
         } else {
-            mMillisOfSoldDate = (int) calendar.getTimeInMillis();
+            mMillisOfSoldDate = calendar.getTimeInMillis();
             if (mMillisOfSoldDate >= mMillisOfRegisterProperty) {
                 setDateInputField(Utils.getUSFormatOfDate(date), 1);
             } else {

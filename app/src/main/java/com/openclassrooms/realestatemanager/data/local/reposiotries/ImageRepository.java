@@ -22,6 +22,7 @@ public class ImageRepository {
 
     // methods
     public long[] createPropertyImages(List<ImageOfProperty> imagesOfProperties) {
+        Log.i("AddProperty", "createPropertyImages: images.size():: " + imagesOfProperties.size());
         return mImageOfPropertyDao.insertImagesOfProperty(imagesOfProperties);
     }
 

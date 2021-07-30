@@ -94,10 +94,10 @@ public class ImageListOfAddPropertyAdapter extends
     public void updateImagesList(List<ImageOfProperty> images) {
         this.notifyDataSetChanged();
         this.mImageOfPropertyList.clear();
-        //Log.i(TAG, "ADAPTER__ updateImagesList: images.size():: " + images.size());
-        //Log.i(TAG, "ADAPTER__ updateImagesList: mImageOfProperty.size():: " + mImageOfPropertyList.size());
+        Log.i(TAG, "ADAPTER__ updateImagesList: images.size():: " + images.size());
+        Log.i(TAG, "ADAPTER__ updateImagesList: mImageOfProperty.size():: " + mImageOfPropertyList.size());
         this.mImageOfPropertyList.addAll(images);
-        //Log.i(TAG, "ADAPTER__ updateImagesList: mImageOfProperty.size():: " + mImageOfPropertyList.size());
+        Log.i(TAG, "ADAPTER__ updateImagesList: mImageOfProperty.size():: " + mImageOfPropertyList.size());
         this.notifyDataSetChanged();
     }
 

@@ -111,9 +111,14 @@ public class AddPropertyViewModel extends ViewModel {
         mImgOfProperty.setPropertyId(mSingleProperty.getId());
         mImgOfProperty.setPath(imageUri);
         Log.i(TAG, "createOneImageOfProperty: imageUri:: " + imageUri);
+        Log.i(TAG, "createOneImageOfProperty: imagesList.size():: " + mImagesOfPropertyList.size());
+        Log.i(TAG, "createOneImageOfProperty: ");
         mImagesOfPropertyList.add(mImgOfProperty);
+        Log.i(TAG, "createOneImageOfProperty: imagesList.size():: " + mImagesOfPropertyList.size());
         mImagesOfProperty.postValue(mImagesOfPropertyList);
-            mImgOfProperty = null;
+        if (mImagesOfProperty.getValue() != null) Log.i(TAG, "createOneImageOfProperty: mImagesOfProperty.getValue().size():: " + mImagesOfProperty.getValue().size());
+        else Log.i(TAG, "createOneImageOfProperty: mImagesOfProperty.getValue() = null");
+        mImgOfProperty = null;
     }
 
     public void removeOneImageOfProperty(ImageOfProperty imageOfProperty) {
@@ -129,7 +134,15 @@ public class AddPropertyViewModel extends ViewModel {
 //    }
 
     public void setImagesOfPropertyList(List<ImageOfProperty> imagesOfPropertyList) {
+        Log.i(TAG, "ADD__VM__ setImagesOfPropertyList: param:-: imagesOfPropertyList.size():: " + imagesOfPropertyList.size());
+        Log.i(TAG, "ADD__VM__ setImagesOfPropertyList: imagesList.size():: " + mImagesOfPropertyList.size());
+        Log.i(TAG, "ADD__VM__ setImagesOfPropertyList: imagesList.size():: " + mImagesOfPropertyList.get(0).toString());
+        mImagesOfPropertyList.clear();
+        Log.i(TAG, "ADD__VM__ setImagesOfPropertyList: imagesList.clear():: " + mImagesOfPropertyList.size());
+        Log.i(TAG, "ADD__VM__ setImagesOfPropertyList: imagesList.size():: " + mImagesOfPropertyList.size());
         mImagesOfPropertyList.addAll(imagesOfPropertyList);
+        Log.i(TAG, "ADD__VM__ setImagesOfPropertyList: imagesList.size():: " + mImagesOfPropertyList.size());
+        Log.i(TAG, "ADD__VM__ setImagesOfPropertyList: imagesList.size():: " + mImagesOfPropertyList.get(0).toString());
     }
 
     public LiveData<List<ImageOfProperty>> getImagesOfProperty() {
@@ -181,12 +194,15 @@ public class AddPropertyViewModel extends ViewModel {
         // If true, the insert method was felt
         final boolean[] response = new boolean[1];
         mExecutor.execute(() -> {
-            long[] res = mImageRepository.createPropertyImages(mImagesOfProperty.getValue());
-            Log.i(TAG, "createImagesOfProperty: RUN:-> rowID:: " + Arrays.toString(res));
-            for (long i: res) {
-                if (i == 0) {
-                    response[0] = true;
-                    break;
+            if (mImagesOfProperty.getValue() != null) {
+                long[] res = mImageRepository.createPropertyImages(mImagesOfProperty.getValue());
+                Log.i(TAG, "createImagesOfProperty: RUN:-> images.size():: " + mImagesOfProperty.getValue().size());
+                Log.i(TAG, "createImagesOfProperty: RUN:-> rowID:: " + Arrays.toString(res));
+                for (long i: res) {
+                    if (i == 0) {
+                        response[0] = true;
+                        break;
+                    }
                 }
             }
             response[0] = false;
