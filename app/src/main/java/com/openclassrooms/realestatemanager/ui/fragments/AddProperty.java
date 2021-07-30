@@ -304,7 +304,7 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
             if (photoFile != null) {
                 Uri fp = FileProvider.getUriForFile(
                         requireActivity(),
-                        AUTHORITY_FILE_PROVIDER,
+                        "com.openclassrooms.realestatemanager.fileprovider",
                         photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fp);
 
@@ -327,11 +327,13 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Uri imageUri = Uri.fromFile(photoFile);
-            String uri = ImageFilePathUtil.getRealPathFromURI_API19(requireContext(), imageUri);
-            mAddPropertyViewModel.createOneImageOfProperty(uri);
+            //String uri = ImageFilePathUtil.getRealPathFromURI_API19(requireContext(), imageUri);
+            Log.i(TAG, "onActivityResult: uri:: " + imageUri.toString());
+            mAddPropertyViewModel.createOneImageOfProperty(imageUri.toString());
         } else if (requestCode == PICK_IMAGE_GALLERY && resultCode == RESULT_OK) {
             if (data != null) {
                 Uri uri = data.getData();
+                Log.i(TAG, "ADD__ pick_photo__onActivityResult: uri:: " + uri.toString());
                 mAddPropertyViewModel.createOneImageOfProperty(uri.toString());
             }
         }

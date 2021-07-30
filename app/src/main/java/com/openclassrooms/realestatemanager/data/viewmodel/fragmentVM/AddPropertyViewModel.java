@@ -112,14 +112,12 @@ public class AddPropertyViewModel extends ViewModel {
         mImgOfProperty.setPath(imageUri);
         Log.i(TAG, "createOneImageOfProperty: imageUri:: " + imageUri);
         mImagesOfPropertyList.add(mImgOfProperty);
-        mImagesOfProperty = new MutableLiveData<>();
         mImagesOfProperty.postValue(mImagesOfPropertyList);
             mImgOfProperty = null;
     }
 
     public void removeOneImageOfProperty(ImageOfProperty imageOfProperty) {
         mImagesOfPropertyList.remove(imageOfProperty);
-        mImagesOfProperty = new MutableLiveData<>();
         mImagesOfProperty.postValue(mImagesOfPropertyList);
     }
 
