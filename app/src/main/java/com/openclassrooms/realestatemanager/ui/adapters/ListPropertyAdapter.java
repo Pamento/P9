@@ -1,7 +1,6 @@
 package com.openclassrooms.realestatemanager.ui.adapters;
 
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.data.local.entities.PropertyWithImages;
-import com.openclassrooms.realestatemanager.data.local.entities.SingleProperty;
 import com.openclassrooms.realestatemanager.databinding.ListItemBinding;
 import com.openclassrooms.realestatemanager.util.texts.StringModifier;
 
@@ -24,7 +22,6 @@ import java.util.List;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class ListPropertyAdapter extends RecyclerView.Adapter<ListPropertyAdapter.ListPropertyViewHolder> {
-    private static final String TAG = "AddProperty";
     private final List<PropertyWithImages> mProperties;
     private final OnItemPropertyListClickListener mListClickListener;
 
@@ -47,20 +44,22 @@ public class ListPropertyAdapter extends RecyclerView.Adapter<ListPropertyAdapte
             String price = StringModifier.addComaInPrice(String.valueOf(one.mSingleProperty.getPrice()));
             String priceDollar = holder.itemView.getContext().getString(R.string.price_dollar);
             Uri uri = Uri.parse(one.ImagesOfProperty.get(0).getPath());
-            Log.i(TAG, "onBindViewHolder:  URI__URI__URI:: " + one.ImagesOfProperty.get(0).getPath());
             holder.type.setText(one.mSingleProperty.getType());
             holder.address.setText(one.mSingleProperty.getQuarter());
             holder.price.setText(String.format(priceDollar, price));
             Glide.with(holder.image.getContext())
                     .load(uri)
                     .error(R.drawable.image_not_found_square)
-                    .transform(new RoundedCornersTransformation(15, 0))
+                    .transform(new RoundedCornersTransformation(12, 1))
                     .apply(RequestOptions.centerCropTransform())
                     .into(holder.image);
         } else {
-            holder.type.setText("Type of estate");
-            holder.address.setText("Quarter");
-            holder.price.setText("Price: 1,000,000 $");
+            holder.type.setText(R.string.list_empty_item_type);
+            holder.address.setText(R.string.list_empty_item_quarter);
+            holder.price.setText(R.string.list_empty_item_price);
+            Glide.with(holder.image.getContext())
+                    .load(R.drawable.image_placeholder)
+                    .into(holder.image);
         }
 
     }
@@ -69,7 +68,7 @@ public class ListPropertyAdapter extends RecyclerView.Adapter<ListPropertyAdapte
     public int getItemCount() {
         if (mProperties.size() > 0)
             return mProperties.size();
-        else return 3;
+        else return 1;
     }
 
     public static class ListPropertyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

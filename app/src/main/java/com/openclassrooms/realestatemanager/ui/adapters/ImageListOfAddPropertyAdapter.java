@@ -6,7 +6,6 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -42,7 +41,7 @@ public class ImageListOfAddPropertyAdapter extends
 
     @Override
     public void onBindViewHolder(@NonNull ImageListOfAddPropertyViewHolder holder, int position) {
-        //Log.i(TAG, "ADAPTER__ onBindViewHolder: mImageOfPropertyList.size():: " + mImageOfPropertyList.size());
+        holder.mImageDescription.removeTextChangedListener(holder.mTextWatcher);
         if (mImageOfPropertyList.size() == 0) {
             holder.mImageDescription.setText(R.string.add_description_placeholder);
             Glide.with(holder.mImageProperty.getContext())
@@ -51,9 +50,6 @@ public class ImageListOfAddPropertyAdapter extends
                     .into(holder.mImageProperty);
         } else {
             ImageOfProperty imgItem = mImageOfPropertyList.get(position);
-            if (imgItem.getDescription() != null && !imgItem.getDescription().equals("")) {
-                holder.mImageDescription.setText(imgItem.getDescription());
-            }
             Uri uri = Uri.parse(imgItem.getPath());
             if (uri != null) {
                 Glide.with(holder.mImageProperty.getContext())
@@ -63,12 +59,11 @@ public class ImageListOfAddPropertyAdapter extends
                         .transform(new RoundedCornersTransformation(20,1))
                         .into(holder.mImageProperty);
             }
-            TextInputEditText recyclerDescription = holder.mImageDescription;
-            recyclerDescription.setOnEditorActionListener((textView, i, keyEvent) -> {
-                // OnEditorActionListener give the "Done" button in keyboard
-                return i == EditorInfo.IME_ACTION_DONE;
-            });
-            recyclerDescription.addTextChangedListener(new TextWatcher() {
+            if (imgItem.getDescription() != null && !imgItem.getDescription().equals("")) {
+                holder.mImageDescription.setText(imgItem.getDescription());
+            }
+
+            holder.mImageDescription.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {/**/}
 
@@ -77,11 +72,9 @@ public class ImageListOfAddPropertyAdapter extends
 
                 @Override
                 public void afterTextChanged(Editable editable) {
-                    // TODO for EditFragment we need to manage change of description in other manner.
                     ImageOfProperty iop = mImageOfPropertyList.get(position);
                     iop.setDescription(editable.toString());
                     mImageOfPropertyList.set(position, iop);
-                    //notifyItemChanged(position);
                 }
             });
         }
@@ -94,13 +87,22 @@ public class ImageListOfAddPropertyAdapter extends
         } else return mImageOfPropertyList.size();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
     public void updateImagesList(List<ImageOfProperty> images) {
         this.notifyDataSetChanged();
         this.mImageOfPropertyList.clear();
         Log.i(TAG, "ADAPTER__ updateImagesList: images.size():: " + images.size());
         Log.i(TAG, "ADAPTER__ updateImagesList: mImageOfProperty.size():: " + mImageOfPropertyList.size());
         this.mImageOfPropertyList.addAll(images);
-        Log.i(TAG, "ADAPTER__ updateImagesList: mImageOfProperty.size():: " + mImageOfPropertyList.size());
         this.notifyDataSetChanged();
     }
 
@@ -111,6 +113,7 @@ public class ImageListOfAddPropertyAdapter extends
     public static class ImageListOfAddPropertyViewHolder extends RecyclerView.ViewHolder {
         ImageView mImageProperty;
         TextInputEditText mImageDescription;
+        TextWatcher mTextWatcher = null;
 
 
         public ImageListOfAddPropertyViewHolder(@NonNull AddImageItemBinding vBinding) {
@@ -125,17 +128,12 @@ public class ImageListOfAddPropertyAdapter extends
     }
 
     public void addNewImage(ImageOfProperty imageOfProperty) {
-        Log.i(TAG, "addNewImage: mImageOfPropertyList.size():: " + mImageOfPropertyList.size());
         this.mImageOfPropertyList.add(imageOfProperty);
-        Log.i(TAG, "addNewImage: mImageOfPropertyList.size():: " + mImageOfPropertyList.size());
         this.notifyItemInserted(mImageOfPropertyList.size());
     }
 
     public void removeDeletedImageFromList(int imageOfProperty) {
-        Log.i(TAG, "removeDeletedImageFromList: size:::::::::::::: " + mImageOfPropertyList.size());
         mImageOfPropertyList.remove(imageOfProperty);
-        Log.i(TAG, "removeDeletedImageFromList: toString::: " + mImageOfPropertyList.get(0).toString());
-        //mImageOfPropertyList.remove(imageOfProperty);
         this.notifyItemRemoved(imageOfProperty);
         this.notifyItemRangeChanged(imageOfProperty, mImageOfPropertyList.size());
     }

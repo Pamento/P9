@@ -94,4 +94,7 @@
     <string name="loan_per_month_euro">%s € / month</string>
     <string name="loan_years">Years</string>
     <string name="loan_months">Months</string>
+    <string name="list_empty_item_type">Type of estate</string>
+    <string name="list_empty_item_quarter">Quarter</string>
+    <string name="list_empty_item_price">Price: ... $</string>
 </resources>

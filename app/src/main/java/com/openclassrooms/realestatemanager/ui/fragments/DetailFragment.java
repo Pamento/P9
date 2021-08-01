@@ -30,6 +30,8 @@ import com.openclassrooms.realestatemanager.util.texts.StringModifier;
 import java.util.ArrayList;
 import java.util.List;
 
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
+
 public class DetailFragment extends Fragment {
     private static final String TAG = "DetailFragment";
     private DetailViewModel mDetailViewModel;
@@ -69,7 +71,6 @@ public class DetailFragment extends Fragment {
     }
 
     private void setOnDataObservers() {
-        Log.i(TAG, "DETAIL__ setOnDataObservers: run");
         mDetailViewModel.getSingleProperty().observe(getViewLifecycleOwner(), singleProperty -> {
             if (singleProperty != null) {
                 mSingleProperty = singleProperty;
@@ -116,7 +117,7 @@ public class DetailFragment extends Fragment {
             String estateRooms = requireActivity().getResources().getString(R.string.detail_rooms);
             binding.detailRoomsNumber.setText(String.format(estateRooms, mSingleProperty.getRooms()));
             String estateBathroom = requireActivity().getResources().getString(R.string.detail_bathroom);
-            binding.detailBathroomsNumber.setText(String.format(estateBathroom,mSingleProperty.getBathroom()));
+            binding.detailBathroomsNumber.setText(String.format(estateBathroom, mSingleProperty.getBathroom()));
             String estateBedroom = requireActivity().getResources().getString(R.string.detail_bedroom);
             binding.detailBedroomNumber.setText(String.format(estateBedroom, mSingleProperty.getBedroom()));
             binding.detailDescription.setText(mSingleProperty.getDescription());
@@ -135,10 +136,10 @@ public class DetailFragment extends Fragment {
     }
 
     private void setStaticMapOfProperty() {
-        Log.i(TAG, "DETAIL__ setStaticMapOfProperty: GLIDE run");
         Glide.with(requireContext())
                 .load(mDetailViewModel.getUrlOfStaticMapOfProperty())
                 .error(R.drawable.image_not_found_square)
+                .transform(new RoundedCornersTransformation(2, 2))
                 .into(binding.detailSmallStaticMap);
     }
 

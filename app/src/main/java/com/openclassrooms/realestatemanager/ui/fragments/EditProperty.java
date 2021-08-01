@@ -131,16 +131,6 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
                 android.R.layout.simple_dropdown_item_1line, types);
         binding.addFTypeDropdown.setAdapter(adapter);
-        binding.addFTypeDropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                //adapterView.getItemAtPosition(i);
-                Log.i(TAG, "onItemSelected: item selected:: " + adapterView.getItemAtPosition(i).toString());
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) { /**/ }
-        });
     }
 
     private void setAgentSpinner() {
@@ -148,15 +138,6 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
                 android.R.layout.simple_dropdown_item_1line, agents);
         binding.addFAgent.setAdapter(adapter);
-        binding.addFAgent.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.i(TAG, "onItemSelected: AGENT SELECTED");
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {/**/}
-        });
     }
 
     private void setPropertyDataObservers() {
@@ -177,7 +158,6 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
         }
     };
     final Observer<List<ImageOfProperty>> getImagesOfProperty = imagesOfProperty -> {
-        Log.i(TAG, "EDIT__ setPropertyDataObservers: Params: imageOfProperties.size():: " + imagesOfProperty.size());
         mImageOfPropertyListToCompare.addAll(imagesOfProperty);
         mImageOfPropertyList.clear();
         mImageOfPropertyList.addAll(imagesOfProperty);
@@ -354,14 +334,12 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
     }
 
     public void updateProperty() {
-        Log.i(TAG, "EDIT__ updateProperty: run and removeObservers ");
         mEditPropertyViewModel.getSingleProperty().removeObserver(getProperty);
         mEditPropertyViewModel.getImagesOfProperty().removeObserver(getImagesOfProperty);
         updateImagesOfProperty();
     }
 
     private void updatePropertyData() {
-        Log.i(TAG, "EDIT__ updatePropertyData: run");
         // Get inputs values:
         String type = binding.addFTypeDropdown.getText().toString();
         if (!type.equals("")) mSingleProperty.setType(type);
@@ -400,13 +378,7 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
         int i = 0;
         int errorRes = 0;
         List<Integer> index = new ArrayList<>();
-        // TODO get imagesList from adapter; compare and: delete, update or
-        //  add;(need to manage add differently; don't save in Room just after getImageFrom Camera or Gallery
 
-        for (ImageOfProperty ip: mImageOfPropertyListToCompare) {
-            Log.i(TAG, "updateImagesOfProperty: KOMPARE//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::");
-            Log.i(TAG, "updateImagesOfProperty: " + ip.toString());
-        }
         List<ImageOfProperty> temp = mImageAdapter.getImageOfPropertyList();
         for (ImageOfProperty ip: temp) {
             if (ip.getId() == null) {
@@ -415,18 +387,14 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
                     errorRes += 1;
                 }                
             } else {
-                Log.i(TAG, "updateImagesOfProperty: id:: " + ip.getId());
                 index.add(mImageOfPropertyListToCompare.indexOf(ip));
-                Log.i(TAG, "updateImagesOfProperty: INDEX:: " + mImageOfPropertyListToCompare.indexOf(ip));
                 boolean res = mEditPropertyViewModel.updateImageOfProperty(ip);
                 if (res) {
                     errorRes += 1;
                 }    
             }
         }
-        Log.i(TAG, "updateImagesOfProperty: index.size():: " + index.size());
         if (index.size() < mImageOfPropertyListToCompare.size()) {
-            Log.i(TAG, "updateImagesOfProperty: index.size(if):: " + index.size());
             i = mImageOfPropertyListToCompare.size();
             for (int k = 0; k < i; k++ ) {
                 if (!index.contains(k)) {
@@ -454,7 +422,6 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
     // Handle data
     private void saveDataAndNotifyUser() {
         boolean res = mEditPropertyViewModel.updateProperty(mSingleProperty);
-        Log.i(TAG, "saveDataAndNotifyUser: res & resImg:: " + res + " _:: ");
         NotificationsUtils notify = new NotificationsUtils(requireContext());
         // fail if res = true
         // success if res = false

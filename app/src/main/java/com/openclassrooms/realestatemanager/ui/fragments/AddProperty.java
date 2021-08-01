@@ -163,16 +163,6 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
                 android.R.layout.simple_dropdown_item_1line, types);
         binding.addFTypeDropdown.setAdapter(adapter);
-        binding.addFTypeDropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                //adapterView.getItemAtPosition(i);
-                Log.i(TAG, "onItemSelected: item selected:: " + adapterView.getItemAtPosition(i).toString());
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) { /**/ }
-        });
     }
 
     private void setAgentSpinner() {
@@ -180,15 +170,6 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
                 android.R.layout.simple_dropdown_item_1line, agents);
         binding.addFAgent.setAdapter(adapter);
-        binding.addFAgent.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.i(TAG, "onItemSelected: AGENT SELECTED");
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {/**/}
-        });
     }
 
     // SET UI
@@ -328,12 +309,10 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Uri imageUri = Uri.fromFile(photoFile);
             //String uri = ImageFilePathUtil.getRealPathFromURI_API19(requireContext(), imageUri);
-            Log.i(TAG, "onActivityResult: uri:: " + imageUri.toString());
             mAddPropertyViewModel.createOneImageOfProperty(imageUri.toString());
         } else if (requestCode == PICK_IMAGE_GALLERY && resultCode == RESULT_OK) {
             if (data != null) {
                 Uri uri = data.getData();
-                Log.i(TAG, "ADD__ pick_photo__onActivityResult: uri:: " + uri.toString());
                 mAddPropertyViewModel.createOneImageOfProperty(uri.toString());
             }
         }
