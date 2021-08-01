@@ -78,7 +78,10 @@ public class ImageListOfAddPropertyAdapter extends
                 @Override
                 public void afterTextChanged(Editable editable) {
                     // TODO for EditFragment we need to manage change of description in other manner.
-                    mImageOfPropertyList.get(position).setDescription(editable.toString());
+                    ImageOfProperty iop = mImageOfPropertyList.get(position);
+                    iop.setDescription(editable.toString());
+                    mImageOfPropertyList.set(position, iop);
+                    //notifyItemChanged(position);
                 }
             });
         }
@@ -122,10 +125,18 @@ public class ImageListOfAddPropertyAdapter extends
     }
 
     public void addNewImage(ImageOfProperty imageOfProperty) {
+        Log.i(TAG, "addNewImage: mImageOfPropertyList.size():: " + mImageOfPropertyList.size());
         this.mImageOfPropertyList.add(imageOfProperty);
+        Log.i(TAG, "addNewImage: mImageOfPropertyList.size():: " + mImageOfPropertyList.size());
+        this.notifyItemInserted(mImageOfPropertyList.size());
     }
 
-    public void removeDeletedImageFromList(ImageOfProperty imageOfProperty) {
+    public void removeDeletedImageFromList(int imageOfProperty) {
+        Log.i(TAG, "removeDeletedImageFromList: size:::::::::::::: " + mImageOfPropertyList.size());
         mImageOfPropertyList.remove(imageOfProperty);
+        Log.i(TAG, "removeDeletedImageFromList: toString::: " + mImageOfPropertyList.get(0).toString());
+        //mImageOfPropertyList.remove(imageOfProperty);
+        this.notifyItemRemoved(imageOfProperty);
+        this.notifyItemRangeChanged(imageOfProperty, mImageOfPropertyList.size());
     }
 }

@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -33,9 +34,11 @@ import com.openclassrooms.realestatemanager.databinding.AmenitiesCheckboxesBindi
 import com.openclassrooms.realestatemanager.databinding.FormAddressPropertyBinding;
 import com.openclassrooms.realestatemanager.databinding.FragmentAddPropertyBinding;
 import com.openclassrooms.realestatemanager.injection.Injection;
+import com.openclassrooms.realestatemanager.ui.activity.MainActivity;
 import com.openclassrooms.realestatemanager.ui.adapters.ImageListOfAddPropertyAdapter;
 import com.openclassrooms.realestatemanager.util.Utils;
 import com.openclassrooms.realestatemanager.util.dateTime.SQLTimeHelper;
+import com.openclassrooms.realestatemanager.util.enums.EFragments;
 import com.openclassrooms.realestatemanager.util.notification.NotificationsUtils;
 import com.openclassrooms.realestatemanager.util.notification.NotifyBySnackBar;
 import com.openclassrooms.realestatemanager.util.resources.AppResources;
@@ -75,6 +78,7 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
     private ImageListOfAddPropertyAdapter mImageAdapter;
     private SingleProperty mSingleProperty;
     private final List<ImageOfProperty> mImageOfPropertyList = new ArrayList<>();
+    private final List<ImageOfProperty> mImageOfPropertyListToCompare = new ArrayList<>();
     private int mMillisOfRegisterProperty = 0;
     private File photoFile;
 
@@ -97,6 +101,7 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
         initViewModel();
         binding = FragmentAddPropertyBinding.inflate(inflater, container, false);
         bindIncludesLayouts();
+        setRecyclerView();
         return binding.getRoot();
     }
 
@@ -155,22 +160,30 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
     }
 
     private void setPropertyDataObservers() {
-        mEditPropertyViewModel.getSingleProperty()
-                .observe(getViewLifecycleOwner(), singleProperty -> {
-                    if (singleProperty!=null) {
-                        mSingleProperty = singleProperty;
-                        updateUi();
-                        updateUIAddressForm();
-                        updateUIAmenities();
-                    }
-                    setListenerDatePicker();
-                });
-        mEditPropertyViewModel.getImagesOfProperty().observe(getViewLifecycleOwner(), imageOfProperties -> {
-            mImageOfPropertyList.addAll(imageOfProperties);
-            setRecyclerView();
-            setEventListener();
-        });
+        mEditPropertyViewModel.getSingleProperty().observe(getViewLifecycleOwner(), getProperty);
+        mEditPropertyViewModel.getImagesOfProperty().observe(getViewLifecycleOwner(), getImagesOfProperty);
     }
+
+    final Observer<SingleProperty> getProperty = new Observer<SingleProperty>() {
+        @Override
+        public void onChanged(SingleProperty singleProperty) {
+            if (singleProperty != null) {
+                mSingleProperty = singleProperty;
+                updateUi();
+                updateUIAddressForm();
+                updateUIAmenities();
+            }
+            setListenerDatePicker();
+        }
+    };
+    final Observer<List<ImageOfProperty>> getImagesOfProperty = imagesOfProperty -> {
+        Log.i(TAG, "EDIT__ setPropertyDataObservers: Params: imageOfProperties.size():: " + imagesOfProperty.size());
+        mImageOfPropertyListToCompare.addAll(imagesOfProperty);
+        mImageOfPropertyList.clear();
+        mImageOfPropertyList.addAll(imagesOfProperty);
+        displayImagesOnRecyclerView();
+        setEventListener();
+    };
 
     private void updateUi() {
         if (mSingleProperty.getType() != null)
@@ -233,11 +246,14 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
     private void setRecyclerView() {
         Log.i(TAG, "ADD__ setRecyclerView: imageToAdd.size():: " + mImageOfPropertyList.size());
         imagesRecycler = binding.addFImagesRecycler;
-        mImageAdapter = new ImageListOfAddPropertyAdapter(mImageOfPropertyList);
-        imagesRecycler.setAdapter(mImageAdapter);
         imagesRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(mSimpleCallback);
         itemTouchHelper.attachToRecyclerView(imagesRecycler);
+    }
+
+    private void displayImagesOnRecyclerView() {
+        mImageAdapter = new ImageListOfAddPropertyAdapter(mImageOfPropertyList);
+        imagesRecycler.setAdapter(mImageAdapter);
     }
 
     ItemTouchHelper.SimpleCallback mSimpleCallback = new ItemTouchHelper.SimpleCallback(
@@ -258,11 +274,13 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
             ImageOfProperty imageOfProperty = mImageAdapter.getImageOfPropertyAt(viewHolder.getAbsoluteAdapterPosition());
             // TODO swiped image don't necessary make part of mImageOfPropertyList.
             //  Before, need to check if swiped/deleted image is in
-            if (mImageOfPropertyList.contains(imageOfProperty)) {
-                mImageOfPropertyList.remove(imageOfProperty);
-                mEditPropertyViewModel.deleteImageOfProperty(imageOfProperty.getId());
-            }
-            mImageAdapter.removeDeletedImageFromList(imageOfProperty);
+//            if (mImageOfPropertyList.contains(imageOfProperty)) {
+//                mImageOfPropertyList.remove(imageOfProperty);
+//                // TODO check the changes for update ImageOfProperty in case when description was added
+//                mEditPropertyViewModel.deleteImageOfProperty(imageOfProperty.getId());
+//            }
+            mImageAdapter.removeDeletedImageFromList(viewHolder.getAbsoluteAdapterPosition());
+            //mImageAdapter.removeDeletedImageFromList(imageOfProperty);
         }
     };
 
@@ -312,8 +330,9 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
         ip.setPath(imageUri);
         ip.setPropertyId(mSingleProperty.getId());
         mImageAdapter.addNewImage(ip);
-        mImageOfPropertyList.add(ip);
-        mEditPropertyViewModel.createImageOfProperty(ip);
+        //for update image use only imagesList in adapter
+        //mImageOfPropertyList.add(ip);
+        //mEditPropertyViewModel.createImageOfProperty(ip);
     }
 
     private void setListenerDatePicker() {
@@ -335,6 +354,14 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
     }
 
     public void updateProperty() {
+        Log.i(TAG, "EDIT__ updateProperty: run and removeObservers ");
+        mEditPropertyViewModel.getSingleProperty().removeObserver(getProperty);
+        mEditPropertyViewModel.getImagesOfProperty().removeObserver(getImagesOfProperty);
+        updateImagesOfProperty();
+    }
+
+    private void updatePropertyData() {
+        Log.i(TAG, "EDIT__ updatePropertyData: run");
         // Get inputs values:
         String type = binding.addFTypeDropdown.getText().toString();
         if (!type.equals("")) mSingleProperty.setType(type);
@@ -369,6 +396,50 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
         saveDataAndNotifyUser();
     }
 
+    private void updateImagesOfProperty() {
+        int i = 0;
+        int errorRes = 0;
+        List<Integer> index = new ArrayList<>();
+        // TODO get imagesList from adapter; compare and: delete, update or
+        //  add;(need to manage add differently; don't save in Room just after getImageFrom Camera or Gallery
+
+        for (ImageOfProperty ip: mImageOfPropertyListToCompare) {
+            Log.i(TAG, "updateImagesOfProperty: KOMPARE//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::");
+            Log.i(TAG, "updateImagesOfProperty: " + ip.toString());
+        }
+        List<ImageOfProperty> temp = mImageAdapter.getImageOfPropertyList();
+        for (ImageOfProperty ip: temp) {
+            if (ip.getId() == null) {
+                boolean res = mEditPropertyViewModel.createImageOfProperty(ip);
+                if (res) {
+                    errorRes += 1;
+                }                
+            } else {
+                Log.i(TAG, "updateImagesOfProperty: id:: " + ip.getId());
+                index.add(mImageOfPropertyListToCompare.indexOf(ip));
+                Log.i(TAG, "updateImagesOfProperty: INDEX:: " + mImageOfPropertyListToCompare.indexOf(ip));
+                boolean res = mEditPropertyViewModel.updateImageOfProperty(ip);
+                if (res) {
+                    errorRes += 1;
+                }    
+            }
+        }
+        Log.i(TAG, "updateImagesOfProperty: index.size():: " + index.size());
+        if (index.size() < mImageOfPropertyListToCompare.size()) {
+            Log.i(TAG, "updateImagesOfProperty: index.size(if):: " + index.size());
+            i = mImageOfPropertyListToCompare.size();
+            for (int k = 0; k < i; k++ ) {
+                if (!index.contains(k)) {
+                    mEditPropertyViewModel.deleteImageOfProperty(mImageOfPropertyListToCompare.get(k).getId());
+                }
+            }
+        }
+        if (errorRes != 0) {
+            NotifyBySnackBar.showSnackBar(1, mView, SAVE_IMAGES_FAIL);
+        }
+        updatePropertyData();
+    }
+
     private String getAmenities() {
         String[] amenities = new String[6];
         amenities[0] = amenitiesBinding.amenitiesShop.isChecked() ? SHOP : NULL;
@@ -391,18 +462,13 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
             notify.showWarning(requireContext(), SAVE_PROPERTY_FAIL);
         else
             notify.showWarning(requireContext(), SAVE_PROPERTY_OK);
+
+        goBackToList();
     }
 
-    private void saveUpdatedImagesOfProperty() {
-        int errorRes = 0;
-        List<ImageOfProperty> imageOfPropertiesFromAdapter = mImageAdapter.getImageOfPropertyList();
-        for (ImageOfProperty image: imageOfPropertiesFromAdapter) {
-            boolean res = mEditPropertyViewModel.updateImageOfProperty(image);
-            if (res) errorRes++;
-        }
-        if (errorRes != 0) {
-            NotifyBySnackBar.showSnackBar(1,mView,SAVE_IMAGES_FAIL);
-        }
+    private void goBackToList() {
+        MainActivity ma = (MainActivity) requireActivity();
+        ma.displayFragm(EFragments.LIST,"");
     }
 
     @Override

@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
                 case EDIT:
                     setToolbarTitle(toolbarTitle, false);
                     EditProperty ep = EditProperty.newInstance();
-                    transaction.add(R.id.main_activity_fragment_container, ep);
+                    transaction.add(R.id.main_activity_fragment_container, ep, EDIT_FRAGMENT);
                     break;
                 default:
                     break;
@@ -174,7 +174,6 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         mEFragments = findFragmentItIs();
-
         switch (mEFragments) {
             case LIST:
                 setToolbarTitle(getResources().getString(R.string.app_name), false);
