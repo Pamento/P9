@@ -22,12 +22,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 
+import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.data.local.entities.ImageOfProperty;
 import com.openclassrooms.realestatemanager.data.local.entities.SingleProperty;
+import com.openclassrooms.realestatemanager.data.remote.models.geocode.Location;
 import com.openclassrooms.realestatemanager.data.viewModelFactory.ViewModelFactory;
 import com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM.EditPropertyViewModel;
 import com.openclassrooms.realestatemanager.databinding.AmenitiesCheckboxesBinding;
@@ -79,8 +80,12 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
     private SingleProperty mSingleProperty;
     private final List<ImageOfProperty> mImageOfPropertyList = new ArrayList<>();
     private final List<ImageOfProperty> mImageOfPropertyListToCompare = new ArrayList<>();
-    private int mMillisOfRegisterProperty = 0;
+    private boolean mIsPropertySold = false;
+    private long mMillisOfRegisterProperty = 0;
+    private long mMillisOfSoldDate = 0;
     private File photoFile;
+    private Location mLocation;
+    private boolean isDateRegister;
 
     public EditProperty() {
         // Required empty public constructor
@@ -221,6 +226,39 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
     private void setEventListener() {
         binding.addFBtnAddImgCamera.setOnClickListener(view -> takePictureIntent());
         binding.addFBtnAddImgGallery.setOnClickListener(view -> openGallery());
+        binding.addFSoldSwitch.setOnClickListener(view -> handleSwitchEvent());
+    }
+
+    private void handleSwitchEvent() {
+        mIsPropertySold = !mIsPropertySold;
+        if (mIsPropertySold) {
+            setDateInputField(Utils.getTodayDate(), 1);
+            mMillisOfSoldDate = System.currentTimeMillis();
+            binding.addFDateSoldOn.setOnClickListener(view -> {
+                isDateRegister = false;
+                showDatePickerDialog();
+            });
+        } else {
+            setDateInputField(requireActivity().getResources().getString(R.string.add_sold_on), 1);
+            mMillisOfSoldDate = 0;
+            if (binding.addFDateSoldOn.hasOnClickListeners()) {
+                binding.addFDateSoldOn.setOnClickListener(null);
+            }
+        }
+        Log.i(TAG, "handleSwitchEvent: click on 'Switch' button. mIsPropertySold:: " + mIsPropertySold);
+        handleSoldDateInput();
+    }
+
+    private void setDateInputField(String date, int mode) {
+        if (mode == 1) {
+            binding.addFDateSoldOn.setText(date);
+        } else {
+            binding.addFDateSince.setText(date);
+        }
+    }
+
+    private void handleSoldDateInput() {
+        binding.addFDateSoldOn.setEnabled(mIsPropertySold);
     }
 
     private void setRecyclerView() {
@@ -316,7 +354,10 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
     }
 
     private void setListenerDatePicker() {
-        binding.addFDateSince.setOnClickListener(view -> showDatePickerDialog());
+        binding.addFDateSince.setOnClickListener(view -> {
+            showDatePickerDialog();
+            isDateRegister = true;
+        });
     }
 
     private void showDatePickerDialog() {
@@ -331,6 +372,24 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
 
     private void setDateInputField(String date) {
         binding.addFDateSince.setText(date);
+    }
+
+    private void getGeoLocationOfProperty() {
+        String address1 = formAddressBinding.addAddress1FormAddress.getEditableText().toString();
+        String city = formAddressBinding.addAddressFormCity.getEditableText().toString();
+        String quarter = formAddressBinding.addAddressFormQuarter.getEditableText().toString();
+        String address = StringModifier.formatAddressToGeocoding(address1,city,quarter);
+        mEditPropertyViewModel.getLocationFromAddress(address);
+        setOnResponseObserver();
+    }
+
+    private void setOnResponseObserver() {
+        mEditPropertyViewModel.getGeoLocationOfProperty().observe(getViewLifecycleOwner(), location -> {
+            if (location != null) {
+                mLocation = location;
+                updateImagesOfProperty();
+            }
+        });
     }
 
     public void updateProperty() {
@@ -352,9 +411,9 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
         String rooms = binding.addFInputRooms.getText().toString();
         if (!TextUtils.isEmpty(rooms)) mSingleProperty.setRooms(Integer.parseInt(rooms));
         String bedrooms = binding.addFInputBedrooms.getText().toString();
-        if (!TextUtils.isEmpty(bedrooms)) mSingleProperty.setRooms(Integer.parseInt(bedrooms));
+        if (!TextUtils.isEmpty(bedrooms)) mSingleProperty.setBedroom(Integer.parseInt(bedrooms));
         String bathrooms = binding.addFInputBathrooms.getText().toString();
-        if (!TextUtils.isEmpty(bedrooms)) mSingleProperty.setRooms(Integer.parseInt(bathrooms));
+        if (!TextUtils.isEmpty(bathrooms)) mSingleProperty.setBathroom(Integer.parseInt(bathrooms));
         String address1 = formAddressBinding.addAddress1FormAddress.getEditableText().toString();
         if (!address1.equals("")) mSingleProperty.setAddress1(address1);
         String address2 = formAddressBinding.addAddress2FormAddressSuite.getEditableText().toString();
@@ -364,14 +423,21 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
         String quarter = formAddressBinding.addAddressFormQuarter.getEditableText().toString();
         if (!quarter.equals("")) mSingleProperty.setQuarter(quarter);
         String postalCode = formAddressBinding.addAddressFormPostalCode.getEditableText().toString();
-        if (!TextUtils.isEmpty(bedrooms)) mSingleProperty.setRooms(Integer.parseInt(postalCode));
-        String amenities = getAmenities();
-        mSingleProperty.setAmenities(amenities);
+        if (!TextUtils.isEmpty(bedrooms)) mSingleProperty.setPostalCode(Integer.parseInt(postalCode));
+        if (mLocation != null) mSingleProperty.setLocation(formatLocationInString());
+        mSingleProperty.setAmenities(getAmenities());
         if (mMillisOfRegisterProperty > 0)
             mSingleProperty.setDateRegister(String.valueOf(mMillisOfRegisterProperty));
+        if (binding.addFSoldSwitch.isChecked() && mMillisOfSoldDate > 0) {
+            mSingleProperty.setDateSold(String.valueOf(mMillisOfSoldDate));
+        }
         String agent = binding.addFAgent.getText().toString();
         if (!agent.equals("")) mSingleProperty.setAgent(agent);
         saveDataAndNotifyUser();
+    }
+
+    private String formatLocationInString() {
+        return String.valueOf(mLocation.getLat()) + "," + String.valueOf(mLocation.getLng());
     }
 
     private void updateImagesOfProperty() {
@@ -435,7 +501,7 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
 
     private void goBackToList() {
         MainActivity ma = (MainActivity) requireActivity();
-        ma.displayFragm(EFragments.LIST,"");
+        ma.displayFragm(EFragments.DETAIL,mSingleProperty.getType());
     }
 
     @Override
@@ -445,8 +511,18 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
         calendar.set(Calendar.MONTH, i1);
         calendar.set(Calendar.DAY_OF_MONTH, i2);
         Date date = calendar.getTime();
-        mMillisOfRegisterProperty = (int) calendar.getTimeInMillis();
-        setDateInputField(Utils.getUSFormatOfDate(date));
+        if (isDateRegister) {
+            mMillisOfRegisterProperty = calendar.getTimeInMillis();
+            setDateInputField(Utils.getUSFormatOfDate(date), 0);
+        } else {
+            mMillisOfSoldDate = calendar.getTimeInMillis();
+            if (mMillisOfSoldDate >= mMillisOfRegisterProperty) {
+                setDateInputField(Utils.getUSFormatOfDate(date), 1);
+            } else {
+                String msg = requireActivity().getResources().getString(R.string.warning_date_sold_smaller_than_register);
+                NotifyBySnackBar.showSnackBar(1, mView, msg);
+            }
+        }
     }
 
     @Override

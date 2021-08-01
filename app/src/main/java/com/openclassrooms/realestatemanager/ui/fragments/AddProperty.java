@@ -24,7 +24,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 
@@ -44,7 +43,6 @@ import com.openclassrooms.realestatemanager.util.enums.EFragments;
 import com.openclassrooms.realestatemanager.util.notification.NotificationsUtils;
 import com.openclassrooms.realestatemanager.util.notification.NotifyBySnackBar;
 import com.openclassrooms.realestatemanager.util.resources.AppResources;
-import com.openclassrooms.realestatemanager.util.system.ImageFilePathUtil;
 import com.openclassrooms.realestatemanager.util.system.ImageFileUtils;
 import com.openclassrooms.realestatemanager.util.texts.StringModifier;
 
@@ -57,7 +55,6 @@ import java.util.List;
 import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
-import static com.openclassrooms.realestatemanager.util.Constants.AUTHORITY_FILE_PROVIDER;
 import static com.openclassrooms.realestatemanager.util.Constants.BUS;
 import static com.openclassrooms.realestatemanager.util.Constants.NULL;
 import static com.openclassrooms.realestatemanager.util.Constants.PARK;
@@ -264,8 +261,6 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
             mAddPropertyViewModel.removeOneImageOfProperty(mImageAdapter.getImageOfPropertyAt(viewHolder.getAbsoluteAdapterPosition()));
-            Log.i(TAG, "onSwiped: imageRecycler::getAbsoluteAdapterPosition:: " + viewHolder.getAbsoluteAdapterPosition());
-            Log.i(TAG, "onSwiped: imageRecycler::getBindingAdapterPosition():: " + viewHolder.getBindingAdapterPosition());
         }
     };
 

@@ -39,7 +39,7 @@ public class AddPropertyViewModel extends ViewModel {
     private final List<ImageOfProperty> mImagesOfPropertyList = new ArrayList<>();
     private MutableLiveData<List<ImageOfProperty>> mImagesOfProperty;
     private ImageOfProperty mImgOfProperty;
-    private MutableLiveData<com.openclassrooms.realestatemanager.data.remote.models.geocode.Location> mLocationOfAddress;
+    private MutableLiveData<Location> mLocationOfAddress;
 
     public AddPropertyViewModel(PropertiesRepository propertiesRepository,
                                 ImageRepository imageRepository,
