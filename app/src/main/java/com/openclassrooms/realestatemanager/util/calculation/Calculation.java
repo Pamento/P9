@@ -15,4 +15,7 @@ public class Calculation {
         }
         return resultInString;
     }
+    public static boolean isMinGreaterMaxValue(int min, int max) {
+        return min > 0 && min > max;
+    }
 }

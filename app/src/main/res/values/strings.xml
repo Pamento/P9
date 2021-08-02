@@ -1,12 +1,10 @@
 <resources>
     <string name="app_name">Real Estate Manager</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <!-- Titles of fragments -->
     <string name="frg_map_title">New York</string>
     <string name="frg_add_title">New property</string>
     <string name="frg_edit_title">Modify information\'s</string>
-    <string name="frg_search_title">Search</string>
+    <string name="frg_search_title">Search Estates</string>
     <string name="frg_simulator_title">Loan calculator</string>
     <!-- menu items -->
     <string name="mi_title_search">Search property</string>
@@ -22,6 +20,7 @@
     <string name="description">Description</string>
     <string name="price_dollar">%s $</string>
     <string name="price_euro">%s €</string>
+    <string name="input_hint_1">1</string>
     <!-- Map fragment -->
     <string name="error_msg_map_service_not_available">Sorry, Your phone don\'t have Google Map Service.</string>
     <string name="ask_location_account_title">Localisation permissions.</string>
@@ -50,7 +49,6 @@
     <string name="add_add_image_title">Add image from</string>
     <string name="add_add_img_camera">Camera</string>
     <string name="add_add_img_gallery">Gallery</string>
-    <string name="add_hint_numeric_1">1</string>
     <string name="add_hint_numeric_price">100,000,000</string>
     <string name="add_location">Location</string>
     <string name="add_type">Type of property</string>
@@ -96,5 +94,20 @@
     <string name="loan_months">Months</string>
     <string name="list_empty_item_type">Type of estate</string>
     <string name="list_empty_item_quarter">Quarter</string>
-    <string name="list_empty_item_price">Price: ... $</string>
+    <string name="list_empty_item_price">Price: … $</string>
+    <!-- search fragment -->
+    <string name="search_by_type">All types</string>
+    <string name="search_in_quarter">Search in quarter:</string>
+    <string name="search_by_surface_title">Search by surface</string>
+    <string name="min_surface">Min surface</string>
+    <string name="max_surface">Max surface</string>
+    <string name="min_price">Min price</string>
+    <string name="max_price">Max price</string>
+    <string name="min_rooms">Min rooms:</string>
+    <string name="min_bathrooms">Min bathrooms</string>
+    <string name="min_bedrooms">Min bedrooms</string>
+    <string name="on_market_since">On market since</string>
+    <string name="include_sold_properties">Include sold properties</string>
+    <string name="exclude_sold_properties">Exclude sold properties</string>
+    <string name="min_greater_max">Pleas, correct the values. Min is greater than max.</string>
 </resources>

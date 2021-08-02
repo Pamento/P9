@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case SEARCH:
                     setToolbarTitle(toolbarTitle, false);
-                    SearchEngine se = SearchEngine.newInstance(null, null);
+                    SearchEngine se = SearchEngine.newInstance();
                     transaction.add(R.id.main_activity_fragment_container, se, SEARCH_FRAGMENT);
                     break;
                 case SIMULATOR:

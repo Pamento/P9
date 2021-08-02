@@ -29,4 +29,5 @@
     <dimen name="add_item_image_size">80dp</dimen>
     <dimen name="detail_item_image_view_size">160dp</dimen>
     <dimen name="detail_static_map_size">312dp</dimen>
+    <dimen name="input_title_long">160dp</dimen>
 </resources>
