@@ -1,7 +1,10 @@
 package com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
+import androidx.sqlite.db.SupportSQLiteQuery;
 
 import com.openclassrooms.realestatemanager.data.local.entities.ImageOfProperty;
 import com.openclassrooms.realestatemanager.data.local.entities.PropertyWithImages;
@@ -18,6 +21,16 @@ public class ListPropertyViewModel extends ViewModel {
     public ListPropertyViewModel(PropertiesRepository propertiesRepository, ImageRepository imageRepository) {
         mPropertiesRepository = propertiesRepository;
         mImageRepository = imageRepository;
+    }
+
+    public SupportSQLiteQuery getSimpleSQLiteQuery() {
+        Log.i("AddProperty", "LIST_VM__ getSimpleSQLiteQuery: SQLite__SQLite__SQLite__SQLite__SQLite__");
+        Log.i("AddProperty", "LIST_VM__ getSimpleSQLiteQuery: SQLite__SQLite__SQLite__SQLite__SQLite__");
+        return mPropertiesRepository.getRowQueryEstates();
+    }
+
+    public List<PropertyWithImages> getPropertiesWithImagesFromRowQuery() {
+        return mPropertiesRepository.getPropertiesWithImagesQuery();
     }
 
     public LiveData<List<PropertyWithImages>> getPropertyWithImages() {

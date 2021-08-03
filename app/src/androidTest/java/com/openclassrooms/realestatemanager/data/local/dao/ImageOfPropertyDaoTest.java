@@ -26,8 +26,8 @@ public class ImageOfPropertyDaoTest {
     private static final Integer IMAGE_ID = 1;
     private static final String PROPERTY_ID = "property_id_1";
     private static final String PROPERTY_ID_TWO = "property_id_2";
-    private static final SingleProperty SINGLE_PROPERTY_ONE = new SingleProperty("property_id_1",null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
-    private static final SingleProperty SINGLE_PROPERTY_TWO = new SingleProperty("property_id_2",null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
+    private static final SingleProperty SINGLE_PROPERTY_ONE = new SingleProperty("property_id_1",null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
+    private static final SingleProperty SINGLE_PROPERTY_TWO = new SingleProperty("property_id_2",null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null, null);
     private static final ImageOfProperty IMAGE_ONE = new ImageOfProperty(1,"path_to_image", "image one description", "property_id_1");
     private static final ImageOfProperty IMAGE_TWO = new ImageOfProperty(2,"path_to_image", "image two description", "property_id_1");
     private static final ImageOfProperty IMAGE_THREE = new ImageOfProperty(3,"path_to_image", "image three description", "property_id_2");

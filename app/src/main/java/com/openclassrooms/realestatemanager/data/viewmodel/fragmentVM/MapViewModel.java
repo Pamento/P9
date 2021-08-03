@@ -1,9 +1,11 @@
 package com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM;
 
 import android.location.Location;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
+import androidx.sqlite.db.SupportSQLiteQuery;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.openclassrooms.realestatemanager.data.local.entities.PropertyWithImages;
@@ -24,8 +26,18 @@ public class MapViewModel extends ViewModel {
         mImageRepository = imageRepository;
     }
 
+    public List<PropertyWithImages> getPropertiesWithImagesFromRowQuery() {
+        return mPropertiesRepository.getPropertiesWithImagesQuery();
+    }
+
     public LiveData<List<PropertyWithImages>> getPropertyWithImages() {
         return mPropertiesRepository.getAllPropertiesWithImages();
+    }
+
+    public SupportSQLiteQuery getSimpleSQLiteQuery() {
+        Log.i("AddProperty", "MAP_VM__ getSimpleSQLiteQuery: SQLite__SQLite__SQLite__SQLite__SQLite__");
+        Log.i("AddProperty", "MAP_VM__ getSimpleSQLiteQuery: SQLite__SQLite__SQLite__SQLite__SQLite__");
+        return mPropertiesRepository.getRowQueryEstates();
     }
 
     public void setPropertyId(String propertyId) {

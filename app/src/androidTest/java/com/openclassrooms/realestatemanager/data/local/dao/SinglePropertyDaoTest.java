@@ -27,10 +27,10 @@ public class SinglePropertyDaoTest {
     private static final String PROPERTY_ID = "property_id_1";
     private static final String PROPERTY_DESCRIPTION_ONE = "Description flat";
     private static final String PROPERTY_DESCRIPTION_TWO = "Description house";
-    private static final SingleProperty SINGLE_PROPERTY_ONE = new SingleProperty("property_id_1","Flat","Description flat",null,null,null,null,null,null,null,null,null,null,null,null,null,null);
-    private static final SingleProperty SINGLE_PROPERTY_TWO = new SingleProperty("property_id_1","House","Description house",null,null,null,null,null,null,null,null,null,null,null,null,null,null);
-    private static final ImageOfProperty IMAGE_ONE = new ImageOfProperty(1,"path_to_image", "image one description", "property_id_1");
-    private static final ImageOfProperty IMAGE_TWO = new ImageOfProperty(2,"path_to_image", "image two description", "property_id_1");
+    private static final SingleProperty SINGLE_PROPERTY_ONE = new SingleProperty("property_id_1", "Flat", "Description flat", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+    private static final SingleProperty SINGLE_PROPERTY_TWO = new SingleProperty("property_id_1", "House", "Description house", null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+    private static final ImageOfProperty IMAGE_ONE = new ImageOfProperty(1, "path_to_image", "image one description", "property_id_1");
+    private static final ImageOfProperty IMAGE_TWO = new ImageOfProperty(2, "path_to_image", "image two description", "property_id_1");
 
 
     @Rule
@@ -39,7 +39,7 @@ public class SinglePropertyDaoTest {
     @Before
     public void setUp() throws Exception {
         Context context = InstrumentationRegistry.getInstrumentation().getContext();
-        mRealEstateDatabase = Room.inMemoryDatabaseBuilder(context,RealEstateDatabase.class)
+        mRealEstateDatabase = Room.inMemoryDatabaseBuilder(context, RealEstateDatabase.class)
                 .allowMainThreadQueries()
                 .build();
     }

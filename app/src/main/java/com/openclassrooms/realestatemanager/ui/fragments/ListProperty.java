@@ -16,7 +16,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.openclassrooms.realestatemanager.data.local.entities.ImageOfProperty;
 import com.openclassrooms.realestatemanager.data.local.entities.PropertyWithImages;
 import com.openclassrooms.realestatemanager.data.viewModelFactory.ViewModelFactory;
 import com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM.ListPropertyViewModel;
@@ -66,6 +65,7 @@ public class ListProperty extends Fragment implements ListPropertyAdapter.OnItem
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view,savedInstanceState);
         setFabListener();
     }
 
@@ -75,7 +75,12 @@ public class ListProperty extends Fragment implements ListPropertyAdapter.OnItem
     }
 
     private void setPropertyObserver() {
-        mListPropertyViewModel.getPropertyWithImages().observe(getViewLifecycleOwner(), getProperties);
+        if (mListPropertyViewModel.getSimpleSQLiteQuery() != null) {
+            mProperties = mListPropertyViewModel.getPropertiesWithImagesFromRowQuery();
+            if (mProperties.size() > 0) displayDataOnRecyclerView();
+        } else {
+            mListPropertyViewModel.getPropertyWithImages().observe(getViewLifecycleOwner(), getProperties);
+        }
     }
 
     final Observer<List<PropertyWithImages>> getProperties = propertyWithImages -> {

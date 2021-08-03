@@ -36,6 +36,7 @@ import com.openclassrooms.realestatemanager.util.Utils;
 import com.openclassrooms.realestatemanager.util.system.LocationUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -131,25 +132,36 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
 
     private void setPropertiesMarkersOnMap() {
         if (mGoogleMaps == null) mGoogleMaps = mMapViewModel.getGoogleMap();
-        if (mGoogleMaps != null) mGoogleMaps.clear();
-        if (mPropertyWithImages.size() != 0) {
-            for (PropertyWithImages sp : mPropertyWithImages) {
-                Marker marker;
-                if (sp != null) {
-                    String[] latLang = sp.mSingleProperty.getLocation().split(",");
-                    LatLng latLng = new LatLng(Double.parseDouble(latLang[0]), Double.parseDouble(latLang[1]));
-                    marker = mGoogleMaps.addMarker(new MarkerOptions()
-                            .position(latLng)
-                            .title(sp.mSingleProperty.getAddress1()));
+        if (mGoogleMaps != null) {
+            mGoogleMaps.clear();
 
-                    marker.setTag(sp.mSingleProperty.getId());
+            if (mPropertyWithImages.size() != 0) {
+                for (PropertyWithImages sp : mPropertyWithImages) {
+                    Marker marker;
+                    if (sp != null) {
+                        String[] latLang = sp.mSingleProperty.getLocation().split(",");
+                        Log.i(TAG, "setPropertiesMarkersOnMap: LOCATION:: " + Arrays.toString(latLang));
+                        LatLng latLng = new LatLng(Double.parseDouble(latLang[0]), Double.parseDouble(latLang[1]));
+                        marker = mGoogleMaps.addMarker(new MarkerOptions()
+                                .position(latLng)
+                                .title(sp.mSingleProperty.getAddress1()));
+
+                        if (marker != null) marker.setTag(sp.mSingleProperty.getId());
+                    }
                 }
             }
         }
     }
 
     private void setPropertyWithImages() {
-        mMapViewModel.getPropertyWithImages().observe(getViewLifecycleOwner(), getPropertyWithImages);
+        if (mMapViewModel.getSimpleSQLiteQuery() != null) {
+            mPropertyWithImages = mMapViewModel.getPropertiesWithImagesFromRowQuery();
+            if (mPropertyWithImages != null) {
+                setPropertiesMarkersOnMap();
+            }
+        } else {
+            mMapViewModel.getPropertyWithImages().observe(getViewLifecycleOwner(), getPropertyWithImages);
+        }
     }
 
     private final Observer<List<PropertyWithImages>> getPropertyWithImages =

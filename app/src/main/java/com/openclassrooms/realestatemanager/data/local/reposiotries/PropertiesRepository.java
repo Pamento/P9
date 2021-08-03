@@ -33,6 +33,7 @@ public class PropertiesRepository {
         }
         return instance;
     }
+
     // Methods
     public LiveData<List<PropertyWithImages>> getAllPropertiesWithImages() {
         return mAllProperties;
