@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModel;
 import com.openclassrooms.realestatemanager.data.local.entities.SingleProperty;
 import com.openclassrooms.realestatemanager.data.local.reposiotries.PropertiesRepository;
 
-import static com.openclassrooms.realestatemanager.util.Constants.THIRTY_YEAR_RATE;
+import static com.openclassrooms.realestatemanager.util.Constants.Constants.THIRTY_YEAR_RATE;
 
 public class LoanSimulatorViewModel extends ViewModel {
 

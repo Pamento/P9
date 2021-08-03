@@ -1,7 +1,7 @@
 package com.openclassrooms.realestatemanager.data.remote.client;
 
 import com.openclassrooms.realestatemanager.data.remote.api.GoogleMapsAPI;
-import com.openclassrooms.realestatemanager.util.Constants;
+import com.openclassrooms.realestatemanager.util.Constants.Constants;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;

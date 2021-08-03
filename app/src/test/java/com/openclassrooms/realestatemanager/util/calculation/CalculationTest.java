@@ -2,7 +2,7 @@ package com.openclassrooms.realestatemanager.util.calculation;
 
 import org.junit.Test;
 
-import static com.openclassrooms.realestatemanager.util.Constants.THIRTY_YEAR_RATE;
+import static com.openclassrooms.realestatemanager.util.Constants.Constants.THIRTY_YEAR_RATE;
 import static org.junit.Assert.*;
 
 public class CalculationTest {

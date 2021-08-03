@@ -29,19 +29,19 @@ import com.openclassrooms.realestatemanager.ui.fragments.ListProperty;
 import com.openclassrooms.realestatemanager.ui.fragments.LoanSimulator;
 import com.openclassrooms.realestatemanager.ui.fragments.MapFragment;
 import com.openclassrooms.realestatemanager.ui.fragments.SearchEngine;
-import com.openclassrooms.realestatemanager.util.Constants;
+import com.openclassrooms.realestatemanager.util.Constants.Constants;
 import com.openclassrooms.realestatemanager.util.enums.EFragments;
 import com.openclassrooms.realestatemanager.util.notification.NotifyBySnackBar;
 
 import java.util.Objects;
 
-import static com.openclassrooms.realestatemanager.util.Constants.ADD_FRAGMENT;
-import static com.openclassrooms.realestatemanager.util.Constants.DETAIL_FRAGMENT;
-import static com.openclassrooms.realestatemanager.util.Constants.EDIT_FRAGMENT;
-import static com.openclassrooms.realestatemanager.util.Constants.LIST_FRAGMENT;
-import static com.openclassrooms.realestatemanager.util.Constants.MAP_FRAGMENT;
-import static com.openclassrooms.realestatemanager.util.Constants.SEARCH_FRAGMENT;
-import static com.openclassrooms.realestatemanager.util.Constants.SIMULATOR_FRAGMENT;
+import static com.openclassrooms.realestatemanager.util.Constants.Constants.ADD_FRAGMENT;
+import static com.openclassrooms.realestatemanager.util.Constants.Constants.DETAIL_FRAGMENT;
+import static com.openclassrooms.realestatemanager.util.Constants.Constants.EDIT_FRAGMENT;
+import static com.openclassrooms.realestatemanager.util.Constants.Constants.LIST_FRAGMENT;
+import static com.openclassrooms.realestatemanager.util.Constants.Constants.MAP_FRAGMENT;
+import static com.openclassrooms.realestatemanager.util.Constants.Constants.SEARCH_FRAGMENT;
+import static com.openclassrooms.realestatemanager.util.Constants.Constants.SIMULATOR_FRAGMENT;
 import static com.openclassrooms.realestatemanager.util.enums.EFragments.*;
 
 public class MainActivity extends AppCompatActivity {

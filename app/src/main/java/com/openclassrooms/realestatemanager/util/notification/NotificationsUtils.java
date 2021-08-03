@@ -9,8 +9,8 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.openclassrooms.realestatemanager.R;
 
-import static com.openclassrooms.realestatemanager.util.Constants.CHANNEL_ID_1;
-import static com.openclassrooms.realestatemanager.util.Constants.CHANNEL_ID_2;
+import static com.openclassrooms.realestatemanager.util.Constants.Constants.CHANNEL_ID_1;
+import static com.openclassrooms.realestatemanager.util.Constants.Constants.CHANNEL_ID_2;
 
 public class NotificationsUtils extends ContextWrapper {
 

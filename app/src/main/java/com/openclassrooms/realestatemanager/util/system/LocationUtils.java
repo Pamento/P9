@@ -19,7 +19,7 @@ import com.google.android.gms.tasks.Task;
 import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
 import com.openclassrooms.realestatemanager.R;
-import com.openclassrooms.realestatemanager.util.Constants;
+import com.openclassrooms.realestatemanager.util.Constants.Constants;
 
 public abstract class LocationUtils {
 

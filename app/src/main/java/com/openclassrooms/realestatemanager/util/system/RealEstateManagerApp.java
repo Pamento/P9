@@ -7,7 +7,7 @@ import android.os.Build;
 
 import androidx.multidex.MultiDexApplication;
 
-import com.openclassrooms.realestatemanager.util.Constants;
+import com.openclassrooms.realestatemanager.util.Constants.Constants;
 
 public class RealEstateManagerApp extends MultiDexApplication {
 

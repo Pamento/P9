@@ -25,11 +25,6 @@ import com.openclassrooms.realestatemanager.util.calculation.Calculation;
 import com.openclassrooms.realestatemanager.util.resources.AppResources;
 import com.openclassrooms.realestatemanager.util.texts.StringModifier;
 
-import static com.openclassrooms.realestatemanager.util.Constants.FIFTEEN_YEAR_RATE;
-import static com.openclassrooms.realestatemanager.util.Constants.THEN_YEAR_RATE;
-import static com.openclassrooms.realestatemanager.util.Constants.THIRTY_YEAR_RATE;
-import static com.openclassrooms.realestatemanager.util.Constants.TWENTY_YEAR_RATE;
-
 public class LoanSimulator extends Fragment {
     private LoanSimulatorViewModel mViewModel;
     private FragmentLoanSimulatorBinding binding;

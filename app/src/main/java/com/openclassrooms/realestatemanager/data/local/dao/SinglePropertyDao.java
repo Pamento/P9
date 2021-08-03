@@ -33,10 +33,6 @@ public interface SinglePropertyDao {
     @Query("SELECT * FROM property WHERE pid = :propertyId")
     Cursor getSinglePropertyProvider(String propertyId);
 
-    // What that return ?
-//    @Query("SELECT pid,type,price FROM property")
-//    public LiveData<List<SingleProperty>> getAllProperties();
-
     // get two table unified
     @Transaction
     @Query("SELECT * FROM property")
@@ -47,5 +43,5 @@ public interface SinglePropertyDao {
     Cursor getPropertyWithImagesProvider();
 
     @RawQuery
-    LiveData<List<PropertyWithImages>> getPropertyWithImageQuery(SupportSQLiteQuery query);
+    List<PropertyWithImages> getPropertyWithImageQuery(SupportSQLiteQuery query);
 }

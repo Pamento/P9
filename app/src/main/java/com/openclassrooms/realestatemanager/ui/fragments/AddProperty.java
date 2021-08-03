@@ -55,18 +55,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
-import static com.openclassrooms.realestatemanager.util.Constants.BUS;
-import static com.openclassrooms.realestatemanager.util.Constants.NULL;
-import static com.openclassrooms.realestatemanager.util.Constants.PARK;
-import static com.openclassrooms.realestatemanager.util.Constants.PICK_IMAGE_GALLERY;
-import static com.openclassrooms.realestatemanager.util.Constants.PLAYGROUND;
-import static com.openclassrooms.realestatemanager.util.Constants.REQUEST_IMAGE_CAPTURE;
-import static com.openclassrooms.realestatemanager.util.Constants.SAVE_IMAGES_FAIL;
-import static com.openclassrooms.realestatemanager.util.Constants.SAVE_PROPERTY_FAIL;
-import static com.openclassrooms.realestatemanager.util.Constants.SAVE_PROPERTY_OK;
-import static com.openclassrooms.realestatemanager.util.Constants.SCHOOL;
-import static com.openclassrooms.realestatemanager.util.Constants.SHOP;
-import static com.openclassrooms.realestatemanager.util.Constants.SUBWAY;
+import static com.openclassrooms.realestatemanager.util.Constants.Constants.*;
 
 public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetListener {
     private static final String TAG = "AddProperty";

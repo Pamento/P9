@@ -32,7 +32,7 @@ public class PropertiesRepository {
         return mAllProperties;
     }
 
-    public LiveData<List<PropertyWithImages>> getPropertiesWithImagesQuery() {
+    public List<PropertyWithImages> getPropertiesWithImagesQuery() {
         return mSinglePropertyDao.getPropertyWithImageQuery(mRowQueryEstates);
     }
 

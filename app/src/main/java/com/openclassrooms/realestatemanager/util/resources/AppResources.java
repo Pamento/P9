@@ -1,9 +1,9 @@
 package com.openclassrooms.realestatemanager.util.resources;
 
-import static com.openclassrooms.realestatemanager.util.Constants.FIFTEEN_YEAR_RATE;
-import static com.openclassrooms.realestatemanager.util.Constants.THEN_YEAR_RATE;
-import static com.openclassrooms.realestatemanager.util.Constants.THIRTY_YEAR_RATE;
-import static com.openclassrooms.realestatemanager.util.Constants.TWENTY_YEAR_RATE;
+import static com.openclassrooms.realestatemanager.util.Constants.Constants.FIFTEEN_YEAR_RATE;
+import static com.openclassrooms.realestatemanager.util.Constants.Constants.THEN_YEAR_RATE;
+import static com.openclassrooms.realestatemanager.util.Constants.Constants.THIRTY_YEAR_RATE;
+import static com.openclassrooms.realestatemanager.util.Constants.Constants.TWENTY_YEAR_RATE;
 
 public abstract class AppResources {
 

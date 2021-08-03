@@ -156,22 +156,22 @@ public class SearchEngine extends Fragment implements DatePickerDialog.OnDateSet
             mParamsForQuery.setMinSurface(getIntValues(binding.searchFMinSurface.getText().toString()));
         }
         if (binding.searchFMaxSurface.getText() != null) {
-            mParamsForQuery.setMinSurface(getIntValues(binding.searchFMaxSurface.getText().toString()));
+            mParamsForQuery.setMaxSurface(getIntValues(binding.searchFMaxSurface.getText().toString()));
         }
         if (binding.searchFMinPrice.getText() != null) {
-            mParamsForQuery.setMinSurface(getIntValues(binding.searchFMinPrice.getText().toString()));
+            mParamsForQuery.setMinPrice(getIntValues(binding.searchFMinPrice.getText().toString()));
         }
         if (binding.searchFMaxPrice.getText() != null) {
-            mParamsForQuery.setMinSurface(getIntValues(binding.searchFMaxPrice.getText().toString()));
+            mParamsForQuery.setMaxPrice(getIntValues(binding.searchFMaxPrice.getText().toString()));
         }
         if (binding.searchFRooms.getText() != null) {
-            mParamsForQuery.setMinSurface(getIntValues(binding.searchFRooms.getText().toString()));
+            mParamsForQuery.setRooms(getIntValues(binding.searchFRooms.getText().toString()));
         }
         if (binding.searchFBedrooms.getText() != null) {
-            mParamsForQuery.setMinSurface(getIntValues(binding.searchFBedrooms.getText().toString()));
+            mParamsForQuery.setBedroom(getIntValues(binding.searchFBedrooms.getText().toString()));
         }
         if (binding.searchFBathrooms.getText() != null) {
-            mParamsForQuery.setMinSurface(getIntValues(binding.searchFBathrooms.getText().toString()));
+            mParamsForQuery.setBathroom(getIntValues(binding.searchFBathrooms.getText().toString()));
         }
         mParamsForQuery.setDateRegister(String.valueOf(mMillisDateToSearchFrom));
         mParamsForQuery.setQuarter(binding.searchFQuarter.getText().toString());
