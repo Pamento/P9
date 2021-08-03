@@ -232,28 +232,24 @@
 
             <TextView
                 android:id="@+id/date_register_title"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/input_title_long"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:padding="@dimen/size_n"
+                android:layout_marginEnd="@dimen/size_n"
                 android:text="@string/on_market_since"
                 android:textSize="@dimen/size_text_n" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/InputLayout"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@android:color/white"
-                android:hint="@string/max_surface">
 
                 <TextView
                     android:id="@+id/searchF_on_market_since"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="@string/detail_date_init"
+                    android:layout_marginEnd="@dimen/size_n"
+                    android:textSize="@dimen/size_text_n"
+                    android:gravity="center"
+                    android:background="@android:color/white"
+                    tools:text="@string/detail_date_init"
                     android:textAlignment="center" />
-            </com.google.android.material.textfield.TextInputLayout>
+
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat

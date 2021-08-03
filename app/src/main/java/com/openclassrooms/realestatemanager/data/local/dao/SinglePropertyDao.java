@@ -7,8 +7,10 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.RawQuery;
 import androidx.room.Transaction;
 import androidx.room.Update;
+import androidx.sqlite.db.SupportSQLiteQuery;
 
 import com.openclassrooms.realestatemanager.data.local.entities.PropertyWithImages;
 import com.openclassrooms.realestatemanager.data.local.entities.SingleProperty;
@@ -43,4 +45,7 @@ public interface SinglePropertyDao {
     @Transaction
     @Query("SELECT * FROM property")
     Cursor getPropertyWithImagesProvider();
+
+    @RawQuery
+    LiveData<List<PropertyWithImages>> getPropertyWithImageQuery(SupportSQLiteQuery query);
 }
