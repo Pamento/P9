@@ -61,7 +61,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             return (T) new MapViewModel(mPropertiesRepository, mImageRepository);
         }
         if (modelClass.isAssignableFrom(SearchEngineViewModel.class)) {
-            return (T) new SearchEngineViewModel(mPropertiesRepository, mImageRepository, mExecutor);
+            return (T) new SearchEngineViewModel(mPropertiesRepository);
         }
         throw new IllegalArgumentException("Unknown ViewModel class: " + modelClass.getName());
     }

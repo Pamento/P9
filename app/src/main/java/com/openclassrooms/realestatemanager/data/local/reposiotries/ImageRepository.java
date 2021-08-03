@@ -12,12 +12,20 @@ import java.util.List;
 
 public class ImageRepository {
 
+    private static volatile ImageRepository instance;
     private static String PROPERTY_ID;
     private final ImageOfPropertyDao mImageOfPropertyDao;
     //private final LiveData<List> imagesOfSingleProperty;
 
     public ImageRepository(ImageOfPropertyDao imageOfPropertyDao) {
         mImageOfPropertyDao = imageOfPropertyDao;
+    }
+
+    public static synchronized ImageRepository getInstance(ImageOfPropertyDao imageOfPropertyDao) {
+        if (instance == null) {
+            instance = new ImageRepository(imageOfPropertyDao);
+        }
+        return instance;
     }
 
     // methods

@@ -4,30 +4,22 @@ import androidx.lifecycle.ViewModel;
 import androidx.sqlite.db.SimpleSQLiteQuery;
 
 import com.openclassrooms.realestatemanager.data.local.models.RowQueryEstates;
-import com.openclassrooms.realestatemanager.data.local.reposiotries.ImageRepository;
 import com.openclassrooms.realestatemanager.data.local.reposiotries.PropertiesRepository;
-
-import java.util.concurrent.Executor;
 
 import static com.openclassrooms.realestatemanager.util.Constants.ColumnName.*;
 
 public class SearchEngineViewModel extends ViewModel {
 
     private final PropertiesRepository mPropertiesRepository;
-    private final ImageRepository mImageRepository;
-    private final Executor mExecutor;
     private SimpleSQLiteQuery mQuery;
 
-    public SearchEngineViewModel(PropertiesRepository propertiesRepository, ImageRepository imageRepository, Executor executor) {
+    public SearchEngineViewModel(PropertiesRepository propertiesRepository) {
         mPropertiesRepository = propertiesRepository;
-        mImageRepository = imageRepository;
-        mExecutor = executor;
     }
 
     public void buildAndSendSearchEstateQuery(RowQueryEstates rowQueryEstates) {
         String query = buildQuery(rowQueryEstates);
         mQuery = new SimpleSQLiteQuery(query);
-        // TODO build query(mQuery) and: sendRowEstateQuery(mQuery)
         sendRowEstateQuery();
     }
 

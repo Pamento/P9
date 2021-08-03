@@ -15,12 +15,12 @@ public class Injection {
 
     public static PropertiesRepository sPropertiesRepository(Context context) {
         RealEstateDatabase db = RealEstateDatabase.getInstance(context);
-        return new PropertiesRepository(db.singlePropertyDao());
+        return PropertiesRepository.getInstance(db.singlePropertyDao());
     }
 
     public static ImageRepository sImageRepository(Context context) {
         RealEstateDatabase db = RealEstateDatabase.getInstance(context);
-        return new ImageRepository(db.imageOfPropertyDao());
+        return ImageRepository.getInstance(db.imageOfPropertyDao());
     }
 
     public static GoogleMapsRepository sGoogleMapsRepository() {

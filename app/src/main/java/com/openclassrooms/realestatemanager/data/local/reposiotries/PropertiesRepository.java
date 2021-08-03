@@ -9,13 +9,13 @@ import androidx.sqlite.db.SupportSQLiteQuery;
 import com.openclassrooms.realestatemanager.data.local.dao.SinglePropertyDao;
 import com.openclassrooms.realestatemanager.data.local.entities.PropertyWithImages;
 import com.openclassrooms.realestatemanager.data.local.entities.SingleProperty;
-import com.openclassrooms.realestatemanager.data.local.models.RowQueryEstates;
 
 import java.util.List;
 
 public class PropertiesRepository {
     private static final String TAG = "AddProperty";
-    //private static volatile PropertiesRepository instance;
+
+    private static volatile PropertiesRepository instance;
     private final SinglePropertyDao mSinglePropertyDao;
     // data
     private final LiveData<List<PropertyWithImages>> mAllProperties;
@@ -27,6 +27,12 @@ public class PropertiesRepository {
         mAllProperties = mSinglePropertyDao.getPropertyWithImages();
     }
 
+    public static synchronized PropertiesRepository getInstance(SinglePropertyDao singlePropertyDao) {
+        if (instance == null) {
+            instance = new PropertiesRepository(singlePropertyDao);
+        }
+        return instance;
+    }
     // Methods
     public LiveData<List<PropertyWithImages>> getAllPropertiesWithImages() {
         return mAllProperties;
@@ -35,10 +41,6 @@ public class PropertiesRepository {
     public List<PropertyWithImages> getPropertiesWithImagesQuery() {
         return mSinglePropertyDao.getPropertyWithImageQuery(mRowQueryEstates);
     }
-
-//    public LiveData<List<SingleProperty>> getAllProperties() {
-//        return mSinglePropertyDao.getAllProperties();
-//    }
 
     public LiveData<SingleProperty> getSingleProperty(@Nullable String propertyId) {
         // If param: propertyId is null, the cal came for DetailFragment
@@ -54,10 +56,6 @@ public class PropertiesRepository {
     public int updateSingleProperty(SingleProperty singleProperty) {
         return mSinglePropertyDao.updateProperty(singleProperty);
     }
-
-//    public String getPROPERTY_ID() {
-//        return PROPERTY_ID;
-//    }
 
     public void setPROPERTY_ID(String PROPERTY_ID) {
         Log.i(TAG, "PROP_REPO__ setPROPERTY_ID: " + PROPERTY_ID);
