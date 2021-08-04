@@ -19,5 +19,5 @@
     <color name="colorTextRed">#ff3d00</color>
 
     <color name="colorWhite">#fafafa</color>
-    <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">#fff</color>
+    <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">#707070</color>
 </resources>

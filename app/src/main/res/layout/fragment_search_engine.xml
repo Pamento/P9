@@ -6,7 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/colorWhite"
-    android:padding="@dimen/size_n"
+    android:paddingHorizontal="@dimen/size_n"
+    android:paddingTop="@dimen/size_n"
+    android:paddingBottom="@dimen/size_b"
     tools:context=".ui.fragments.SearchEngine">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -32,6 +34,7 @@
             android:id="@+id/surface_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/size_n"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/type_layout">
 
@@ -41,6 +44,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_marginEnd="@dimen/size_n"
                 android:hint="@string/min_surface">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -77,6 +81,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_marginEnd="@dimen/size_n"
                 android:hint="@string/min_price">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -124,6 +129,7 @@
                 android:layout_marginHorizontal="@dimen/size_n"
                 android:layout_weight="1"
                 android:hint="@string/input_hint_1"
+                android:textColorHint="@color/colorTextPrimaryAlpha"
                 android:labelFor="@+id/searchF_rooms">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -159,6 +165,7 @@
                 android:layout_marginHorizontal="@dimen/size_n"
                 android:layout_weight="1"
                 android:hint="@string/input_hint_1"
+                android:textColorHint="@color/colorTextPrimaryAlpha"
                 android:labelFor="@+id/searchF_bathrooms">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -193,6 +200,7 @@
                 android:layout_marginHorizontal="@dimen/size_n"
                 android:layout_weight="1"
                 android:hint="@string/input_hint_1"
+                android:textColorHint="@color/colorTextPrimaryAlpha"
                 android:labelFor="@+id/searchF_bedrooms">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -227,6 +235,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="@dimen/size_n"
             app:layout_constraintTop_toBottomOf="@+id/quarter_layout">
 
 
@@ -257,6 +266,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:layout_marginTop="@dimen/size_n"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/date_layout">
 
@@ -265,6 +275,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/size_n"
+                android:textSize="@dimen/size_text_n"
                 android:text="@string/include_sold_properties"/>
 
             <androidx.appcompat.widget.SwitchCompat

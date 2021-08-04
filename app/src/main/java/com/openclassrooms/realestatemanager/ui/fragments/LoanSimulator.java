@@ -73,7 +73,6 @@ public class LoanSimulator extends Fragment {
 
     private void setOnResultObserver() {
         mViewModel.getLoanCalculated().observe(getViewLifecycleOwner(), s -> {
-            Log.i(TAG, "setOnResultObserver: SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
             Log.i(TAG, "setOnResultObserver: s:: " + s);
             if (s != null) {
                 loanCalculated = s;
@@ -87,13 +86,12 @@ public class LoanSimulator extends Fragment {
         mViewModel.getSingleProperty()
                 .observe(getViewLifecycleOwner(), singleProperty -> {
                     mSingleProperty = singleProperty;
-                    //if (singleProperty != null) {
-                    setOnContributionInputListener();
-                    setOnRatingInputListener();
-                    setOnDurationInputListener();
-                    //updateUI();
-                    //}
-                    updateUI();
+                    if (singleProperty != null) {
+                        setOnContributionInputListener();
+                        setOnRatingInputListener();
+                        setOnDurationInputListener();
+                        updateUI();
+                    }
                 });
     }
 
@@ -102,18 +100,14 @@ public class LoanSimulator extends Fragment {
 
         currencyToDisplay = mViewModel.isDollar() ? dollarPerMonth : euroPerMonth;
         String priceToDisplay = mViewModel.isDollar() ? dollarPrice : euroPrice;
-//        binding.loanPropertyType.setText(mSingleProperty.getType());
-//        binding.loanPropertyQuarter.setText(mSingleProperty.getQuarter());
-//        String price = isDollar ? mSingleProperty.getPrice() : Utils.convertDollarToEuro(mSingleProperty.getPrice()):
-//        binding.loanPropertyPrice.setText(String.format(priceToDisplay ,StringModifier.addComaInPrice(price)));
+        binding.loanPropertyType.setText(mSingleProperty.getType());
+        binding.loanPropertyQuarter.setText(mSingleProperty.getQuarter());
+        String price = mViewModel.isDollar() ?
+                String.valueOf(mSingleProperty.getPrice()) :
+                String.valueOf(Utils.convertDollarToEuro(mSingleProperty.getPrice()));
+        binding.loanPropertyPrice.setText(String.format(priceToDisplay, StringModifier.addComaInPrice(price)));
         binding.loanCalcInterest.setText(String.valueOf(mViewModel.getInterest()));
         binding.loanCalcResult.setText(String.format(currencyToDisplay, loanCalculated));
-
-        binding.loanPropertyType.setText("Flat");
-        binding.loanPropertyQuarter.setText("Manhattan");
-        String price = mViewModel.isDollar() ? "1200000" : String.valueOf(Utils.convertDollarToEuro(1200000));
-        binding.loanPropertyPrice.setText(String.format(priceToDisplay,StringModifier.addComaInPrice(price)));
-
     }
 
     private void updateButtonDurationState() {
@@ -161,16 +155,13 @@ public class LoanSimulator extends Fragment {
     private void setOnRatingInputListener() {
         binding.loanCalcInterest.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {/**/
-                Log.i(TAG, "beforeTextChanged: EEEEEEEEEEEEEEEEEEEvent:: " + charSequence.toString());}
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {/**/}
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 if (AppResources.getInterestFixedRate(charSequence.toString()) == null) {
-                    Log.i(TAG, "onTextChanged: EEEEEEEEEEEEEEEEEEEvent:: AppResources.getInterestFixedRate(charSequence.toString()):: " + AppResources.getInterestFixedRate(charSequence.toString()));
                     mViewModel.setInterestEdited(true);
                 }
-                Log.i(TAG, "onTextChanged: EEEEEEEEEEEEEEEEEEEvent:: " + charSequence.toString());
             }
 
             @Override
@@ -211,10 +202,7 @@ public class LoanSimulator extends Fragment {
 
     private void calculateLoan() {
         if (mViewModel.getDuration() > 0) {
-            //Integer price = isDollar ? mSingleProperty.getPrice() : Utils.convertDollarToEuro(mSingleProperty.getPrice()):
-            //String loanCalculated = Calculation.calculateMonthlyLoan(price,mContribution,mInterest,mDuration);
-            int price;
-            price = mViewModel.isDollar() ? 1200000 : Utils.convertDollarToEuro(1200000);
+            int price = mViewModel.isDollar() ? mSingleProperty.getPrice() : Utils.convertDollarToEuro(mSingleProperty.getPrice());
             mViewModel.setLoanCalculated(Calculation.calculateMonthlyLoan(price, mViewModel.getContribution(), mViewModel.getInterest(), mViewModel.getDuration()));
         }
     }
