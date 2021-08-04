@@ -48,6 +48,7 @@
                     android:layout_height="wrap_content"
                     android:imeOptions="actionDone"
                     android:inputType="textImeMultiLine"
+                    android:textSize="@dimen/size_text_n"
                     android:lines="2"
                     android:maxLines="4"
                     android:scrollbars="vertical" />

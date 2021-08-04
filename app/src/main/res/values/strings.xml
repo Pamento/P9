@@ -110,4 +110,5 @@
     <string name="include_sold_properties">Include sold properties</string>
     <string name="exclude_sold_properties">Exclude sold properties</string>
     <string name="min_greater_max">Pleas, correct the values. Min is greater than max.</string>
+    <string name="detail_address_title">Address</string>
 </resources>

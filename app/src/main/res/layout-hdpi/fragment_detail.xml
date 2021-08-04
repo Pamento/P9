@@ -24,11 +24,11 @@
 
             <TextView
                 android:id="@+id/detail_available"
-                style="@style/TextAppearance.AppCompat.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/size_n"
                 android:textColor="@color/colorAccent"
+                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -36,7 +36,6 @@
 
             <TextView
                 android:id="@+id/detail_since"
-                style="@style/TextAppearance.AppCompat.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
@@ -47,10 +46,10 @@
 
             <TextView
                 android:id="@+id/detail_date_register"
-                style="@style/TextAppearance.AppCompat.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
+                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -81,34 +80,36 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/detail_2_layout">
 
-            <TextView
-                android:id="@+id/detail_surface"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawablePadding="@dimen/size_n"
-                android:textSize="@dimen/size_text_n"
-                app:drawableStartCompat="@drawable/ic_settings_overscan_24"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="@string/detail_surface_integer" />
 
             <TextView
                 android:id="@+id/detail_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/size_text_m"
                 android:textColor="@color/colorAccent"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:textSize="@dimen/size_text_m"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="@string/price_dollar" />
+
+            <TextView
+                android:id="@+id/detail_surface"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/size_n"
+                android:drawablePadding="@dimen/size_n"
+                android:textSize="@dimen/size_text_n"
+                app:drawableStartCompat="@drawable/ic_settings_overscan_24"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/detail_price"
+                tools:text="@string/detail_surface_integer" />
 
             <TextView
                 android:id="@+id/detail_rooms_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/size_s"
                 android:drawablePadding="@dimen/size_n"
                 android:textSize="@dimen/size_text_n"
-                android:layout_marginTop="@dimen/size_s"
                 app:drawableStartCompat="@drawable/ic_other_houses_24"
                 app:layout_constraintStart_toStartOf="@+id/detail_surface"
                 app:layout_constraintTop_toBottomOf="@+id/detail_surface"
@@ -118,9 +119,9 @@
                 android:id="@+id/detail_bathrooms_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/size_text_n"
-                android:drawablePadding="@dimen/size_n"
                 android:layout_marginTop="@dimen/size_s"
+                android:drawablePadding="@dimen/size_n"
+                android:textSize="@dimen/size_text_n"
                 app:drawableStartCompat="@drawable/ic_bathtub_24"
                 app:layout_constraintStart_toStartOf="@+id/detail_rooms_number"
                 app:layout_constraintTop_toBottomOf="@+id/detail_rooms_number"
@@ -130,13 +131,13 @@
                 android:id="@+id/detail_bedroom_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/size_text_n"
                 android:layout_marginTop="@dimen/size_s"
                 android:drawablePadding="@dimen/size_n"
+                android:textSize="@dimen/size_text_n"
                 app:drawableStartCompat="@drawable/ic_local_hotel_24"
-                app:layout_constraintTop_toBottomOf="@+id/detail_bathrooms_number"
                 app:layout_constraintStart_toStartOf="@+id/detail_bathrooms_number"
-                tools:text="@string/detail_bedroom"/>
+                app:layout_constraintTop_toBottomOf="@+id/detail_bathrooms_number"
+                tools:text="@string/detail_bedroom" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -149,11 +150,12 @@
 
             <TextView
                 android:id="@+id/detail_description_title"
-                style="@style/TextAppearance.AppCompat.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/size_s"
-                android:text="@string/description" />
+                android:text="@string/description"
+                android:textSize="@dimen/size_text_m"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/detail_description"
@@ -173,11 +175,12 @@
 
             <TextView
                 android:id="@+id/detail_address_title"
-                style="@style/TextAppearance.AppCompat.Title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/size_s"
-                android:text="@string/detail_address_title" />
+                android:text="@string/detail_address_title"
+                android:textSize="@dimen/size_text_m"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/detail_address_1"
@@ -235,8 +238,8 @@
                 android:id="@+id/detail_small_static_map"
                 android:layout_width="@dimen/detail_static_map_size"
                 android:layout_height="@dimen/detail_static_map_size"
-                android:background="@color/colorAccentDark"
                 android:layout_gravity="center"
+                android:background="@color/colorAccentDark"
                 android:contentDescription="@string/img_description_small_static_map"
                 android:elevation="@dimen/size_s"
                 tools:src="@drawable/staticmap_new_york" />
@@ -251,10 +254,11 @@
 
             <TextView
                 android:id="@+id/textView10"
-                style="@style/TextAppearance.AppCompat.Title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/detail_near_by" />
+                android:text="@string/detail_near_by"
+                android:textSize="@dimen/size_text_m"
+                android:textStyle="bold" />
 
             <ListView
                 android:id="@+id/detail_amenities_list_view"
@@ -273,10 +277,11 @@
 
             <TextView
                 android:id="@+id/detail_agent_title"
-                style="@style/TextAppearance.AppCompat.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/detail_managed_by" />
+                android:text="@string/detail_managed_by"
+                android:textSize="@dimen/size_text_m"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/detail_agent"

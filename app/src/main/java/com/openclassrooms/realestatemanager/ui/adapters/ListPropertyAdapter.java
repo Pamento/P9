@@ -50,6 +50,7 @@ public class ListPropertyAdapter extends RecyclerView.Adapter<ListPropertyAdapte
             Glide.with(holder.image.getContext())
                     .load(uri)
                     .error(R.drawable.image_not_found_square)
+                    .placeholder(R.drawable.image_placeholder)
                     .transform(new RoundedCornersTransformation(12, 1))
                     .apply(RequestOptions.centerCropTransform())
                     .into(holder.image);

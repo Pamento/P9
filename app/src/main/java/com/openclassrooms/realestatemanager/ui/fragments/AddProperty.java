@@ -321,6 +321,9 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
 
             @Override
             public void afterTextChanged(Editable editable) {/**/
+                // TODO
+                //https://www.google.com/search?client=opera&q=android+editable.setFilters&sourceid=opera&ie=UTF-8&oe=UTF-8
+                //https://stackoverflow.com/questions/3349121/how-do-i-use-inputfilter-to-limit-characters-in-an-edittext-in-android
                 Log.i(TAG, "ADD__ afterTextChanged: text:: " + editable.toString());
                 editable.setFilters(new InputFilter[]{priceFilter});
             }
