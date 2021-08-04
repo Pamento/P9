@@ -33,6 +33,7 @@ import com.openclassrooms.realestatemanager.injection.Injection;
 import com.openclassrooms.realestatemanager.ui.activity.MainActivity;
 import com.openclassrooms.realestatemanager.util.Constants.Constants;
 import com.openclassrooms.realestatemanager.util.Utils;
+import com.openclassrooms.realestatemanager.util.enums.EFragments;
 import com.openclassrooms.realestatemanager.util.system.LocationUtils;
 
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import static com.openclassrooms.realestatemanager.util.enums.EFragments.DETAIL;
 import static com.openclassrooms.realestatemanager.util.enums.EFragments.LIST;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback,
@@ -96,7 +98,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public boolean onMarkerClick(@NonNull Marker marker) {
         if (marker.getTag() != null) {
+            Log.i(TAG, "onMarkerClick: tag:: " + marker.getTag().toString());
+            Log.i(TAG, "onMarkerClick: propertyId:: " + mPropertyWithImages.get(0).mSingleProperty.getId());
+            Log.i(TAG, "onMarkerClick: type:: " + getPropertyType(marker.getTag().toString()));
             mMapViewModel.setPropertyId(marker.getTag().toString());
+            navigateToFragment(DETAIL, getPropertyType(marker.getTag().toString()));
         }
         return false;
     }
@@ -201,9 +207,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     private void setFabListener() {
         binding.fabList.setOnClickListener(view -> {
             Log.i(TAG, "onClick: LIST _ fab;;");
-            MainActivity ma = (MainActivity) requireActivity();
-            ma.displayFragm(LIST, "");
+            navigateToFragment(LIST, "");
         });
+    }
+
+    private void navigateToFragment(EFragments fragment, String toolbarTitle) {
+        MainActivity ma = (MainActivity) requireActivity();
+        ma.displayFragm(fragment, toolbarTitle);
+    }
+
+    private String getPropertyType(String propertyId) {
+        String pType = "";
+        for (PropertyWithImages p : mPropertyWithImages) {
+            if (p.mSingleProperty.getId().equals(propertyId)) pType = p.mSingleProperty.getType();
+        }
+        return pType;
     }
 
     @Override
