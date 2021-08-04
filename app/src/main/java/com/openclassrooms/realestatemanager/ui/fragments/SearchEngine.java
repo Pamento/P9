@@ -22,8 +22,10 @@ import com.openclassrooms.realestatemanager.data.viewModelFactory.ViewModelFacto
 import com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM.SearchEngineViewModel;
 import com.openclassrooms.realestatemanager.databinding.FragmentSearchEngineBinding;
 import com.openclassrooms.realestatemanager.injection.Injection;
+import com.openclassrooms.realestatemanager.ui.activity.MainActivity;
 import com.openclassrooms.realestatemanager.util.Utils;
 import com.openclassrooms.realestatemanager.util.calculation.Calculation;
+import com.openclassrooms.realestatemanager.util.enums.EFragments;
 import com.openclassrooms.realestatemanager.util.notification.NotifyBySnackBar;
 import com.openclassrooms.realestatemanager.util.resources.AppResources;
 
@@ -186,6 +188,9 @@ public class SearchEngine extends Fragment implements DatePickerDialog.OnDateSet
 
     private void sendQuery() {
         mSearchEngineViewModel.buildAndSendSearchEstateQuery(mParamsForQuery);
+
+        MainActivity ma = (MainActivity) requireActivity();
+        ma.displayFragm(EFragments.LIST,"");
     }
 
     @Override

@@ -4,6 +4,7 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
+import androidx.sqlite.db.SimpleSQLiteQuery;
 import androidx.sqlite.db.SupportSQLiteQuery;
 
 import com.openclassrooms.realestatemanager.data.local.dao.SinglePropertyDao;
@@ -20,7 +21,7 @@ public class PropertiesRepository {
     // data
     private final LiveData<List<PropertyWithImages>> mAllProperties;
     private String PROPERTY_ID;
-    private SupportSQLiteQuery mRowQueryEstates;
+    private SimpleSQLiteQuery mRowQueryEstates;
 
     public PropertiesRepository(SinglePropertyDao singlePropertyDao) {
         mSinglePropertyDao = singlePropertyDao;
@@ -67,7 +68,7 @@ public class PropertiesRepository {
         return mRowQueryEstates;
     }
 
-    public void setRowQueryEstates(SupportSQLiteQuery rowQueryEstates) {
+    public void setRowQueryEstates(SimpleSQLiteQuery rowQueryEstates) {
         mRowQueryEstates = rowQueryEstates;
     }
 }
