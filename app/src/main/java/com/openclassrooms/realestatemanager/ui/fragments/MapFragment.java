@@ -70,7 +70,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         initViewModel();
         binding = FragmentMapBinding.inflate(inflater, container, false);
         initMap();
-        setPropertyWithImages();
         getCurrentUserLocation();
         return binding.getRoot();
     }
@@ -125,6 +124,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                     moveCamera(mMapViewModel.getCurrentUserLocation());
                     // display point bleu on the map
                     mGoogleMaps.setMyLocationEnabled(true);
+                    setPropertyWithImages();
                 }
             }
         });

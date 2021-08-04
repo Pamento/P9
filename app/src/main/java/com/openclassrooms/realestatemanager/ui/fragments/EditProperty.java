@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -298,10 +299,15 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
             photoFile = ImageFileUtils.createImageFile();
 
             if (photoFile != null) {
-                Uri fp = FileProvider.getUriForFile(
-                        requireActivity(),
-                        "com.openclassrooms.realestatemanager.fileprovider",
-                        photoFile);
+                Uri fp;
+                if ((Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP)){
+                    fp = FileProvider.getUriForFile(
+                            requireActivity(),
+                            "com.openclassrooms.realestatemanager.fileprovider",
+                            photoFile);
+                } else {
+                    fp = Uri.fromFile(photoFile);
+                }
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fp);
 
                 try {
