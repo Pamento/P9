@@ -9,151 +9,134 @@
     android:orientation="vertical"
     tools:context=".ui.fragments.DetailFragment">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/detail_1_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:padding="@dimen/size_n"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/detail_1_layout"
+        <TextView
+            android:id="@+id/detail_available"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/size_n"
+            android:textColor="@color/colorAccent"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@string/detail_prop_available" />
+
+        <TextView
+            android:id="@+id/detail_since"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/size_s"
+            android:layout_marginTop="@dimen/size_n"
+            android:text="@string/since"
+            app:layout_constraintBottom_toBottomOf="@+id/detail_available"
+            app:layout_constraintEnd_toStartOf="@+id/detail_date_register"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/detail_date_register"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/size_n"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/detail_available"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@string/detail_date_init" />
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/detail_img_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/size_s"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@+id/detail_available" />
 
-            <TextView
-                android:id="@+id/detail_available"
-                style="@style/TextAppearance.AppCompat.Title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/size_n"
-                android:textColor="@color/colorAccent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="@string/detail_prop_available" />
-
-            <TextView
-                android:id="@+id/detail_since"
-                style="@style/TextAppearance.AppCompat.Title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="@string/since"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/detail_date_register"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/detail_date_register"
-                style="@style/TextAppearance.AppCompat.Title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="@string/detail_date_init" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/detail_2_layout"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/detail_price"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:orientation="horizontal"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/detail_1_layout">
+            android:layout_marginTop="@dimen/size_s"
+            android:textColor="@color/colorAccent"
+            android:textSize="@dimen/size_text_m"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/detail_img_recycler_view"
+            tools:text="@string/price_dollar" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/detail_img_recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </androidx.appcompat.widget.LinearLayoutCompat>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/detail_3_Layout"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/detail_surface"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/size_b"
-            android:layout_marginVertical="@dimen/size_n"
+            android:layout_marginTop="@dimen/size_n"
+            android:drawablePadding="@dimen/size_n"
+            android:textSize="@dimen/size_text_n"
+            app:drawableStartCompat="@drawable/ic_settings_overscan_24"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/detail_2_layout">
+            app:layout_constraintTop_toBottomOf="@+id/detail_img_recycler_view"
+            tools:text="@string/detail_surface_integer" />
 
-            <TextView
-                android:id="@+id/detail_surface"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawablePadding="@dimen/size_n"
-                android:textSize="@dimen/size_text_n"
-                app:drawableStartCompat="@drawable/ic_settings_overscan_24"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="@string/detail_surface_integer" />
+        <TextView
+            android:id="@+id/detail_rooms_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/size_s"
+            android:drawablePadding="@dimen/size_n"
+            android:textSize="@dimen/size_text_n"
+            app:drawableStartCompat="@drawable/ic_other_houses_24"
+            app:layout_constraintStart_toStartOf="@+id/detail_surface"
+            app:layout_constraintTop_toBottomOf="@+id/detail_surface"
+            tools:text="@string/detail_rooms" />
 
-            <TextView
-                android:id="@+id/detail_price"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/size_text_m"
-                android:textColor="@color/colorAccent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="@string/price_dollar" />
+        <TextView
+            android:id="@+id/detail_bathrooms_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/size_s"
+            android:drawablePadding="@dimen/size_n"
+            android:textSize="@dimen/size_text_n"
+            app:drawableStartCompat="@drawable/ic_bathtub_24"
+            app:layout_constraintStart_toStartOf="@+id/detail_rooms_number"
+            app:layout_constraintTop_toBottomOf="@+id/detail_rooms_number"
+            tools:text="@string/detail_bathroom" />
 
-            <TextView
-                android:id="@+id/detail_rooms_number"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawablePadding="@dimen/size_n"
-                android:textSize="@dimen/size_text_n"
-                android:layout_marginTop="@dimen/size_s"
-                app:drawableStartCompat="@drawable/ic_other_houses_24"
-                app:layout_constraintStart_toStartOf="@+id/detail_surface"
-                app:layout_constraintTop_toBottomOf="@+id/detail_surface"
-                tools:text="@string/detail_rooms" />
-
-            <TextView
-                android:id="@+id/detail_bathrooms_number"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/size_text_n"
-                android:drawablePadding="@dimen/size_n"
-                android:layout_marginTop="@dimen/size_s"
-                app:drawableStartCompat="@drawable/ic_bathtub_24"
-                app:layout_constraintStart_toStartOf="@+id/detail_rooms_number"
-                app:layout_constraintTop_toBottomOf="@+id/detail_rooms_number"
-                tools:text="@string/detail_bathroom" />
-
-            <TextView
-                android:id="@+id/detail_bedroom_number"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/size_text_n"
-                android:layout_marginTop="@dimen/size_s"
-                android:drawablePadding="@dimen/size_n"
-                app:drawableStartCompat="@drawable/ic_local_hotel_24"
-                app:layout_constraintTop_toBottomOf="@+id/detail_bathrooms_number"
-                app:layout_constraintStart_toStartOf="@+id/detail_bathrooms_number"
-                tools:text="@string/detail_bedroom"/>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/detail_bedroom_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/size_s"
+            android:drawablePadding="@dimen/size_n"
+            android:textSize="@dimen/size_text_n"
+            app:drawableStartCompat="@drawable/ic_local_hotel_24"
+            app:layout_constraintStart_toStartOf="@+id/detail_bathrooms_number"
+            app:layout_constraintTop_toBottomOf="@+id/detail_bathrooms_number"
+            tools:text="@string/detail_bedroom" />
 
         <LinearLayout
-            android:id="@+id/detail_4_layout"
+            android:id="@+id/detail_description_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/size_n"
-            android:orientation="vertical">
+            android:layout_marginTop="@dimen/size_n"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/detail_bedroom_number">
 
             <TextView
                 android:id="@+id/detail_description_title"
-                style="@style/TextAppearance.AppCompat.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/size_s"
-                android:text="@string/description" />
+                android:text="@string/description"
+                android:textSize="@dimen/size_text_m"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/detail_description"
@@ -164,20 +147,22 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/detail_5_layout"
+            android:id="@+id/detail_address_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/size_n"
             android:orientation="vertical"
-            android:paddingHorizontal="@dimen/size_n">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/detail_description_layout">
 
             <TextView
                 android:id="@+id/detail_address_title"
-                style="@style/TextAppearance.AppCompat.Title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/size_s"
-                android:text="@string/detail_address_title" />
+                android:text="@string/detail_address_title"
+                android:textSize="@dimen/size_text_m"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/detail_address_1"
@@ -222,39 +207,38 @@
                 tools:text="United States" />
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/detail_6_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+
+        <ImageView
+            android:id="@+id/detail_small_static_map"
+            android:layout_width="@dimen/detail_static_map_size"
+            android:layout_height="@dimen/detail_static_map_size"
             android:layout_gravity="center"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="32dp"
-            android:orientation="vertical">
+            android:layout_marginTop="@dimen/size_n"
+            android:background="@color/colorAccentDark"
+            android:contentDescription="@string/img_description_small_static_map"
+            android:elevation="@dimen/size_s"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/detail_address_layout"
+            tools:src="@drawable/staticmap_new_york" />
 
-            <ImageView
-                android:id="@+id/detail_small_static_map"
-                android:layout_width="@dimen/detail_static_map_size"
-                android:layout_height="@dimen/detail_static_map_size"
-                android:background="@color/colorAccentDark"
-                android:layout_gravity="center"
-                android:contentDescription="@string/img_description_small_static_map"
-                android:elevation="@dimen/size_s"
-                tools:src="@drawable/staticmap_new_york" />
-        </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/detail_7_layout"
+            android:id="@+id/detail_amenities_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/size_b"
-            android:orientation="vertical">
+            android:layout_marginTop="@dimen/size_n"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/detail_small_static_map">
 
             <TextView
                 android:id="@+id/textView10"
-                style="@style/TextAppearance.AppCompat.Title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/detail_near_by" />
+                android:text="@string/detail_near_by"
+                android:textSize="@dimen/size_text_m"
+                android:textStyle="bold" />
 
             <ListView
                 android:id="@+id/detail_amenities_list_view"
@@ -268,15 +252,18 @@
             android:id="@+id/detail_8_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="32dp"
-            android:orientation="vertical">
+            android:layout_margin="@dimen/size_b"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/detail_amenities_layout">
 
             <TextView
                 android:id="@+id/detail_agent_title"
-                style="@style/TextAppearance.AppCompat.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/detail_managed_by" />
+                android:text="@string/detail_managed_by"
+                android:textSize="@dimen/size_text_m"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/detail_agent"
@@ -285,7 +272,5 @@
                 android:layout_margin="10dp"
                 tools:text="Mark Donald" />
         </LinearLayout>
-
-    </LinearLayout>
-
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

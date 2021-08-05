@@ -138,8 +138,8 @@ public class DetailFragment extends Fragment {
     private void setStaticMapOfProperty() {
         Glide.with(requireContext())
                 .load(mDetailViewModel.getUrlOfStaticMapOfProperty())
-                .error(R.drawable.image_not_found_square)
                 .placeholder(R.drawable.image_placeholder)
+                .error(R.drawable.image_not_found_square)
                 .transform(new RoundedCornersTransformation(2, 2))
                 .into(binding.detailSmallStaticMap);
     }
