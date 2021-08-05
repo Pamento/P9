@@ -28,6 +28,7 @@ import com.openclassrooms.realestatemanager.util.dateTime.SQLTimeHelper;
 import com.openclassrooms.realestatemanager.util.texts.StringModifier;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
@@ -146,7 +147,8 @@ public class DetailFragment extends Fragment {
 
     private void setAmenitiesView() {
         String[] amenities = StringModifier.singleStringToArrayString(mSingleProperty.getAmenities());
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireActivity(), android.R.layout.simple_dropdown_item_1line, amenities);
+        Log.i(TAG, "setAmenitiesView: DETAIL:: " + Arrays.toString(amenities));
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireActivity(), android.R.layout.simple_list_item_1, amenities);
         binding.detailAmenitiesListView.setAdapter(adapter);
     }
 
