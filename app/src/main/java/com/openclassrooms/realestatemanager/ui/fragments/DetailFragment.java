@@ -25,6 +25,7 @@ import com.openclassrooms.realestatemanager.databinding.FragmentDetailBinding;
 import com.openclassrooms.realestatemanager.injection.Injection;
 import com.openclassrooms.realestatemanager.ui.adapters.ImageListOfDetailAdapter;
 import com.openclassrooms.realestatemanager.util.dateTime.SQLTimeHelper;
+import com.openclassrooms.realestatemanager.util.system.AdapterHelper;
 import com.openclassrooms.realestatemanager.util.texts.StringModifier;
 
 import java.util.ArrayList;
@@ -150,6 +151,7 @@ public class DetailFragment extends Fragment {
         Log.i(TAG, "setAmenitiesView: DETAIL:: " + Arrays.toString(amenities));
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireActivity(), android.R.layout.simple_list_item_1, amenities);
         binding.detailAmenitiesListView.setAdapter(adapter);
+        AdapterHelper.setListViewHeightBasedOnChildren(binding.detailAmenitiesListView);
     }
 
     private void initViewModel() {

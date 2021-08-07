@@ -15,13 +15,14 @@
     <dimen name="size_text_s">4sp</dimen>
     <dimen name="size_text_ss">6sp</dimen>
     <dimen name="size_text_sss">8sp</dimen>
-    <dimen name="size_text_n">10sp</dimen>
+    <dimen name="size_text_n">14sp</dimen>
     <dimen name="size_text_nn">12sp</dimen>
-    <dimen name="size_text_m">16sp</dimen>
-    <dimen name="size_text_b">20sp</dimen>
+    <dimen name="size_text_m">20sp</dimen>
+    <dimen name="size_text_b">24sp</dimen>
 
     <!-- Dimensions specific -->
     <dimen name="list_image_size">96dp</dimen>
+    <dimen name="detail_image_size">128dp</dimen>
     <dimen name="add_frg_numeric_input">120dp</dimen>
     <dimen name="add_frg_numeric_input_title">160dp</dimen>
     <dimen name="add_frg_height_of_description_field">100dp</dimen>

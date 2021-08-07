@@ -52,6 +52,7 @@ public class Utils {
      */
     @SuppressWarnings("deprecation")
     public static Boolean isInternetAvailable(Context context) {
+        //if (context == null) get RealEstateManagerApp;
         // TODO test if is the connectivity on mobil mode non WiFi and vice-versa.
 //        WifiManager wifi = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 //        if (wifi.isWifiEnabled()) {

@@ -22,6 +22,7 @@
 
     <!-- Dimensions specific -->
     <dimen name="list_image_size">136dp</dimen>
+    <dimen name="detail_image_size">136dp</dimen>
     <dimen name="add_frg_numeric_input">120dp</dimen>
     <dimen name="add_frg_numeric_input_title">160dp</dimen>
     <dimen name="add_frg_height_of_description_field">100dp</dimen>

@@ -25,6 +25,7 @@
             android:layout_marginTop="@dimen/size_n"
             android:textColor="@color/colorAccent"
             android:textStyle="bold"
+            android:textSize="@dimen/size_text_m"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="@string/detail_prop_available" />
@@ -36,7 +37,8 @@
             android:layout_marginHorizontal="@dimen/size_s"
             android:layout_marginTop="@dimen/size_n"
             android:text="@string/since"
-            app:layout_constraintBottom_toBottomOf="@+id/detail_available"
+            android:textSize="@dimen/size_text_n"
+            app:layout_constraintBottom_toBottomOf="@+id/detail_date_register"
             app:layout_constraintEnd_toStartOf="@+id/detail_date_register"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -46,7 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/size_n"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/detail_available"
+            android:textSize="@dimen/size_text_m"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="@string/detail_date_init" />
