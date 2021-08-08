@@ -108,7 +108,7 @@ public class SearchEngine extends Fragment implements DatePickerDialog.OnDateSet
             @Override
             public void afterTextChanged(Editable editable) {
                 if (binding.searchFMinPrice.getText() != null) {
-                    int minPrice = Integer.parseInt(binding.searchFMinPrice.getText().toString());
+                    int minPrice = binding.searchFMinPrice.getText().toString().equals("") ? 0 : Integer.parseInt(binding.searchFMinPrice.getText().toString());
 
                     if (Calculation.isMinGreaterMaxValue(minPrice, Integer.parseInt(editable.toString()))) {
                         String msg = requireActivity().getResources().getString(R.string.min_greater_max);
@@ -130,7 +130,7 @@ public class SearchEngine extends Fragment implements DatePickerDialog.OnDateSet
             @Override
             public void afterTextChanged(Editable editable) {
                 if (binding.searchFMinSurface.getText() != null) {
-                    int minSurface = Integer.parseInt(binding.searchFMinSurface.getText().toString());
+                    int minSurface = binding.searchFMinSurface.getText().toString().equals("") ? 0 : Integer.parseInt(binding.searchFMinSurface.getText().toString());
                     if (Calculation.isMinGreaterMaxValue(minSurface, Integer.parseInt(editable.toString()))) {
                         String msg = requireActivity().getResources().getString(R.string.min_greater_max);
                         NotifyBySnackBar.showSnackBar(1, view, msg);

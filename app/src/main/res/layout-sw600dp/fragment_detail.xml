@@ -28,7 +28,7 @@
             android:textSize="@dimen/size_text_b"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="@string/detail_prop_available" />
+            tools:text="@string/detail_estate_available" />
 
         <TextView
             android:id="@+id/detail_since"
@@ -226,7 +226,7 @@
             android:background="@color/colorAccentDark"
             android:contentDescription="@string/img_description_small_static_map"
             android:elevation="@dimen/size_s"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/detail_address_layout"
             app:layout_constraintTop_toBottomOf="@+id/detail_description_layout"
             tools:src="@drawable/staticmap_new_york" />
 

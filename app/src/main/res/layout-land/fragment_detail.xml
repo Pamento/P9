@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="@dimen/size_n"
+        android:padding="@dimen/size_b"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -22,10 +22,9 @@
             android:id="@+id/detail_available"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/size_n"
             android:textColor="@color/colorAccent"
             android:textStyle="bold"
-            android:textSize="@dimen/size_text_m"
+            android:textSize="@dimen/size_text_b"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="@string/detail_estate_available" />
@@ -35,9 +34,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/size_s"
-            android:layout_marginTop="@dimen/size_n"
             android:text="@string/since"
-            android:textSize="@dimen/size_text_n"
+            android:textSize="@dimen/size_text_m"
             app:layout_constraintBottom_toBottomOf="@+id/detail_date_register"
             app:layout_constraintEnd_toStartOf="@+id/detail_date_register"
             app:layout_constraintTop_toTopOf="parent" />
@@ -46,9 +44,8 @@
             android:id="@+id/detail_date_register"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/size_n"
             android:textStyle="bold"
-            android:textSize="@dimen/size_text_m"
+            android:textSize="@dimen/size_text_b"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="@string/detail_date_init" />
@@ -77,10 +74,10 @@
             android:id="@+id/detail_surface"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/size_n"
+            android:layout_marginHorizontal="@dimen/size_b"
             android:layout_marginTop="@dimen/size_n"
             android:drawablePadding="@dimen/size_n"
-            android:textSize="@dimen/size_text_n"
+            android:textSize="@dimen/size_text_m"
             app:drawableStartCompat="@drawable/ic_settings_overscan_24"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/detail_img_recycler_view"
@@ -92,7 +89,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/size_s"
             android:drawablePadding="@dimen/size_n"
-            android:textSize="@dimen/size_text_n"
+            android:textSize="@dimen/size_text_m"
             app:drawableStartCompat="@drawable/ic_other_houses_24"
             app:layout_constraintStart_toStartOf="@+id/detail_surface"
             app:layout_constraintTop_toBottomOf="@+id/detail_surface"
@@ -104,7 +101,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/size_s"
             android:drawablePadding="@dimen/size_n"
-            android:textSize="@dimen/size_text_n"
+            android:textSize="@dimen/size_text_m"
             app:drawableStartCompat="@drawable/ic_bathtub_24"
             app:layout_constraintStart_toStartOf="@+id/detail_rooms_number"
             app:layout_constraintTop_toBottomOf="@+id/detail_rooms_number"
@@ -116,7 +113,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/size_s"
             android:drawablePadding="@dimen/size_n"
-            android:textSize="@dimen/size_text_n"
+            android:textSize="@dimen/size_text_m"
             app:drawableStartCompat="@drawable/ic_local_hotel_24"
             app:layout_constraintStart_toStartOf="@+id/detail_bathrooms_number"
             app:layout_constraintTop_toBottomOf="@+id/detail_bathrooms_number"
@@ -126,7 +123,7 @@
             android:id="@+id/detail_description_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/size_b"
+            android:layout_marginTop="@dimen/size_n"
             android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/detail_bedroom_number">
@@ -137,22 +134,23 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/size_s"
                 android:text="@string/description"
-                android:textSize="@dimen/size_text_m"
+                android:textSize="@dimen/size_text_b"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/detail_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="@dimen/size_text_m"
                 tools:text="The person who is in charge of managing land and buildings for a company or in a particular area, including activities such as keeping buildings in good condition and organizing the renting of property." />
 
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/detail_address_layout"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/size_b"
+            android:layout_marginTop="@dimen/size_n"
             android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/detail_description_layout">
@@ -163,13 +161,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/size_s"
                 android:text="@string/detail_address_title"
-                android:textSize="@dimen/size_text_m"
+                android:textSize="@dimen/size_text_b"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/detail_address_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textSize="@dimen/size_text_m"
                 android:layout_marginHorizontal="@dimen/size_b"
                 tools:text="740 Park Avenue" />
 
@@ -177,6 +176,7 @@
                 android:id="@+id/detail_address_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textSize="@dimen/size_text_m"
                 android:layout_marginHorizontal="@dimen/size_b"
                 tools:text="Apt 6/7 A" />
 
@@ -184,6 +184,7 @@
                 android:id="@+id/detail_address_quarter"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textSize="@dimen/size_text_m"
                 android:layout_marginHorizontal="@dimen/size_b"
                 tools:text="Quarter" />
 
@@ -191,6 +192,7 @@
                 android:id="@+id/detail_address_city"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textSize="@dimen/size_text_m"
                 android:layout_marginHorizontal="@dimen/size_b"
                 tools:text="New York" />
 
@@ -198,6 +200,7 @@
                 android:id="@+id/detail_address_postal_code"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textSize="@dimen/size_text_m"
                 android:layout_marginHorizontal="@dimen/size_b"
                 tools:text="NY 10021" />
 
@@ -205,6 +208,7 @@
                 android:id="@+id/detail_address_6"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textSize="@dimen/size_text_m"
                 android:layout_marginHorizontal="@dimen/size_b"
                 tools:text="United States" />
         </LinearLayout>
@@ -214,36 +218,36 @@
             android:id="@+id/detail_small_static_map"
             android:layout_width="@dimen/detail_static_map_size"
             android:layout_height="@dimen/detail_static_map_size"
-            android:layout_marginTop="@dimen/size_n"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/size_b"
             android:background="@color/colorAccentDark"
             android:contentDescription="@string/img_description_small_static_map"
             android:elevation="@dimen/size_s"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/detail_address_layout"
+            app:layout_constraintStart_toEndOf="@+id/detail_address_layout"
+            app:layout_constraintTop_toBottomOf="@+id/detail_description_layout"
             tools:src="@drawable/staticmap_new_york" />
 
 
         <LinearLayout
             android:id="@+id/detail_amenities_layout"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/size_b"
+            android:layout_marginTop="@dimen/size_n"
             android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/detail_small_static_map">
+            app:layout_constraintTop_toBottomOf="@+id/detail_address_layout">
 
             <TextView
                 android:id="@+id/textView10"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/detail_near_by"
-                android:textSize="@dimen/size_text_m"
+                android:textSize="@dimen/size_text_b"
                 android:textStyle="bold" />
 
             <ListView
                 android:id="@+id/detail_amenities_list_view"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/size_b" />
 
@@ -256,21 +260,22 @@
             android:layout_margin="@dimen/size_b"
             android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/detail_amenities_layout">
+            app:layout_constraintTop_toBottomOf="@+id/detail_small_static_map">
 
             <TextView
                 android:id="@+id/detail_agent_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/detail_managed_by"
-                android:textSize="@dimen/size_text_m"
+                android:textSize="@dimen/size_text_b"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/detail_agent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:textSize="@dimen/size_text_m"
+                android:layout_margin="@dimen/size_s"
                 tools:text="Mark Donald" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

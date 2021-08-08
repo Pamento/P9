@@ -27,7 +27,6 @@
     <string name="ask_location_account_message">To find the restaurant near by you, the app needs access to your location.\nYou can set the location in System Settings globally or in part of Real Estate Manager app.</string>
     <!-- detail fragment -->
     <string name="img_description_about_property_image">about property image</string>
-    <string name="detail_prop_available">Available</string>
     <string name="since">Since</string>
     <string name="detail_date_init">2021/01/06</string>
     <string name="img_description_small_static_map">small static map</string>

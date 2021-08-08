@@ -479,9 +479,16 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         formAddressBinding = null;
         amenitiesBinding = null;
         binding = null;
+        Log.i(TAG, "ADD__ onDestroyView");
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.i(TAG, "ADD__ onDestroy");
     }
 }

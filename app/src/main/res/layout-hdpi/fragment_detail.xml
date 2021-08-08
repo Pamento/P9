@@ -27,7 +27,7 @@
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="@string/detail_prop_available" />
+            tools:text="@string/detail_estate_available" />
 
         <TextView
             android:id="@+id/detail_since"
