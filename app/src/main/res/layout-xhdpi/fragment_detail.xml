@@ -22,7 +22,6 @@
             android:id="@+id/detail_available"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/size_n"
             android:textColor="@color/colorAccent"
             android:textStyle="bold"
             android:textSize="@dimen/size_text_m"
@@ -35,7 +34,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/size_s"
-            android:layout_marginTop="@dimen/size_n"
             android:text="@string/since"
             android:textSize="@dimen/size_text_n"
             app:layout_constraintBottom_toBottomOf="@+id/detail_date_register"
@@ -46,7 +44,6 @@
             android:id="@+id/detail_date_register"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/size_n"
             android:textStyle="bold"
             android:textSize="@dimen/size_text_m"
             app:layout_constraintEnd_toEndOf="parent"
@@ -250,7 +247,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/detail_8_layout"
+            android:id="@+id/detail_agent_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/size_b"

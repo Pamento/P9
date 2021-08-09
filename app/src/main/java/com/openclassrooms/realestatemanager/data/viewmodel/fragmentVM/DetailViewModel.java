@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.openclassrooms.realestatemanager.BuildConfig;
 import com.openclassrooms.realestatemanager.data.local.entities.ImageOfProperty;
+import com.openclassrooms.realestatemanager.data.local.entities.PropertyWithImages;
 import com.openclassrooms.realestatemanager.data.local.entities.SingleProperty;
 import com.openclassrooms.realestatemanager.data.local.reposiotries.ImageRepository;
 import com.openclassrooms.realestatemanager.data.local.reposiotries.PropertiesRepository;
@@ -28,6 +29,14 @@ public class DetailViewModel extends ViewModel {
 
     public LiveData<List<ImageOfProperty>> getImagesOfProperty() {
         return mImageRepository.getAllImagesOfProperty(null);
+    }
+
+    public LiveData<List<PropertyWithImages>> getAllProperties() {
+        return mPropertiesRepository.getAllPropertiesWithImages();
+    }
+
+    public String getPropertyId() {
+        return mPropertiesRepository.getPROPERTY_ID();
     }
 
     public String getUrlOfStaticMapOfProperty() {

@@ -153,13 +153,15 @@
             android:layout_marginTop="@dimen/size_n"
             android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/detail_description_layout">
+            app:layout_constraintTop_toBottomOf="@+id/detail_description_layout"
+            app:layout_constraintEnd_toEndOf="@+id/detail_amenities_layout">
 
             <TextView
                 android:id="@+id/detail_address_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/size_s"
+                android:minWidth="@dimen/input_title_long"
                 android:text="@string/detail_address_title"
                 android:textSize="@dimen/size_text_b"
                 android:textStyle="bold" />
@@ -230,12 +232,13 @@
 
         <LinearLayout
             android:id="@+id/detail_amenities_layout"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/size_n"
             android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/detail_address_layout">
+            app:layout_constraintTop_toBottomOf="@+id/detail_address_layout"
+            app:layout_constraintEnd_toEndOf="@+id/detail_address_layout">
 
             <TextView
                 android:id="@+id/textView10"
@@ -247,20 +250,20 @@
 
             <ListView
                 android:id="@+id/detail_amenities_list_view"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/size_b" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/detail_8_layout"
-            android:layout_width="match_parent"
+            android:id="@+id/detail_agent_layout"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/size_b"
+            android:layout_marginVertical="@dimen/size_b"
             android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/detail_small_static_map">
+            app:layout_constraintTop_toBottomOf="@+id/detail_amenities_layout">
 
             <TextView
                 android:id="@+id/detail_agent_title"

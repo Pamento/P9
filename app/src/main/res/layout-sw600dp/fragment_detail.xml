@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="@dimen/size_n"
+        android:padding="@dimen/size_b"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -22,7 +22,6 @@
             android:id="@+id/detail_available"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/size_n"
             android:textColor="@color/colorAccent"
             android:textStyle="bold"
             android:textSize="@dimen/size_text_b"
@@ -35,7 +34,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/size_s"
-            android:layout_marginTop="@dimen/size_n"
             android:text="@string/since"
             android:textSize="@dimen/size_text_m"
             app:layout_constraintBottom_toBottomOf="@+id/detail_date_register"
@@ -46,7 +44,6 @@
             android:id="@+id/detail_date_register"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/size_n"
             android:textStyle="bold"
             android:textSize="@dimen/size_text_b"
             app:layout_constraintEnd_toEndOf="parent"
@@ -156,13 +153,15 @@
             android:layout_marginTop="@dimen/size_n"
             android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/detail_description_layout">
+            app:layout_constraintTop_toBottomOf="@+id/detail_description_layout"
+            app:layout_constraintEnd_toEndOf="@+id/detail_amenities_layout">
 
             <TextView
                 android:id="@+id/detail_address_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/size_s"
+                android:minWidth="@dimen/input_title_long"
                 android:text="@string/detail_address_title"
                 android:textSize="@dimen/size_text_b"
                 android:textStyle="bold" />
@@ -233,12 +232,13 @@
 
         <LinearLayout
             android:id="@+id/detail_amenities_layout"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/size_n"
             android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/detail_address_layout">
+            app:layout_constraintTop_toBottomOf="@+id/detail_address_layout"
+            app:layout_constraintEnd_toEndOf="@+id/detail_address_layout">
 
             <TextView
                 android:id="@+id/textView10"
@@ -250,20 +250,20 @@
 
             <ListView
                 android:id="@+id/detail_amenities_list_view"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/size_b" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/detail_8_layout"
-            android:layout_width="match_parent"
+            android:id="@+id/detail_agent_layout"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/size_b"
+            android:layout_marginVertical="@dimen/size_b"
             android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/detail_small_static_map">
+            app:layout_constraintTop_toBottomOf="@+id/detail_amenities_layout">
 
             <TextView
                 android:id="@+id/detail_agent_title"

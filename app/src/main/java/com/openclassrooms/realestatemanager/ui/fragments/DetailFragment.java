@@ -17,8 +17,7 @@ import android.widget.ArrayAdapter;
 
 import com.bumptech.glide.Glide;
 import com.openclassrooms.realestatemanager.R;
-import com.openclassrooms.realestatemanager.data.local.entities.ImageOfProperty;
-import com.openclassrooms.realestatemanager.data.local.entities.SingleProperty;
+import com.openclassrooms.realestatemanager.data.local.entities.*;
 import com.openclassrooms.realestatemanager.data.viewModelFactory.ViewModelFactory;
 import com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM.DetailViewModel;
 import com.openclassrooms.realestatemanager.databinding.FragmentDetailBinding;
@@ -36,24 +35,32 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class DetailFragment extends Fragment {
     private static final String TAG = "DetailFragment";
+    private static final String LAYOUT_MODE = "double";
+    private boolean isTwoFragmentLayout = false;
     private DetailViewModel mDetailViewModel;
     private FragmentDetailBinding binding;
     private SingleProperty mSingleProperty;
     private RecyclerView recyclerV;
-    private ImageListOfDetailAdapter mAdapter;
     private final List<ImageOfProperty> mImageOfPropertyList = new ArrayList<>();
 
     public DetailFragment() {
         // Required empty public constructor
     }
 
-    public static DetailFragment newInstance() {
-        return new DetailFragment();
+    public static DetailFragment newInstance(boolean isTwoFragmentsToDisplay) {
+        DetailFragment fragment = new DetailFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(LAYOUT_MODE, isTwoFragmentsToDisplay);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            isTwoFragmentLayout = getArguments().getBoolean(LAYOUT_MODE );
+        }
     }
 
     @Override
@@ -69,7 +76,13 @@ public class DetailFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setOnDataObservers();
+        Log.i(TAG, "DETAIL__ onViewCreated: isTwoFragments:: " + isTwoFragmentLayout);
+        Log.i(TAG, "DETAIL__ onViewCreated: isTwoFragments::id " + mDetailViewModel.getPropertyId());
+        if (isTwoFragmentLayout && mDetailViewModel.getPropertyId() == null) {
+            getAllProperties();
+        } else {
+            setOnDataObservers();
+        }
     }
 
     private void setOnDataObservers() {
@@ -87,6 +100,22 @@ public class DetailFragment extends Fragment {
         });
     }
 
+    private void getAllProperties() {
+        Log.i(TAG, "DETAIL__ getAllProperties: run");
+        mDetailViewModel.getAllProperties().observe(getViewLifecycleOwner(), propertyWithImages -> {
+            if (propertyWithImages != null) {
+                Log.i(TAG, "DETAIL__ getAllProperties: size:: " + propertyWithImages.size());
+                PropertyWithImages property = propertyWithImages.get(0);
+                mSingleProperty = property.mSingleProperty;
+                // TODO is network is available
+                mDetailViewModel.setUrlOfStaticMapOfProperty(property.mSingleProperty.getLocation());
+                setUI();
+                mImageOfPropertyList.addAll(property.ImagesOfProperty);
+                displayDataOnRecyclerView();
+            }
+        });
+    }
+
     private void setDetailRecyclerView() {
         Log.i(TAG, "DETAIL__ setDetailRecyclerView: adapter _____________adapter");
         recyclerV = binding.detailImgRecyclerView;
@@ -97,8 +126,8 @@ public class DetailFragment extends Fragment {
     }
 
     private void displayDataOnRecyclerView() {
-        mAdapter = new ImageListOfDetailAdapter(mImageOfPropertyList);
-        recyclerV.setAdapter(mAdapter);
+        ImageListOfDetailAdapter adapter = new ImageListOfDetailAdapter(mImageOfPropertyList);
+        recyclerV.setAdapter(adapter);
     }
 
     private void setUI() {
@@ -109,7 +138,7 @@ public class DetailFragment extends Fragment {
             else
                 binding.detailAvailable.setText(R.string.detail_estate_available);
             // continue
-            Log.i(TAG, "setUI: time::: " + mSingleProperty.getDateRegister());
+            Log.i(TAG, "DETAIL__ setUI: time::: " + mSingleProperty.getDateRegister());
             binding.detailDateRegister.setText(SQLTimeHelper.getUSFormDateFromTimeInMillis(Long.parseLong(mSingleProperty.getDateRegister())));
             String surfaceMetre = requireActivity().getResources().getString(R.string.detail_surface_integer);
             binding.detailSurface.setText(String.format(surfaceMetre, mSingleProperty.getSurface()));

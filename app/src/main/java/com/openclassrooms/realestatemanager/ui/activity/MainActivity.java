@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private boolean mActivityHasTwoFragment = false;
     private FragmentManager mFragmentManager;
-    private FragmentTransaction fTransaction;
     private EFragments mEFragments = LIST;
 
     @Override
@@ -93,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
     private void initListFragment() {
         // The function: initListFragment() is called only on the opening the application. She doesn't part of navigation.
         if (mFragmentManager != null) {
-            fTransaction = mFragmentManager.beginTransaction();
+            FragmentTransaction fTransaction = mFragmentManager.beginTransaction();
             ListProperty listProperty = ListProperty.newInstance();
             fTransaction.replace(R.id.main_activity_fragment_container, listProperty, LIST_FRAGMENT).commit();
 
@@ -112,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
     private void initDetailFragment() {
         Log.i(TAG, "MAIN__ initDetailFragment: run");
         // The function: initDetailFragment() is called only on the opening the application. She doesn't part of navigation.
-        DetailFragment detail = DetailFragment.newInstance();
+        DetailFragment detail = DetailFragment.newInstance(mActivityHasTwoFragment);
         FragmentTransaction ft = mFragmentManager.beginTransaction();
         ft.replace(R.id.main_activity_fragment_container_secondary, detail, DETAIL_FRAGMENT).commit();
     }
@@ -141,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case DETAIL:
                     setToolbarTitle(toolbarTitle, true);
-                    DetailFragment df = DetailFragment.newInstance();
+                    DetailFragment df = DetailFragment.newInstance(mActivityHasTwoFragment);
                     // transaction.add add the fragment as a layer without removing the list
                     transaction.add(getFragmentContainer(null), df, DETAIL_FRAGMENT);
                     break;
@@ -174,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private int getFragmentContainer(@Nullable EFragments fragment) {
-        // if LIST && doubleFragment
+        // if LIST && doubleFragment fragm
         if (fragment == LIST && mActivityHasTwoFragment) {
             return R.id.main_activity_fragment_container;
         } else if (fragment == null && mActivityHasTwoFragment) {

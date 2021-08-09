@@ -64,6 +64,10 @@ public class PropertiesRepository {
         this.PROPERTY_ID = PROPERTY_ID;
     }
 
+    public String getPROPERTY_ID() {
+        return PROPERTY_ID;
+    }
+
     public SupportSQLiteQuery getRowQueryEstates() {
         return mRowQueryEstates;
     }

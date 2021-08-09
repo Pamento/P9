@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fragment_loan_simulator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorWhite"
     tools:context=".ui.fragments.LoanSimulator">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorWhite"
-        android:paddingVertical="@dimen/size_b"
-        android:paddingHorizontal="@dimen/land_padding">
+        android:paddingHorizontal="@dimen/land_padding"
+        android:paddingVertical="@dimen/size_b">
+
         <TextView
             android:id="@+id/loan_property_type"
             style="@style/TextAppearance.AppCompat.Title"
