@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
@@ -44,8 +45,9 @@ public class MainActivity extends AppCompatActivity {
     private MainActivityViewModel mMainViewModel;
     private View view;
     private ActivityMainBinding binding;
+    private boolean mActivityHasTwoFragment = false;
     private FragmentManager mFragmentManager;
-    FragmentTransaction fTransaction;
+    private FragmentTransaction fTransaction;
     private EFragments mEFragments = LIST;
 
     @Override
@@ -56,7 +58,8 @@ public class MainActivity extends AppCompatActivity {
         view = binding.getRoot();
         setFragmentManager();
         setContentView(view);
-        displayListFragment();
+        checkIfActivityHasDoubleFragment();
+        initListFragment();
     }
 
     private void setFragmentManager() {
@@ -66,6 +69,11 @@ public class MainActivity extends AppCompatActivity {
     private void initViewModel() {
         ViewModelFactory vmF = Injection.sViewModelFactory(this);
         mMainViewModel = new ViewModelProvider(this, vmF).get(MainActivityViewModel.class);
+    }
+
+    private void checkIfActivityHasDoubleFragment() {
+        FragmentContainerView fc = binding.mainActivityFragmentContainerSecondary;
+        mActivityHasTwoFragment = fc != null;
     }
 
     private void setToolbarTitle(String toolbarTitle, boolean backUpButton) {
@@ -82,30 +90,31 @@ public class MainActivity extends AppCompatActivity {
         this.invalidateOptionsMenu();
     }
 
-    private void displayListFragment() {
+    private void initListFragment() {
+        // The function: initListFragment() is called only on the opening the application. She doesn't part of navigation.
         if (mFragmentManager != null) {
             fTransaction = mFragmentManager.beginTransaction();
             ListProperty listProperty = ListProperty.newInstance();
-            fTransaction.replace(R.id.main_activity_fragment_container, listProperty).commit();
+            fTransaction.replace(R.id.main_activity_fragment_container, listProperty, LIST_FRAGMENT).commit();
 
-
-            FragmentContainerView fc = binding.mainActivityFragmentContainerSecondary;
-            if (fc == null) Log.i(TAG, "displayListFragment: SECONDARY:: is ___NUll");
+            Log.i(TAG, "initListFragment: mActivityHasTwoFragment:: " + mActivityHasTwoFragment);
+            if (!mActivityHasTwoFragment) Log.i(TAG, "initListFragment: SECONDARY:: is ___NUll:: ");
             else {
-                Log.i(TAG, "displayListFragment: SECONDARY:: is ___WORK!");
-                displayDetailFragment();
+                Log.i(TAG, "initListFragment: SECONDARY:: is ___WORK!");
+                initDetailFragment();
             }
         } else {
             setFragmentManager();
-            displayListFragment();
+            initListFragment();
         }
     }
 
-    private void displayDetailFragment() {
+    private void initDetailFragment() {
+        Log.i(TAG, "MAIN__ initDetailFragment: run");
+        // The function: initDetailFragment() is called only on the opening the application. She doesn't part of navigation.
         DetailFragment detail = DetailFragment.newInstance();
         FragmentTransaction ft = mFragmentManager.beginTransaction();
-        ft.replace(R.id.main_activity_fragment_container_secondary, detail).commit();
-
+        ft.replace(R.id.main_activity_fragment_container_secondary, detail, DETAIL_FRAGMENT).commit();
     }
 
     public void displayFragm(EFragments fragment, String toolbarTitle) {
@@ -118,13 +127,13 @@ public class MainActivity extends AppCompatActivity {
                 case LIST:
                     setToolbarTitle(getResources().getString(R.string.app_name), false);
                     ListProperty lp = ListProperty.newInstance();
-                    transaction.replace(R.id.main_activity_fragment_container, lp, LIST_FRAGMENT);
+                    transaction.replace(getFragmentContainer(fragment), lp, LIST_FRAGMENT);
                     break;
                 case MAP:
                     if (isMapsServiceOk()) {
                         setToolbarTitle("New York", false);
-                        MapFragment mf = MapFragment.newInstance(null, null);
-                        transaction.replace(R.id.main_activity_fragment_container, mf, MAP_FRAGMENT);
+                        MapFragment mf = MapFragment.newInstance(mActivityHasTwoFragment);
+                        transaction.replace(getFragmentContainer(null), mf, MAP_FRAGMENT);
                     } else {
                         String msg = getResources().getString(R.string.error_msg_map_service_not_available);
                         NotifyBySnackBar.showSnackBar(1, view, msg);
@@ -134,27 +143,27 @@ public class MainActivity extends AppCompatActivity {
                     setToolbarTitle(toolbarTitle, true);
                     DetailFragment df = DetailFragment.newInstance();
                     // transaction.add add the fragment as a layer without removing the list
-                    transaction.add(R.id.main_activity_fragment_container, df, DETAIL_FRAGMENT);
+                    transaction.add(getFragmentContainer(null), df, DETAIL_FRAGMENT);
                     break;
                 case ADD:
                     setToolbarTitle(toolbarTitle, false);
                     AddProperty ap = AddProperty.newInstance();
-                    transaction.add(R.id.main_activity_fragment_container, ap, ADD_FRAGMENT);
+                    transaction.add(getFragmentContainer(null), ap, ADD_FRAGMENT);
                     break;
                 case SEARCH:
                     setToolbarTitle(toolbarTitle, false);
                     SearchEngine se = SearchEngine.newInstance();
-                    transaction.add(R.id.main_activity_fragment_container, se, SEARCH_FRAGMENT);
+                    transaction.add(getFragmentContainer(null), se, SEARCH_FRAGMENT);
                     break;
                 case SIMULATOR:
                     setToolbarTitle(toolbarTitle, true);
                     LoanSimulator ls = LoanSimulator.newInstance();
-                    transaction.add(R.id.main_activity_fragment_container, ls, SIMULATOR_FRAGMENT);
+                    transaction.add(getFragmentContainer(null), ls, SIMULATOR_FRAGMENT);
                     break;
                 case EDIT:
                     setToolbarTitle(toolbarTitle, false);
                     EditProperty ep = EditProperty.newInstance();
-                    transaction.add(R.id.main_activity_fragment_container, ep, EDIT_FRAGMENT);
+                    transaction.add(getFragmentContainer(null), ep, EDIT_FRAGMENT);
                     break;
                 default:
                     break;
@@ -162,6 +171,20 @@ public class MainActivity extends AppCompatActivity {
             transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
             transaction.addToBackStack(toolbarTitle).commit();
         }
+    }
+
+    private int getFragmentContainer(@Nullable EFragments fragment) {
+        // if LIST && doubleFragment
+        if (fragment == LIST && mActivityHasTwoFragment) {
+            return R.id.main_activity_fragment_container;
+        } else if (fragment == null && mActivityHasTwoFragment) {
+            return R.id.main_activity_fragment_container_secondary;
+        } else {
+            return R.id.main_activity_fragment_container;
+        }
+        // TODO the List can be called. Than, (?) need to add verification if mEFragments = LIST (?)
+        //  or add param: fragment. If fragment == LIST -> {update RecyclerView of ListProperty)
+        //int secondFragmentContainer = R.id.main_activity_fragment_container_secondary;
     }
 
     // Check if service Google Maps is available

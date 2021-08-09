@@ -17,6 +17,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:layout="@layout/fragment_list_property" />
 
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary"
+        app:layout_constraintStart_toEndOf="@+id/main_activity_fragment_container"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/main_activity_fragment_container_secondary"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/main_activity_fragment_container_secondary"
         android:layout_width="0dp"

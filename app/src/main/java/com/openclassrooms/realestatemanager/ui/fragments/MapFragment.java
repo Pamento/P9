@@ -48,22 +48,31 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         GoogleMap.OnMarkerClickListener {
 
     private static final String TAG = "MapFragment";
+    public static final String FAB_DECIDER = "display_fab";
     private MapViewModel mMapViewModel;
     private FragmentMapBinding binding;
     private GoogleMap mGoogleMaps;
     private List<PropertyWithImages> mPropertyWithImages = new ArrayList<>();
+    private boolean isDoubleFragment = false;
 
     public MapFragment() {
         // Required empty public constructor
     }
 
-    public static MapFragment newInstance(String param1, String param2) {
-        return new MapFragment();
+    public static MapFragment newInstance(boolean isDoubleFragment) {
+        MapFragment fragment = new MapFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(FAB_DECIDER, isDoubleFragment);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            isDoubleFragment = getArguments().getBoolean(FAB_DECIDER);
+        }
     }
 
     @Override
@@ -83,7 +92,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        setFabListener();
+        if (isDoubleFragment) {
+            binding.fabList.setVisibility(View.GONE);
+        } else {
+            setFabListener();
+        }
     }
 
     private void initMap() {
