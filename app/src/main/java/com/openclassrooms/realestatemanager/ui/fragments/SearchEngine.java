@@ -195,8 +195,8 @@ public class SearchEngine extends Fragment implements DatePickerDialog.OnDateSet
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         binding = null;
+        super.onDestroyView();
     }
 
     @Override

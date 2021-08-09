@@ -127,7 +127,7 @@ public class ListProperty extends Fragment implements ListPropertyAdapter.OnItem
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         binding = null;
+        super.onDestroyView();
     }
 }

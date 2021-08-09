@@ -522,9 +522,9 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
 
     @Override
     public void onDestroyView() {
-        super.onDestroyView();
         amenitiesBinding = null;
         formAddressBinding = null;
         binding = null;
+        super.onDestroyView();
     }
 }

@@ -11,6 +11,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
@@ -35,13 +36,7 @@ import com.openclassrooms.realestatemanager.util.notification.NotifyBySnackBar;
 
 import java.util.Objects;
 
-import static com.openclassrooms.realestatemanager.util.Constants.Constants.ADD_FRAGMENT;
-import static com.openclassrooms.realestatemanager.util.Constants.Constants.DETAIL_FRAGMENT;
-import static com.openclassrooms.realestatemanager.util.Constants.Constants.EDIT_FRAGMENT;
-import static com.openclassrooms.realestatemanager.util.Constants.Constants.LIST_FRAGMENT;
-import static com.openclassrooms.realestatemanager.util.Constants.Constants.MAP_FRAGMENT;
-import static com.openclassrooms.realestatemanager.util.Constants.Constants.SEARCH_FRAGMENT;
-import static com.openclassrooms.realestatemanager.util.Constants.Constants.SIMULATOR_FRAGMENT;
+import static com.openclassrooms.realestatemanager.util.Constants.Constants.*;
 import static com.openclassrooms.realestatemanager.util.enums.EFragments.*;
 
 public class MainActivity extends AppCompatActivity {
@@ -50,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private View view;
     private ActivityMainBinding binding;
     private FragmentManager mFragmentManager;
+    FragmentTransaction fTransaction;
     private EFragments mEFragments = LIST;
 
     @Override
@@ -87,16 +83,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void displayListFragment() {
-        ListProperty listProperty = ListProperty.newInstance();
-
         if (mFragmentManager != null) {
-            FragmentTransaction fTransaction = mFragmentManager
-                    .beginTransaction();
+            fTransaction = mFragmentManager.beginTransaction();
+            ListProperty listProperty = ListProperty.newInstance();
             fTransaction.replace(R.id.main_activity_fragment_container, listProperty).commit();
+
+
+            FragmentContainerView fc = binding.mainActivityFragmentContainerSecondary;
+            if (fc == null) Log.i(TAG, "displayListFragment: SECONDARY:: is ___NUll");
+            else {
+                Log.i(TAG, "displayListFragment: SECONDARY:: is ___WORK!");
+                displayDetailFragment();
+            }
         } else {
             setFragmentManager();
             displayListFragment();
         }
+    }
+
+    private void displayDetailFragment() {
+        DetailFragment detail = DetailFragment.newInstance();
+        FragmentTransaction ft = mFragmentManager.beginTransaction();
+        ft.replace(R.id.main_activity_fragment_container_secondary, detail).commit();
+
     }
 
     public void displayFragm(EFragments fragment, String toolbarTitle) {
@@ -118,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
                         transaction.replace(R.id.main_activity_fragment_container, mf, MAP_FRAGMENT);
                     } else {
                         String msg = getResources().getString(R.string.error_msg_map_service_not_available);
-                        NotifyBySnackBar.showSnackBar(1,view,msg);
+                        NotifyBySnackBar.showSnackBar(1, view, msg);
                     }
                     break;
                 case DETAIL:
