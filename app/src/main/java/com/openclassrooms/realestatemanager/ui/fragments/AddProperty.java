@@ -360,7 +360,9 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
 
         if (checked == 0) {
             mAddPropertyViewModel.setImagesOfPropertyList(mImageAdapter.getImageOfPropertyList());
-            getGeoLocationOfProperty();
+            if (Utils.isInternetAvailable(requireContext())) {
+                getGeoLocationOfProperty();
+            }
         } else {
             Log.i(TAG, "checkFormValidityBeforeSave: we are ready to create SingleProperty:: checked:: " + checked);
             String msg = requireActivity().getResources().getString(R.string.warning_missing_fields);
@@ -404,7 +406,7 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
         String address2 = formAddressBinding.addAddress2FormAddressSuite.getEditableText().toString();
         String city = formAddressBinding.addAddressFormCity.getEditableText().toString();
         String quarter = formAddressBinding.addAddressFormQuarter.getEditableText().toString();
-        String location = formatLocationInString();
+        String location = mLocation == null ? "" : formatLocationInString();
         String postalCodeStr = formAddressBinding.addAddressFormPostalCode.getEditableText().toString();
         int postalCode = TextUtils.isEmpty(postalCodeStr) ? 0 : Integer.parseInt(postalCodeStr);
         String amenities = getAmenities();

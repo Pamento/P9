@@ -365,10 +365,6 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
         datePicker.show();
     }
 
-    private void setDateInputField(String date) {
-        binding.addFDateSince.setText(date);
-    }
-
     private void getGeoLocationOfProperty() {
         String address1 = formAddressBinding.addAddress1FormAddress.getEditableText().toString();
         String city = formAddressBinding.addAddressFormCity.getEditableText().toString();
@@ -382,7 +378,6 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
         mEditPropertyViewModel.getGeoLocationOfProperty().observe(getViewLifecycleOwner(), location -> {
             if (location != null) {
                 mLocation = location;
-                updateImagesOfProperty();
             }
         });
     }
@@ -390,7 +385,9 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
     public void updateProperty() {
         mEditPropertyViewModel.getSingleProperty().removeObserver(getProperty);
         mEditPropertyViewModel.getImagesOfProperty().removeObserver(getImagesOfProperty);
-        updateImagesOfProperty();
+        if (Utils.isInternetAvailable(requireContext())) {
+            updateImagesOfProperty();
+        }
     }
 
     private void updatePropertyData() {
@@ -436,7 +433,7 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
     }
 
     private void updateImagesOfProperty() {
-        int i = 0;
+        int i;
         int errorRes = 0;
         List<Integer> index = new ArrayList<>();
 

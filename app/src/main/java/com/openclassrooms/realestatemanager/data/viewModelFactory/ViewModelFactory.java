@@ -46,7 +46,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
             return (T) new AddPropertyViewModel(mPropertiesRepository, mImageRepository, mGoogleMapsRepository, mExecutor);
         }
         if (modelClass.isAssignableFrom(DetailViewModel.class)) {
-            return (T) new DetailViewModel(mPropertiesRepository, mImageRepository);
+            return (T) new DetailViewModel(mPropertiesRepository, mImageRepository, mGoogleMapsRepository);
         }
         if (modelClass.isAssignableFrom(EditPropertyViewModel.class)) {
             return (T) new EditPropertyViewModel(mPropertiesRepository, mImageRepository, mGoogleMapsRepository, mExecutor);

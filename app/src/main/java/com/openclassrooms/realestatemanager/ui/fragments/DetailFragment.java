@@ -23,6 +23,7 @@ import com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM.DetailView
 import com.openclassrooms.realestatemanager.databinding.FragmentDetailBinding;
 import com.openclassrooms.realestatemanager.injection.Injection;
 import com.openclassrooms.realestatemanager.ui.adapters.ImageListOfDetailAdapter;
+import com.openclassrooms.realestatemanager.util.Utils;
 import com.openclassrooms.realestatemanager.util.dateTime.SQLTimeHelper;
 import com.openclassrooms.realestatemanager.util.system.AdapterHelper;
 import com.openclassrooms.realestatemanager.util.texts.StringModifier;
@@ -108,10 +109,34 @@ public class DetailFragment extends Fragment {
                 PropertyWithImages property = propertyWithImages.get(0);
                 mSingleProperty = property.mSingleProperty;
                 // TODO is network is available
-                mDetailViewModel.setUrlOfStaticMapOfProperty(property.mSingleProperty.getLocation());
+                if (property.mSingleProperty.getLocation().equals("")){
+                    getLocationFromAddress();
+                } else {
+                    mDetailViewModel.setUrlOfStaticMapOfProperty(property.mSingleProperty.getLocation());
+                }
                 setUI();
                 mImageOfPropertyList.addAll(property.ImagesOfProperty);
                 displayDataOnRecyclerView();
+            }
+        });
+    }
+
+    private void getLocationFromAddress() {
+        if (Utils.isInternetAvailable(requireContext())) {
+            String address1 = mSingleProperty.getAddress1();
+            String city = mSingleProperty.getCity();
+            String quarter = mSingleProperty.getQuarter();
+            String address = StringModifier.formatAddressToGeocoding(address1,city,quarter);
+            mDetailViewModel.getLocationFromAddress(address);
+            setResponseObserver();
+        }
+    }
+
+    private void setResponseObserver() {
+        mDetailViewModel.getGeoLocationOfProperty().observe(getViewLifecycleOwner(), location -> {
+            if (location != null) {
+                String l = String.valueOf(location.getLat()) + "," + String.valueOf(location.getLng());
+                mDetailViewModel.setUrlOfStaticMapOfProperty(l);
             }
         });
     }
