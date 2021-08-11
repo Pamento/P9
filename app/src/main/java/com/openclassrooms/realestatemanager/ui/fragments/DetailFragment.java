@@ -94,7 +94,11 @@ public class DetailFragment extends Fragment {
         mDetailViewModel.getSingleProperty().observe(getViewLifecycleOwner(), singleProperty -> {
             if (singleProperty != null) {
                 mSingleProperty = singleProperty;
-                mDetailViewModel.setUrlOfStaticMapOfProperty(singleProperty.getLocation());
+                if (mSingleProperty.getLocation().equals("")) {
+                    getLocationFromAddress();
+                } else {
+                    mDetailViewModel.setUrlOfStaticMapOfProperty(singleProperty.getLocation());
+                }
             }
             setUI();
         });
@@ -146,6 +150,9 @@ public class DetailFragment extends Fragment {
             if (location != null) {
                 String l = String.valueOf(location.getLat()) + "," + String.valueOf(location.getLng());
                 mDetailViewModel.setUrlOfStaticMapOfProperty(l);
+                setStaticMapOfProperty();
+                mSingleProperty.setLocation(l);
+                updatePropertyInRoom();
             }
         });
     }
@@ -220,6 +227,10 @@ public class DetailFragment extends Fragment {
     private void initViewModel() {
         ViewModelFactory vmF = Injection.sViewModelFactory(requireActivity());
         mDetailViewModel = new ViewModelProvider(requireActivity(), vmF).get(DetailViewModel.class);
+    }
+
+    private void updatePropertyInRoom() {
+        mDetailViewModel.updateSingleProperty(mSingleProperty);
     }
 
     @Override

@@ -90,4 +90,8 @@ public class DetailViewModel extends ViewModel {
     public LiveData<Location> getGeoLocationOfProperty() {
         return mLocationOfAddress;
     }
+
+    public void updateSingleProperty(SingleProperty singleProperty) {
+        mPropertiesRepository.updateSingleProperty(singleProperty);
+    }
 }
