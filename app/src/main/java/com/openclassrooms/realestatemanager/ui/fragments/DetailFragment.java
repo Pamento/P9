@@ -37,7 +37,9 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 public class DetailFragment extends Fragment {
     private static final String TAG = "DetailFragment";
     private static final String LAYOUT_MODE = "double";
+    private static final String POSITION_OF_LIST = "position_list";
     private boolean isTwoFragmentLayout = false;
+    private boolean isFirstItemOfList = true;
     private DetailViewModel mDetailViewModel;
     private FragmentDetailBinding binding;
     private SingleProperty mSingleProperty;
@@ -48,10 +50,11 @@ public class DetailFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static DetailFragment newInstance(boolean isTwoFragmentsToDisplay) {
+    public static DetailFragment newInstance(boolean isTwoFragmentsToDisplay, boolean displayFirstItem) {
         DetailFragment fragment = new DetailFragment();
         Bundle args = new Bundle();
         args.putBoolean(LAYOUT_MODE, isTwoFragmentsToDisplay);
+        args.putBoolean(POSITION_OF_LIST, displayFirstItem);
         fragment.setArguments(args);
         return fragment;
     }
@@ -60,7 +63,8 @@ public class DetailFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            isTwoFragmentLayout = getArguments().getBoolean(LAYOUT_MODE );
+            isTwoFragmentLayout = getArguments().getBoolean(LAYOUT_MODE);
+            isFirstItemOfList = getArguments().getBoolean(POSITION_OF_LIST);
         }
     }
 
@@ -103,13 +107,18 @@ public class DetailFragment extends Fragment {
 
     private void getAllProperties() {
         Log.i(TAG, "DETAIL__ getAllProperties: run");
-        mDetailViewModel.getAllProperties().observe(getViewLifecycleOwner(), propertyWithImages -> {
-            if (propertyWithImages != null) {
-                Log.i(TAG, "DETAIL__ getAllProperties: size:: " + propertyWithImages.size());
-                PropertyWithImages property = propertyWithImages.get(0);
+        mDetailViewModel.getAllProperties().observe(getViewLifecycleOwner(), propertiesWithImages -> {
+            if (propertiesWithImages != null) {
+                PropertyWithImages property;
+                Log.i(TAG, "DETAIL__ getAllProperties: size:: " + propertiesWithImages.size());
+                if (isFirstItemOfList) {
+                    property = propertiesWithImages.get(0);
+                } else {
+                    property = propertiesWithImages.get(propertiesWithImages.size() - 1);
+                }
                 mSingleProperty = property.mSingleProperty;
                 // TODO is network is available
-                if (property.mSingleProperty.getLocation().equals("")){
+                if (property.mSingleProperty.getLocation().equals("")) {
                     getLocationFromAddress();
                 } else {
                     mDetailViewModel.setUrlOfStaticMapOfProperty(property.mSingleProperty.getLocation());
@@ -126,7 +135,7 @@ public class DetailFragment extends Fragment {
             String address1 = mSingleProperty.getAddress1();
             String city = mSingleProperty.getCity();
             String quarter = mSingleProperty.getQuarter();
-            String address = StringModifier.formatAddressToGeocoding(address1,city,quarter);
+            String address = StringModifier.formatAddressToGeocoding(address1, city, quarter);
             mDetailViewModel.getLocationFromAddress(address);
             setResponseObserver();
         }

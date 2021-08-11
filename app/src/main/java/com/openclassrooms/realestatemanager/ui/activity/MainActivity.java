@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
             if (!mActivityHasTwoFragment) Log.i(TAG, "initListFragment: SECONDARY:: is ___NUll:: ");
             else {
                 Log.i(TAG, "initListFragment: SECONDARY:: is ___WORK!");
-                initDetailFragment();
+                initDetailFragment(true);
             }
         } else {
             setFragmentManager();
@@ -108,10 +108,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void initDetailFragment() {
+    private void initDetailFragment(boolean firstPositionOfList) {
         Log.i(TAG, "MAIN__ initDetailFragment: run");
         // The function: initDetailFragment() is called only on the opening the application. She doesn't part of navigation.
-        DetailFragment detail = DetailFragment.newInstance(mActivityHasTwoFragment);
+        DetailFragment detail = DetailFragment.newInstance(mActivityHasTwoFragment,firstPositionOfList);
         FragmentTransaction ft = mFragmentManager.beginTransaction();
         ft.replace(R.id.main_activity_fragment_container_secondary, detail, DETAIL_FRAGMENT).commit();
     }
@@ -127,6 +127,9 @@ public class MainActivity extends AppCompatActivity {
                     setToolbarTitle(getResources().getString(R.string.app_name), false);
                     ListProperty lp = ListProperty.newInstance();
                     transaction.replace(getFragmentContainer(fragment), lp, LIST_FRAGMENT);
+                    if (mActivityHasTwoFragment) {
+                        initDetailFragment(false);
+                    }
                     break;
                 case MAP:
                     if (isMapsServiceOk()) {
@@ -140,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case DETAIL:
                     setToolbarTitle(toolbarTitle, true);
-                    DetailFragment df = DetailFragment.newInstance(mActivityHasTwoFragment);
+                    DetailFragment df = DetailFragment.newInstance(mActivityHasTwoFragment, true);
                     // transaction.add add the fragment as a layer without removing the list
                     transaction.add(getFragmentContainer(null), df, DETAIL_FRAGMENT);
                     break;

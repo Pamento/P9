@@ -360,8 +360,11 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
 
         if (checked == 0) {
             mAddPropertyViewModel.setImagesOfPropertyList(mImageAdapter.getImageOfPropertyList());
+            Log.i(TAG, "checkFormValidityBeforeSave: is__Wi-Fi ???:: " + Utils.isInternetAvailable(requireContext()));
             if (Utils.isInternetAvailable(requireContext())) {
                 getGeoLocationOfProperty();
+            } else {
+                createProperty();
             }
         } else {
             Log.i(TAG, "checkFormValidityBeforeSave: we are ready to create SingleProperty:: checked:: " + checked);

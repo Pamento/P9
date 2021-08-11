@@ -378,6 +378,7 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
         mEditPropertyViewModel.getGeoLocationOfProperty().observe(getViewLifecycleOwner(), location -> {
             if (location != null) {
                 mLocation = location;
+                updateImagesOfProperty();
             }
         });
     }
@@ -386,6 +387,8 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
         mEditPropertyViewModel.getSingleProperty().removeObserver(getProperty);
         mEditPropertyViewModel.getImagesOfProperty().removeObserver(getImagesOfProperty);
         if (Utils.isInternetAvailable(requireContext())) {
+            getGeoLocationOfProperty();
+        } else {
             updateImagesOfProperty();
         }
     }
@@ -416,7 +419,7 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
         if (!quarter.equals("")) mSingleProperty.setQuarter(quarter);
         String postalCode = formAddressBinding.addAddressFormPostalCode.getEditableText().toString();
         if (!TextUtils.isEmpty(bedrooms)) mSingleProperty.setPostalCode(Integer.parseInt(postalCode));
-        if (mLocation != null) mSingleProperty.setLocation(formatLocationInString());
+        mSingleProperty.setLocation(mLocation == null ? "" :  formatLocationInString());
         mSingleProperty.setAmenities(getAmenities());
         if (mMillisOfRegisterProperty > 0)
             mSingleProperty.setDateRegister(String.valueOf(mMillisOfRegisterProperty));
