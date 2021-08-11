@@ -8,6 +8,7 @@
     <dimen name="size_nn">20dp</dimen>
     <dimen name="size_m">24dp</dimen>
     <dimen name="size_b">32dp</dimen>
+    <dimen name="size_bb">48dp</dimen>
     <dimen name="size_x">40dp</dimen>
     <dimen name="size_h">64dp</dimen>
 

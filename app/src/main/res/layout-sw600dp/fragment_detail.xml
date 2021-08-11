@@ -23,8 +23,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/colorAccent"
-            android:textStyle="bold"
             android:textSize="@dimen/size_text_b"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="@string/detail_estate_available" />
@@ -44,8 +44,8 @@
             android:id="@+id/detail_date_register"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
             android:textSize="@dimen/size_text_b"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="@string/detail_date_init" />
@@ -64,7 +64,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/size_s"
-            android:textColor="@color/colorAccent"
+            android:background="@drawable/background_price_ticket"
+            android:padding="@dimen/size_s"
+            android:textColor="@color/colorWhite"
             android:textSize="@dimen/size_text_b"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/detail_img_recycler_view"
@@ -150,11 +152,11 @@
             android:id="@+id/detail_address_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/size_n"
+            android:layout_marginTop="@dimen/size_b"
             android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="@+id/detail_amenities_layout"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/detail_description_layout"
-            app:layout_constraintEnd_toEndOf="@+id/detail_amenities_layout">
+            app:layout_constraintTop_toBottomOf="@+id/detail_description_layout">
 
             <TextView
                 android:id="@+id/detail_address_title"
@@ -170,48 +172,48 @@
                 android:id="@+id/detail_address_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/size_text_m"
                 android:layout_marginHorizontal="@dimen/size_b"
+                android:textSize="@dimen/size_text_m"
                 tools:text="740 Park Avenue" />
 
             <TextView
                 android:id="@+id/detail_address_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/size_text_m"
                 android:layout_marginHorizontal="@dimen/size_b"
+                android:textSize="@dimen/size_text_m"
                 tools:text="Apt 6/7 A" />
 
             <TextView
                 android:id="@+id/detail_address_quarter"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/size_text_m"
                 android:layout_marginHorizontal="@dimen/size_b"
+                android:textSize="@dimen/size_text_m"
                 tools:text="Quarter" />
 
             <TextView
                 android:id="@+id/detail_address_city"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/size_text_m"
                 android:layout_marginHorizontal="@dimen/size_b"
+                android:textSize="@dimen/size_text_m"
                 tools:text="New York" />
 
             <TextView
                 android:id="@+id/detail_address_postal_code"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/size_text_m"
                 android:layout_marginHorizontal="@dimen/size_b"
+                android:textSize="@dimen/size_text_m"
                 tools:text="NY 10021" />
 
             <TextView
                 android:id="@+id/detail_address_6"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/size_text_m"
                 android:layout_marginHorizontal="@dimen/size_b"
+                android:textSize="@dimen/size_text_m"
                 tools:text="United States" />
         </LinearLayout>
 
@@ -234,11 +236,11 @@
             android:id="@+id/detail_amenities_layout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/size_n"
+            android:layout_marginTop="@dimen/size_b"
             android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="@+id/detail_address_layout"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/detail_address_layout"
-            app:layout_constraintEnd_toEndOf="@+id/detail_address_layout">
+            app:layout_constraintTop_toBottomOf="@+id/detail_address_layout">
 
             <TextView
                 android:id="@+id/textView10"
@@ -251,8 +253,7 @@
             <ListView
                 android:id="@+id/detail_amenities_list_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/size_b" />
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 
@@ -269,6 +270,7 @@
                 android:id="@+id/detail_agent_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:minWidth="@dimen/input_title_long"
                 android:text="@string/detail_managed_by"
                 android:textSize="@dimen/size_text_b"
                 android:textStyle="bold" />
@@ -277,8 +279,8 @@
                 android:id="@+id/detail_agent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/size_text_m"
                 android:layout_margin="@dimen/size_s"
+                android:textSize="@dimen/size_text_m"
                 tools:text="Mark Donald" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

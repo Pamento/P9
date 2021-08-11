@@ -152,11 +152,10 @@
             android:id="@+id/detail_address_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/size_n"
+            android:layout_marginTop="@dimen/size_b"
             android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/detail_description_layout"
-            app:layout_constraintEnd_toEndOf="@+id/detail_amenities_layout">
+            app:layout_constraintTop_toBottomOf="@+id/detail_description_layout">
 
             <TextView
                 android:id="@+id/detail_address_title"
@@ -173,7 +172,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/size_text_m"
-                android:layout_marginHorizontal="@dimen/size_b"
+                android:layout_marginStart="@dimen/size_n"
+                android:layout_marginEnd="@dimen/size_b"
                 tools:text="740 Park Avenue" />
 
             <TextView
@@ -181,7 +181,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/size_text_m"
-                android:layout_marginHorizontal="@dimen/size_b"
+                android:layout_marginStart="@dimen/size_n"
+                android:layout_marginEnd="@dimen/size_b"
                 tools:text="Apt 6/7 A" />
 
             <TextView
@@ -189,7 +190,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/size_text_m"
-                android:layout_marginHorizontal="@dimen/size_b"
+                android:layout_marginStart="@dimen/size_n"
+                android:layout_marginEnd="@dimen/size_b"
                 tools:text="Quarter" />
 
             <TextView
@@ -197,7 +199,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/size_text_m"
-                android:layout_marginHorizontal="@dimen/size_b"
+                android:layout_marginStart="@dimen/size_n"
+                android:layout_marginEnd="@dimen/size_b"
                 tools:text="New York" />
 
             <TextView
@@ -205,7 +208,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/size_text_m"
-                android:layout_marginHorizontal="@dimen/size_b"
+                android:layout_marginStart="@dimen/size_n"
+                android:layout_marginEnd="@dimen/size_b"
                 tools:text="NY 10021" />
 
             <TextView
@@ -213,7 +217,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/size_text_m"
-                android:layout_marginHorizontal="@dimen/size_b"
+                android:layout_marginStart="@dimen/size_n"
+                android:layout_marginEnd="@dimen/size_b"
                 tools:text="United States" />
         </LinearLayout>
 
@@ -227,25 +232,27 @@
             android:background="@color/colorAccentDark"
             android:contentDescription="@string/img_description_small_static_map"
             android:elevation="@dimen/size_s"
-            app:layout_constraintStart_toEndOf="@+id/detail_address_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/detail_amenities_layout"
             app:layout_constraintTop_toBottomOf="@+id/detail_description_layout"
             tools:src="@drawable/staticmap_new_york" />
 
 
         <LinearLayout
             android:id="@+id/detail_amenities_layout"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/size_n"
             android:orientation="vertical"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/detail_address_layout"
-            app:layout_constraintEnd_toEndOf="@+id/detail_address_layout">
+            app:layout_constraintStart_toEndOf="@+id/detail_address_layout"
+            app:layout_constraintTop_toTopOf="@+id/detail_address_layout"
+            app:layout_constraintEnd_toStartOf="@+id/detail_small_static_map">
 
             <TextView
                 android:id="@+id/textView10"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/size_bb"
+                android:paddingStart="0dp"
                 android:text="@string/detail_near_by"
                 android:textSize="@dimen/size_text_b"
                 android:textStyle="bold" />
@@ -253,19 +260,21 @@
             <ListView
                 android:id="@+id/detail_amenities_list_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/size_b" />
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/detail_agent_layout"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/size_b"
+            android:layout_marginTop="@dimen/size_b"
+            android:gravity="end"
             android:orientation="vertical"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/detail_amenities_layout">
+            app:layout_constraintStart_toStartOf="@+id/detail_small_static_map"
+            app:layout_constraintEnd_toEndOf="@+id/detail_small_static_map"
+            app:layout_constraintTop_toBottomOf="@+id/detail_small_static_map">
 
             <TextView
                 android:id="@+id/detail_agent_title"
@@ -279,6 +288,7 @@
                 android:id="@+id/detail_agent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textAlignment="textEnd"
                 android:textSize="@dimen/size_text_m"
                 android:layout_margin="@dimen/size_s"
                 tools:text="Mark Donald" />
