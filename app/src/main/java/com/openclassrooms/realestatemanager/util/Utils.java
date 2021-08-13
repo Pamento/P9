@@ -62,8 +62,8 @@ public class Utils {
      * @return boolean true or false about question if is internet available
      */
     @SuppressWarnings("deprecation")
-    public static Boolean isInternetAvailable() {
-        ConnectivityManager cm = (ConnectivityManager) RealEstateManagerApp.getContext().getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+    public static Boolean isInternetAvailable(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             return cm.isDefaultNetworkActive();
         } else {

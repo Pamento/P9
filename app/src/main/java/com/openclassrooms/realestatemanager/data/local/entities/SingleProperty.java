@@ -1,5 +1,7 @@
 package com.openclassrooms.realestatemanager.data.local.entities;
 
+import android.content.ContentValues;
+
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -248,5 +250,29 @@ public class SingleProperty {
                 ", amenities='" + amenities + '\'' +
                 ", agent='" + agent + '\'' +
                 '}';
+    }
+
+    public static SingleProperty fromContentValues(ContentValues cv) {
+        SingleProperty property = new SingleProperty();
+        if (cv.containsKey("id")) property.setId(cv.getAsString("id"));
+        if (cv.containsKey("type")) property.setType(cv.getAsString("type"));
+        if (cv.containsKey("description")) property.setDescription(cv.getAsString("description"));
+        if (cv.containsKey("surface")) property.setSurface(cv.getAsInteger("surface"));
+        if (cv.containsKey("price")) property.setPrice(cv.getAsInteger("price"));
+        if (cv.containsKey("rooms")) property.setRooms(cv.getAsInteger("rooms"));
+        if (cv.containsKey("bedroom")) property.setBedroom(cv.getAsInteger("bedroom"));
+        if (cv.containsKey("bathroom")) property.setBathroom(cv.getAsInteger("bathroom"));
+        if (cv.containsKey("dateRegister"))
+            property.setDateRegister(cv.getAsString("dateRegister"));
+        if (cv.containsKey("dateSold")) property.setDateSold(cv.getAsString("dateSold"));
+        if (cv.containsKey("address1")) property.setAddress1(cv.getAsString("address1"));
+        if (cv.containsKey("address2")) property.setAddress2(cv.getAsString("address2"));
+        if (cv.containsKey("city")) property.setCity(cv.getAsString("city"));
+        if (cv.containsKey("quarter")) property.setQuarter(cv.getAsString("quarter"));
+        if (cv.containsKey("postalCode")) property.setPostalCode(cv.getAsInteger("postalCode"));
+        if (cv.containsKey("location")) property.setLocation(cv.getAsString("location"));
+        if (cv.containsKey("amenities")) property.setAmenities(cv.getAsString("amenities"));
+        if (cv.containsKey("agent")) property.setAgent(cv.getAsString("agent"));
+        return property;
     }
 }

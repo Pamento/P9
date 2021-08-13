@@ -34,6 +34,7 @@ import com.openclassrooms.realestatemanager.ui.activity.MainActivity;
 import com.openclassrooms.realestatemanager.util.Constants.Constants;
 import com.openclassrooms.realestatemanager.util.Utils;
 import com.openclassrooms.realestatemanager.util.enums.EFragments;
+import com.openclassrooms.realestatemanager.util.notification.NotifyBySnackBar;
 import com.openclassrooms.realestatemanager.util.system.LocationUtils;
 
 import java.util.ArrayList;
@@ -50,6 +51,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     private static final String TAG = "MapFragment";
     public static final String FAB_DECIDER = "display_fab";
     private MapViewModel mMapViewModel;
+    private View view;
     private FragmentMapBinding binding;
     private GoogleMap mGoogleMaps;
     private List<PropertyWithImages> mPropertyWithImages = new ArrayList<>();
@@ -92,6 +94,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        this.view = view;
         if (isDoubleFragment) {
             binding.fabList.setVisibility(View.GONE);
         } else {
@@ -100,7 +103,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     private void initMap() {
-        if (Utils.isInternetAvailable()) {
+        if (Utils.isInternetAvailable(requireContext())) {
             SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
             if (supportMapFragment != null) {
                 supportMapFragment.getMapAsync(MapFragment.this);
@@ -196,7 +199,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                 if (LocationUtils.isDeviceLocationEnabled()) {
                     Objects.requireNonNull(LocationUtils.getCurrentDeviceLocation()).observe(getViewLifecycleOwner(), getLocation);
                 } else {
-                    // TODO display message
+                    String msg = "Please, switch ON location for use plenty of this app.";
+                    NotifyBySnackBar.showSnackBar(1,view,msg);
                 }
             }
         });
@@ -207,7 +211,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         public void onChanged(Location location) {
             if (location != null) {
                 mMapViewModel.setCurrentUserLocation(location);
-                // TODO update user position on map
+                if (mGoogleMaps != null) {
+                    setMap();
+                }
             }
         }
     };

@@ -40,12 +40,15 @@ public class ListPropertyAdapter extends RecyclerView.Adapter<ListPropertyAdapte
     @Override
     public void onBindViewHolder(@NonNull ListPropertyViewHolder holder, int position) {
         if (mProperties.size() > 0) {
-            PropertyWithImages one = mProperties.get(position);
-            String price = StringModifier.addComaInPrice(String.valueOf(one.mSingleProperty.getPrice()));
+            PropertyWithImages property = mProperties.get(position);
+            String price = StringModifier.addComaInPrice(String.valueOf(property.mSingleProperty.getPrice()));
             String priceDollar = holder.itemView.getContext().getString(R.string.price_dollar);
-            Uri uri = Uri.parse(one.ImagesOfProperty.get(0).getPath());
-            holder.type.setText(one.mSingleProperty.getType());
-            holder.address.setText(one.mSingleProperty.getQuarter());
+            Uri uri = null;
+            if (property.ImagesOfProperty.size() > 0) {
+                uri = Uri.parse(property.ImagesOfProperty.get(0).getPath());
+            }
+            holder.type.setText(property.mSingleProperty.getType());
+            holder.address.setText(property.mSingleProperty.getQuarter());
             holder.price.setText(String.format(priceDollar, price));
             Glide.with(holder.image.getContext())
                     .load(uri)
