@@ -135,7 +135,7 @@ public class DetailFragment extends Fragment {
     }
 
     private void getLocationFromAddress() {
-        if (Utils.isInternetAvailable(requireContext())) {
+        if (Utils.isInternetAvailable()) {
             String address1 = mSingleProperty.getAddress1();
             String city = mSingleProperty.getCity();
             String quarter = mSingleProperty.getQuarter();

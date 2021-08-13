@@ -5,6 +5,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 
+import com.openclassrooms.realestatemanager.util.system.RealEstateManagerApp;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -28,18 +30,28 @@ public class Utils {
     }
 
     /**
+     * Conversion d'un prix d'un bien immobilier (Euros vers Dollars)
+     *
+     * @param euros value to convert
+     * @return converted value of money
+     */
+    public static int convertEuroToDollar(int euros) {
+        return (int) Math.round(euros * 1.137);
+    }
+
+    /**
      * Conversion de la date d'aujourd'hui en un format plus approprié
      * NOTE : NE PAS SUPPRIMER, A MONTRER DURANT LA SOUTENANCE
      *
      * @return data format in english version
      */
     public static String getTodayDate() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd", Locale.US);
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
         return dateFormat.format(new Date());
     }
 
     public static String getUSFormatOfDate(Date date) {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd", Locale.US);
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
         return dateFormat.format(date);
     }
 
@@ -47,25 +59,16 @@ public class Utils {
      * Verification de la connexion WI-FI
      * NOTE : NE PAS SUPPRIMER, A MONTRER DURANT LA SOUTENANCE
      *
-     * @param context of application
      * @return boolean true or false about question if is internet available
      */
     @SuppressWarnings("deprecation")
-    public static Boolean isInternetAvailable(Context context) {
-        //if (context == null) get RealEstateManagerApp;
-        // TODO test if is the connectivity on mobil mode non WiFi and vice-versa.
-//        WifiManager wifi = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-//        if (wifi.isWifiEnabled()) {
-            ConnectivityManager cm = (ConnectivityManager) context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                return cm.isDefaultNetworkActive();
-            } else {
-                // for API 19 & 20
-                NetworkInfo nI = cm.getActiveNetworkInfo();
-                return nI != null && nI.getState() == NetworkInfo.State.CONNECTED;
-            }
-//        } else {
-//            return false;
-//        }
+    public static Boolean isInternetAvailable() {
+        ConnectivityManager cm = (ConnectivityManager) RealEstateManagerApp.getContext().getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            return cm.isDefaultNetworkActive();
+        } else {
+            NetworkInfo nI = cm.getActiveNetworkInfo();
+            return nI != null && nI.getState() == NetworkInfo.State.CONNECTED;
+        }
     }
 }

@@ -386,7 +386,7 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
     public void updateProperty() {
         mEditPropertyViewModel.getSingleProperty().removeObserver(getProperty);
         mEditPropertyViewModel.getImagesOfProperty().removeObserver(getImagesOfProperty);
-        if (Utils.isInternetAvailable(requireContext())) {
+        if (Utils.isInternetAvailable()) {
             getGeoLocationOfProperty();
         } else {
             updateImagesOfProperty();

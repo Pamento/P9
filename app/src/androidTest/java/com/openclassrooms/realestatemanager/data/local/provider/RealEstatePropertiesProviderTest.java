@@ -32,11 +32,11 @@ public class RealEstatePropertiesProviderTest {
     public void query() {
         final Cursor cursor = mContentResolver.query(ContentUris.withAppendedId(RealEstatePropertiesProvider.URI_DB,PROPERTY_ID),null,null,null);
         assertNotNull(cursor);
-        assertThat(cursor.getCount(), is(0));
+        assertThat(cursor.getCount(), is(3));
         cursor.close();
     }
 
-    @Test
-    public void getType() {
-    }
+//    @Test
+//    public void getType() {
+//    }
 }

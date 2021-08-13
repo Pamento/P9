@@ -22,9 +22,9 @@ public class RealEstatePropertiesProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] strings, @Nullable String s, @Nullable String[] strings1, @Nullable String s1) {
-        if (requireContext() != null) {
-            final Cursor cursor = RealEstateDatabase.getInstance(requireContext()).singlePropertyDao().getPropertyWithImagesProvider();
-            cursor.setNotificationUri(requireContext().getContentResolver(),uri);
+        if (getContext() != null) {
+            final Cursor cursor = RealEstateDatabase.getInstance(getContext()).singlePropertyDao().getPropertyWithImagesProvider();
+            cursor.setNotificationUri(getContext().getContentResolver(),uri);
             return cursor;
         }
         throw new IllegalArgumentException("Failed to query row for uri " + uri);

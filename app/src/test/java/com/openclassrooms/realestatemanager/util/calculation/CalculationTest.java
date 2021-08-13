@@ -7,23 +7,24 @@ import static org.junit.Assert.*;
 
 public class CalculationTest {
 
-    private final String result1 = "4289,17";
-    private final String result2 = "5575,92";
-    private final String result3 = "1429,72";
-    private final String result4 = "1029,40";
-
-    private final int amount1 = 1500000;
-    private final int amount2 = 1300000;
-    private final int amount3 = 250000;
-    private final int amount4 = 120000;
-
-    private final int month1 = 360;
-    private final int month2 = 240;
-    private final int month3 = 180;
-    private final int month4 = 120;
-
     @Test
     public void calculateMonthlyLoan() {
+
+        final String result1 = "4289,17";
+        final String result2 = "5575,92";
+        final String result3 = "1429,72";
+        final String result4 = "1029,40";
+
+        final int amount1 = 1500000;
+        final int amount2 = 1300000;
+        final int amount3 = 250000;
+        final int amount4 = 120000;
+
+        final int month1 = 360;
+        final int month2 = 240;
+        final int month3 = 180;
+        final int month4 = 120;
+
         String calculation1 = Calculation.calculateMonthlyLoan(amount1, 0, THIRTY_YEAR_RATE, month1);
         assertEquals(result1, calculation1);
         String calculation2 = Calculation.calculateMonthlyLoan(amount2, 0, THIRTY_YEAR_RATE, month2);

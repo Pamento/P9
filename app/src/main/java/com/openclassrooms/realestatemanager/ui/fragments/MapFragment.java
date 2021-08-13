@@ -100,7 +100,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     private void initMap() {
-        if (Utils.isInternetAvailable(requireContext())) {
+        if (Utils.isInternetAvailable()) {
             SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
             if (supportMapFragment != null) {
                 supportMapFragment.getMapAsync(MapFragment.this);
