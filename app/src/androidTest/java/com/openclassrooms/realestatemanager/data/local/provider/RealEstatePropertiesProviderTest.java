@@ -5,20 +5,23 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.strictmode.ContentUriWithoutPermissionViolation;
 
 import androidx.room.Room;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.openclassrooms.realestatemanager.data.local.database.RealEstateDatabase;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
+@RunWith(AndroidJUnit4.class)
 public class RealEstatePropertiesProviderTest {
 
     private ContentResolver mContentResolver;
@@ -32,30 +35,25 @@ public class RealEstatePropertiesProviderTest {
         mContentResolver = InstrumentationRegistry.getInstrumentation().getContext().getContentResolver();
     }
 
-//    @Test
-//    public void firstQuery() {
-//        final Cursor cursorZero = mContentResolver.query(ContentUris.withAppendedId(RealEstatePropertiesProvider.URI_DB, PROPERTY_ID), null, null, null);
-//        assertNotNull(cursorZero);
-//        assertThat(cursorZero.getCount(), is(1));
-//        cursorZero.close();
-//    }
-
     @Test
-    public void insertAndUpdate() {
+    public void insertAndUpdate_test() {
         // assert empty data base
-        final Cursor cursorZero = mContentResolver.query(ContentUris.withAppendedId(RealEstatePropertiesProvider.URI_DB, PROPERTY_ID), null, null, null);
-        assertNotNull(cursorZero);
-        assertThat(cursorZero.getCount(), is(0));
+        final Cursor cursor = mContentResolver.query(ContentUris.withAppendedId(RealEstatePropertiesProvider.URI_DB, PROPERTY_ID), null, null, null);
+        assertNotNull(cursor);
+        assertThat(cursor.getCount(), is(0));
+        cursor.close();
         // insert
         final Uri propertyUri = mContentResolver.insert(RealEstatePropertiesProvider.URI_DB, generateProperty());
         // get
-        final Cursor cursor = mContentResolver.query(ContentUris.withAppendedId(RealEstatePropertiesProvider.URI_DB, PROPERTY_ID),null,null,null,null);
+        final Cursor cursor2 = mContentResolver.query(ContentUris.withAppendedId(RealEstatePropertiesProvider.URI_DB, PROPERTY_ID),null,null,null,null);
         // assert
         assertThat(propertyUri, notNullValue());
-        assertThat(cursor, notNullValue());
-        assertThat(cursor.getCount(),is(1));
-        assertThat(cursor.moveToFirst(), is(true));
-        assertThat(cursor.getString(cursor.getColumnIndexOrThrow("type")),is("Flat"));
+        assertThat(cursor2, notNullValue());
+        assertThat(cursor2.getCount(),is(1));
+        assertThat(cursor2.moveToFirst(), is(true));
+        assertThat(cursor2.getString(cursor2.getColumnIndexOrThrow("type")),is("Flat"));
+        cursor2.close();
+
         // update
         final int resUpdate = mContentResolver.update(RealEstatePropertiesProvider.URI_DB, generateUpdateProperty(),null, null);
         // get
@@ -64,9 +62,9 @@ public class RealEstatePropertiesProviderTest {
         assertThat(resUpdate, notNullValue());
         assertThat(cursorUpdate, notNullValue());
         assertThat(cursorUpdate.getCount(), is(1));
-        assertThat(cursor.moveToFirst(), is(true));
-        assertThat(cursor.getString(cursor.getColumnIndexOrThrow("type")),is("Flat"));
-        cursor.close();
+        assertThat(cursorUpdate.moveToFirst(), is(true));
+        assertThat(cursorUpdate.getString(cursorUpdate.getColumnIndexOrThrow("type")),is("Apartment"));
+        cursorUpdate.close();
     }
 
     private ContentValues generateProperty() {
