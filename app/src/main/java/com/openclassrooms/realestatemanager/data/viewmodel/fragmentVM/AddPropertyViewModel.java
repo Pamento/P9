@@ -56,6 +56,9 @@ public class AddPropertyViewModel extends ViewModel {
         mSingleProperty.setId(UUID.randomUUID().toString());
         mImagesOfProperty = new MutableLiveData<>();
         mLocationOfAddress = new MutableLiveData<>();
+        if (mImagesOfPropertyList.size() > 0) {
+            mImagesOfPropertyList.clear();
+        }
     }
 
     public SingleProperty getSingleProperty() {
@@ -115,7 +118,7 @@ public class AddPropertyViewModel extends ViewModel {
         Log.i(TAG, "createOneImageOfProperty: ");
         mImagesOfPropertyList.add(mImgOfProperty);
         Log.i(TAG, "createOneImageOfProperty: imagesList.size():: " + mImagesOfPropertyList.size());
-        mImagesOfProperty.postValue(mImagesOfPropertyList);
+        mImagesOfProperty.setValue(mImagesOfPropertyList);
         if (mImagesOfProperty.getValue() != null) Log.i(TAG, "createOneImageOfProperty: mImagesOfProperty.getValue().size():: " + mImagesOfProperty.getValue().size());
         else Log.i(TAG, "createOneImageOfProperty: mImagesOfProperty.getValue() = null");
         mImgOfProperty = null;
@@ -123,15 +126,8 @@ public class AddPropertyViewModel extends ViewModel {
 
     public void removeOneImageOfProperty(ImageOfProperty imageOfProperty) {
         mImagesOfPropertyList.remove(imageOfProperty);
-        mImagesOfProperty.postValue(mImagesOfPropertyList);
+        mImagesOfProperty.setValue(mImagesOfPropertyList);
     }
-
-//    public void addDescriptionToImage(int position, String description) {
-//        ImageOfProperty iOP = mImagesOfPropertyList.get(position);
-//        iOP.setDescription(description);
-//        mImagesOfPropertyList.set(position, iOP);
-//        mImagesOfProperty.setValue(mImagesOfPropertyList);
-//    }
 
     public void setImagesOfPropertyList(List<ImageOfProperty> imagesOfPropertyList) {
         Log.i(TAG, "ADD__VM__ setImagesOfPropertyList: param:-: imagesOfPropertyList.size():: " + imagesOfPropertyList.size());
@@ -149,7 +145,10 @@ public class AddPropertyViewModel extends ViewModel {
         return mImagesOfProperty;
     }
 
-
+    public void resetImageOfProperty() {
+        mImagesOfProperty.setValue(null);
+        mImagesOfPropertyList.clear();
+    }
 
     public void getLocationFromAddress(String address) {
         mGoogleMapsRepository.getGoogleGeoCodeOfAddress(address)

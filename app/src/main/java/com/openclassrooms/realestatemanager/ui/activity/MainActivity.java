@@ -207,7 +207,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        int count = mFragmentManager.getBackStackEntryCount();
+        Log.i(TAG, "onBackPressed: mEFragments::  " + mEFragments + " & count::"+ count);
         mEFragments = findFragmentItIs();
+        Log.i(TAG, "onBackPressed: mEFragments::  " + mEFragments + " & count::"+ count);
         switch (mEFragments) {
             case LIST:
                 setToolbarTitle(getResources().getString(R.string.app_name), false);

@@ -28,6 +28,8 @@ public class SearchEngineViewModel extends ViewModel {
         String query = buildQuery(rowQueryEstates);
         Log.i("BUILD_QUERY", "buildAndSendSearchEstateQuery: args::");
         Log.i("BUILD_QUERY", "" + Arrays.toString(args.toArray()));
+        Log.i("BUILD_QUERY", "query::");
+        Log.i("BUILD_QUERY", "" + query);
         mQuery = new SimpleSQLiteQuery(query, args.toArray());
         sendRowEstateQuery();
     }

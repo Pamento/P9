@@ -75,9 +75,12 @@ public class ListProperty extends Fragment implements ListPropertyAdapter.OnItem
     }
 
     private void setPropertyObserver() {
+        Log.i(TAG, "setPropertyObserver");
         if (mListPropertyViewModel.getSimpleSQLiteQuery() != null) {
+            Log.i(TAG, "setPropertyObserver: inside");
             mProperties = mListPropertyViewModel.getPropertiesWithImagesFromRowQuery();
             if (mProperties.size() > 0) displayDataOnRecyclerView();
+            Log.i(TAG, "setPropertyObserver: mProperties.size():: " + mProperties.size());
         } else {
             mListPropertyViewModel.getPropertyWithImages().observe(getViewLifecycleOwner(), getProperties);
         }

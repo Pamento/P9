@@ -496,7 +496,9 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
 
     private void goBackToList() {
         MainActivity ma = (MainActivity) requireActivity();
-        ma.displayFragm(EFragments.DETAIL,mSingleProperty.getType());
+        ma.onBackPressed();
+        Log.i(TAG, "goBackToList: onBackPressed __ from EditProperty");
+        //ma.displayFragm(EFragments.DETAIL,mSingleProperty.getType());
     }
 
     @Override
