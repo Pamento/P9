@@ -181,8 +181,8 @@ public class SearchEngine extends Fragment implements DatePickerDialog.OnDateSet
     }
 
     private void checkMinMaxV() {
-        boolean price = mParamsForQuery.getMaxPrice() > mParamsForQuery.getMinPrice();
-        boolean surface = mParamsForQuery.getMaxSurface() > mParamsForQuery.getMinSurface();
+        boolean price = mParamsForQuery.getMaxPrice() >= mParamsForQuery.getMinPrice();
+        boolean surface = mParamsForQuery.getMaxSurface() >= mParamsForQuery.getMinSurface();
         if (price && surface) sendQuery();
         else {
             String msg = getResources().getString(R.string.search_min_max_velues_error);

@@ -3,12 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/mi_save"
-        android:icon="@drawable/ic_check_white_24"
-        android:title="@string/mi_title_save_change"
-        app:showAsAction="always" />
-
-    <item
         android:id="@+id/mi_dollar_to_euro"
         android:focusable="false"
         android:title="@string/mi_dollar_to_euro" />
