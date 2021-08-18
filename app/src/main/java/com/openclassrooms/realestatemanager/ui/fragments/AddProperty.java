@@ -289,7 +289,6 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Uri imageUri = Uri.fromFile(photoFile);
-            //String uri = ImageFilePathUtil.getRealPathFromURI_API19(requireContext(), imageUri);
             mAddPropertyViewModel.createOneImageOfProperty(imageUri.toString());
         } else if (requestCode == PICK_IMAGE_GALLERY && resultCode == RESULT_OK) {
             if (data != null) {
@@ -310,7 +309,6 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
 
             @Override
             public void afterTextChanged(Editable editable) {/**/
-                // TODO
                 //https://www.google.com/search?client=opera&q=android+editable.setFilters&sourceid=opera&ie=UTF-8&oe=UTF-8
                 //https://stackoverflow.com/questions/3349121/how-do-i-use-inputfilter-to-limit-characters-in-an-edittext-in-android
                 editable.setFilters(new InputFilter[]{priceFilter});
