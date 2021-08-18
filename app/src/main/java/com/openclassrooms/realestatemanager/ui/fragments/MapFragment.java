@@ -160,7 +160,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
             if (mPropertyWithImages.size() != 0) {
                 for (PropertyWithImages sp : mPropertyWithImages) {
                     Marker marker;
-                    if (sp != null) {
+                    if (sp != null && !sp.mSingleProperty.getLocation().equals("")) {
                         String[] latLang = sp.mSingleProperty.getLocation().split(",");
                         Log.i(TAG, "setPropertiesMarkersOnMap: LOCATION:: " + Arrays.toString(latLang));
                         LatLng latLng = new LatLng(Double.parseDouble(latLang[0]), Double.parseDouble(latLang[1]));

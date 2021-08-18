@@ -26,10 +26,8 @@ public class SearchEngineViewModel extends ViewModel {
 
     public void buildAndSendSearchEstateQuery(RowQueryEstates rowQueryEstates) {
         String query = buildQuery(rowQueryEstates);
-        Log.i("BUILD_QUERY", "buildAndSendSearchEstateQuery: args::");
-        Log.i("BUILD_QUERY", "" + Arrays.toString(args.toArray()));
-        Log.i("BUILD_QUERY", "query::");
-        Log.i("BUILD_QUERY", "" + query);
+        Log.i("BUILD_QUERY", "args:: " + Arrays.toString(args.toArray()));
+        Log.i("BUILD_QUERY", "query::\n" + query);
         mQuery = new SimpleSQLiteQuery(query, args.toArray());
         sendRowEstateQuery();
     }
@@ -95,9 +93,9 @@ public class SearchEngineViewModel extends ViewModel {
     }
 
     private String toAppendNotNull(int sLong, boolean includeSoldEstate) {
-        if (sLong == 22 && includeSoldEstate) return " WHERE " + DATE_SOLD + " IS NOT NULL";
+        if (sLong == 22 && includeSoldEstate) return " WHERE " + DATE_SOLD + " > ''";
         else if (sLong == 22) return " WHERE " + DATE_SOLD + " IS NULL";
-        else if (sLong > 22 && includeSoldEstate) return " AND " + DATE_SOLD + " IS NOT NULL";
-        else return " AND " + DATE_SOLD + " IS NULL";
+        else if (sLong > 22 && includeSoldEstate) return " AND " + DATE_SOLD + " > ''";
+        else return " AND " + DATE_SOLD + " = ''";
     }
 }

@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.data.local.entities.PropertyWithImages;
 import com.openclassrooms.realestatemanager.data.viewModelFactory.ViewModelFactory;
 import com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM.ListPropertyViewModel;
@@ -24,6 +25,7 @@ import com.openclassrooms.realestatemanager.injection.Injection;
 import com.openclassrooms.realestatemanager.ui.activity.MainActivity;
 import com.openclassrooms.realestatemanager.ui.adapters.ListPropertyAdapter;
 import com.openclassrooms.realestatemanager.util.enums.EFragments;
+import com.openclassrooms.realestatemanager.util.notification.NotifyBySnackBar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,9 +37,9 @@ public class ListProperty extends Fragment implements ListPropertyAdapter.OnItem
 
     private static final String TAG = "LIST_TO_MAP";
     private ListPropertyViewModel mListPropertyViewModel;
+    private View view;
     private FragmentListPropertyBinding binding;
     private RecyclerView recyclerView;
-    private ListPropertyAdapter mAdapter;
     private List<PropertyWithImages> mProperties = new ArrayList<>();
 
     public ListProperty() {
@@ -46,11 +48,6 @@ public class ListProperty extends Fragment implements ListPropertyAdapter.OnItem
 
     public static ListProperty newInstance() {
         return new ListProperty();
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -66,6 +63,7 @@ public class ListProperty extends Fragment implements ListPropertyAdapter.OnItem
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view,savedInstanceState);
+        this.view = view;
         setFabListener();
     }
 
@@ -80,6 +78,10 @@ public class ListProperty extends Fragment implements ListPropertyAdapter.OnItem
             Log.i(TAG, "setPropertyObserver: inside");
             mProperties = mListPropertyViewModel.getPropertiesWithImagesFromRowQuery();
             if (mProperties.size() > 0) displayDataOnRecyclerView();
+            else {
+                String msg = getResources().getString(R.string.search_give_zero_data);
+                NotifyBySnackBar.showSnackBar(1, view, msg);
+            }
             Log.i(TAG, "setPropertyObserver: mProperties.size():: " + mProperties.size());
         } else {
             mListPropertyViewModel.getPropertyWithImages().observe(getViewLifecycleOwner(), getProperties);
@@ -110,8 +112,8 @@ public class ListProperty extends Fragment implements ListPropertyAdapter.OnItem
     }
 
     private void displayDataOnRecyclerView() {
-        mAdapter = new ListPropertyAdapter(mProperties,this);
-        recyclerView.setAdapter(mAdapter);
+        ListPropertyAdapter adapter = new ListPropertyAdapter(mProperties, this);
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
