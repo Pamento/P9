@@ -15,15 +15,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.openclassrooms.realestatemanager.R;
-import com.openclassrooms.realestatemanager.data.viewModelFactory.ViewModelFactory;
-import com.openclassrooms.realestatemanager.data.viewmodel.MainActivityViewModel;
 import com.openclassrooms.realestatemanager.databinding.ActivityMainBinding;
-import com.openclassrooms.realestatemanager.injection.Injection;
 import com.openclassrooms.realestatemanager.ui.fragments.AddProperty;
 import com.openclassrooms.realestatemanager.ui.fragments.DetailFragment;
 import com.openclassrooms.realestatemanager.ui.fragments.EditProperty;
@@ -41,8 +37,7 @@ import static com.openclassrooms.realestatemanager.util.Constants.Constants.*;
 import static com.openclassrooms.realestatemanager.util.enums.EFragments.*;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "AddProperty";
-    private MainActivityViewModel mMainViewModel;
+    private static final String TAG = "MainActivity";
     private View view;
     private ActivityMainBinding binding;
     private boolean mActivityHasTwoFragment = false;
@@ -52,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initViewModel();
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         view = binding.getRoot();
         setFragmentManager();
@@ -63,11 +57,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void setFragmentManager() {
         mFragmentManager = getSupportFragmentManager();
-    }
-
-    private void initViewModel() {
-        ViewModelFactory vmF = Injection.sViewModelFactory(this);
-        mMainViewModel = new ViewModelProvider(this, vmF).get(MainActivityViewModel.class);
     }
 
     private void checkIfActivityHasDoubleFragment() {
@@ -111,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
     private void initDetailFragment(boolean firstPositionOfList) {
         Log.i(TAG, "MAIN__ initDetailFragment: run");
         // The function: initDetailFragment() is called only on the opening the application. She doesn't part of navigation.
-        DetailFragment detail = DetailFragment.newInstance(mActivityHasTwoFragment,firstPositionOfList);
+        DetailFragment detail = DetailFragment.newInstance(mActivityHasTwoFragment, firstPositionOfList);
         FragmentTransaction ft = mFragmentManager.beginTransaction();
         ft.replace(R.id.main_activity_fragment_container_secondary, detail, DETAIL_FRAGMENT).commit();
     }
@@ -124,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
             //transaction.setReorderingAllowed(true);
             switch (fragment) {
                 case LIST:
+                    Log.i(TAG, "MAIN__ displayFragm ((onBackPressed)): LIST");
                     setToolbarTitle(getResources().getString(R.string.app_name), false);
                     ListProperty lp = ListProperty.newInstance();
                     transaction.replace(getFragmentContainer(fragment), lp, LIST_FRAGMENT);
@@ -132,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     break;
                 case MAP:
+                    Log.i(TAG, "MAIN__ displayFragm ((onBackPressed)): MAP");
                     if (isMapsServiceOk()) {
                         setToolbarTitle("New York", false);
                         MapFragment mf = MapFragment.newInstance(mActivityHasTwoFragment);
@@ -142,27 +133,32 @@ public class MainActivity extends AppCompatActivity {
                     }
                     break;
                 case DETAIL:
+                    Log.i(TAG, "MAIN__ displayFragm ((onBackPressed)): DETAIL");
                     setToolbarTitle(toolbarTitle, true);
                     DetailFragment df = DetailFragment.newInstance(mActivityHasTwoFragment, true);
                     // transaction.add add the fragment as a layer without removing the list
                     transaction.add(getFragmentContainer(null), df, DETAIL_FRAGMENT);
                     break;
                 case ADD:
+                    Log.i(TAG, "MAIN__ displayFragm ((onBackPressed)): ADD");
                     setToolbarTitle(toolbarTitle, false);
                     AddProperty ap = AddProperty.newInstance();
                     transaction.add(getFragmentContainer(null), ap, ADD_FRAGMENT);
                     break;
                 case SEARCH:
+                    Log.i(TAG, "MAIN__ displayFragm ((onBackPressed)): SEARCH");
                     setToolbarTitle(toolbarTitle, false);
                     SearchEngine se = SearchEngine.newInstance();
                     transaction.add(getFragmentContainer(null), se, SEARCH_FRAGMENT);
                     break;
                 case SIMULATOR:
+                    Log.i(TAG, "MAIN__ displayFragm ((onBackPressed)): SIMULATOR");
                     setToolbarTitle(toolbarTitle, true);
                     LoanSimulator ls = LoanSimulator.newInstance();
                     transaction.add(getFragmentContainer(null), ls, SIMULATOR_FRAGMENT);
                     break;
                 case EDIT:
+                    Log.i(TAG, "MAIN__ displayFragm ((onBackPressed)): EDIT");
                     setToolbarTitle(toolbarTitle, false);
                     EditProperty ep = EditProperty.newInstance();
                     transaction.add(getFragmentContainer(null), ep, EDIT_FRAGMENT);
@@ -208,9 +204,9 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         int count = mFragmentManager.getBackStackEntryCount();
-        Log.i(TAG, "onBackPressed: mEFragments::  " + mEFragments + " & count::"+ count);
+        Log.i(TAG, "onBackPressed: mEFragments::  " + mEFragments + " & count::" + count);
         mEFragments = findFragmentItIs();
-        Log.i(TAG, "onBackPressed: mEFragments::  " + mEFragments + " & count::"+ count);
+        Log.i(TAG, "onBackPressed: mEFragments::  " + mEFragments + " & count::" + count);
         switch (mEFragments) {
             case LIST:
                 setToolbarTitle(getResources().getString(R.string.app_name), false);
@@ -290,6 +286,8 @@ public class MainActivity extends AppCompatActivity {
             runCommand(2);
         } else if (id == R.id.mi_euro_to_dollar) {
             runCommand(1);
+        } else if (id == R.id.mi_reset_row_query) {
+            runCommand(0);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -312,6 +310,15 @@ public class MainActivity extends AppCompatActivity {
             case SIMULATOR:
                 LoanSimulator lF = (LoanSimulator) mFragmentManager.findFragmentByTag(SIMULATOR_FRAGMENT);
                 if (lF != null) lF.handleCurrency(commandCode);
+            case LIST:
+                Log.i(TAG, "runCommand: LIST::");
+                ListProperty list = (ListProperty) mFragmentManager.findFragmentByTag(LIST_FRAGMENT);
+                if (list != null) list.resetRowQuery();
+                break;
+            case MAP:
+                MapFragment map = (MapFragment) mFragmentManager.findFragmentByTag(MAP_FRAGMENT);
+                if (map != null) map.resetRowQuery();
+                break;
             default:
                 break;
         }

@@ -4,12 +4,12 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
-import androidx.sqlite.db.SupportSQLiteQuery;
+import androidx.sqlite.db.SimpleSQLiteQuery;
 
-import com.openclassrooms.realestatemanager.data.local.entities.ImageOfProperty;
 import com.openclassrooms.realestatemanager.data.local.entities.PropertyWithImages;
 import com.openclassrooms.realestatemanager.data.local.reposiotries.ImageRepository;
 import com.openclassrooms.realestatemanager.data.local.reposiotries.PropertiesRepository;
+import com.openclassrooms.realestatemanager.util.enums.QueryState;
 
 import java.util.List;
 
@@ -23,10 +23,10 @@ public class ListPropertyViewModel extends ViewModel {
         mImageRepository = imageRepository;
     }
 
-    public SupportSQLiteQuery getSimpleSQLiteQuery() {
+    public LiveData<SimpleSQLiteQuery> getSimpleSQLiteQuery() {
         Log.i("AddProperty", "LIST_VM__ getSimpleSQLiteQuery: SQLite__SQLite__SQLite__SQLite__SQLite__");
         Log.i("AddProperty", "LIST_VM__ getSimpleSQLiteQuery: SQLite__SQLite__SQLite__SQLite__SQLite__");
-        return mPropertiesRepository.getRowQueryEstates();
+        return mPropertiesRepository.getRowQueryProperties();
     }
 
     public List<PropertyWithImages> getPropertiesWithImagesFromRowQuery() {
@@ -37,12 +37,16 @@ public class ListPropertyViewModel extends ViewModel {
         return mPropertiesRepository.getAllPropertiesWithImages();
     }
 
-    public LiveData<List<ImageOfProperty>> getImagesOfProperty(String propertyId) {
-        return mImageRepository.getAllImagesOfProperty(propertyId);
-    }
-
     public void setPropertyId(String propertyId) {
         mPropertiesRepository.setPROPERTY_ID(propertyId);
         mImageRepository.setPropertyId(propertyId);
+    }
+
+    public LiveData<QueryState> getQueryState() {
+        return mPropertiesRepository.getQueryState();
+    }
+
+    public void setQueryState(QueryState queryState) {
+        mPropertiesRepository.setQueryState(queryState);
     }
 }

@@ -5,12 +5,13 @@ import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
-import androidx.sqlite.db.SupportSQLiteQuery;
+import androidx.sqlite.db.SimpleSQLiteQuery;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.openclassrooms.realestatemanager.data.local.entities.PropertyWithImages;
 import com.openclassrooms.realestatemanager.data.local.reposiotries.ImageRepository;
 import com.openclassrooms.realestatemanager.data.local.reposiotries.PropertiesRepository;
+import com.openclassrooms.realestatemanager.util.enums.QueryState;
 
 import java.util.List;
 
@@ -34,10 +35,10 @@ public class MapViewModel extends ViewModel {
         return mPropertiesRepository.getAllPropertiesWithImages();
     }
 
-    public SupportSQLiteQuery getSimpleSQLiteQuery() {
+    public LiveData<SimpleSQLiteQuery> getSimpleSQLiteQuery() {
         Log.i("AddProperty", "MAP_VM__ getSimpleSQLiteQuery: SQLite__SQLite__SQLite__SQLite__SQLite__");
         Log.i("AddProperty", "MAP_VM__ getSimpleSQLiteQuery: SQLite__SQLite__SQLite__SQLite__SQLite__");
-        return mPropertiesRepository.getRowQueryEstates();
+        return mPropertiesRepository.getRowQueryProperties();
     }
 
     public void setPropertyId(String propertyId) {
@@ -60,5 +61,13 @@ public class MapViewModel extends ViewModel {
 
     public void setCurrentUserLocation(Location currentUserLocation) {
         mCurrentUserLocation = currentUserLocation;
+    }
+
+    public LiveData<QueryState> getQueryState() {
+        return mPropertiesRepository.getQueryState();
+    }
+
+    public void setQueryState(QueryState queryState) {
+        mPropertiesRepository.setQueryState(queryState);
     }
 }

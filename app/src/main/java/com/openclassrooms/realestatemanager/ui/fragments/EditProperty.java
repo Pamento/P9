@@ -272,7 +272,6 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
             int fromPosition = viewHolder.getAbsoluteAdapterPosition();
             int toPosition = target.getAbsoluteAdapterPosition();
             Collections.swap(mImageOfPropertyList, fromPosition, toPosition);
-            // TODO? updateImageAdapter();
             Objects.requireNonNull(imagesRecycler.getAdapter()).notifyItemMoved(fromPosition, toPosition);
             return false;
         }
@@ -280,15 +279,7 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
             ImageOfProperty imageOfProperty = mImageAdapter.getImageOfPropertyAt(viewHolder.getAbsoluteAdapterPosition());
-            // TODO swiped image don't necessary make part of mImageOfPropertyList.
-            //  Before, need to check if swiped/deleted image is in
-//            if (mImageOfPropertyList.contains(imageOfProperty)) {
-//                mImageOfPropertyList.remove(imageOfProperty);
-//                // TODO check the changes for update ImageOfProperty in case when description was added
-//                mEditPropertyViewModel.deleteImageOfProperty(imageOfProperty.getId());
-//            }
             mImageAdapter.removeDeletedImageFromList(viewHolder.getAbsoluteAdapterPosition());
-            //mImageAdapter.removeDeletedImageFromList(imageOfProperty);
         }
     };
 

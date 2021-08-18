@@ -4,12 +4,13 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.sqlite.db.SimpleSQLiteQuery;
-import androidx.sqlite.db.SupportSQLiteQuery;
 
 import com.openclassrooms.realestatemanager.data.local.dao.SinglePropertyDao;
 import com.openclassrooms.realestatemanager.data.local.entities.PropertyWithImages;
 import com.openclassrooms.realestatemanager.data.local.entities.SingleProperty;
+import com.openclassrooms.realestatemanager.util.enums.QueryState;
 
 import java.util.List;
 
@@ -21,11 +22,14 @@ public class PropertiesRepository {
     // data
     private final LiveData<List<PropertyWithImages>> mAllProperties;
     private String PROPERTY_ID;
-    private SimpleSQLiteQuery mRowQueryEstates;
+    private final MutableLiveData<SimpleSQLiteQuery> mRowQueryEstates;
+    private final MutableLiveData<QueryState> mQueryState = new MutableLiveData<>();
 
     public PropertiesRepository(SinglePropertyDao singlePropertyDao) {
         mSinglePropertyDao = singlePropertyDao;
         mAllProperties = mSinglePropertyDao.getPropertyWithImages();
+        mRowQueryEstates = new MutableLiveData<>();
+        mQueryState.setValue(QueryState.NULL);
     }
 
     public static synchronized PropertiesRepository getInstance(SinglePropertyDao singlePropertyDao) {
@@ -41,7 +45,7 @@ public class PropertiesRepository {
     }
 
     public List<PropertyWithImages> getPropertiesWithImagesQuery() {
-        return mSinglePropertyDao.getPropertyWithImageQuery(mRowQueryEstates);
+        return mSinglePropertyDao.getPropertyWithImageQuery(mRowQueryEstates.getValue());
     }
 
     public LiveData<SingleProperty> getSingleProperty(@Nullable String propertyId) {
@@ -68,11 +72,20 @@ public class PropertiesRepository {
         return PROPERTY_ID;
     }
 
-    public SupportSQLiteQuery getRowQueryEstates() {
+    public LiveData<QueryState> getQueryState() {
+        return mQueryState;
+    }
+
+    public void setQueryState(QueryState queryState) {
+        mQueryState.setValue(queryState);
+    }
+
+    public LiveData<SimpleSQLiteQuery> getRowQueryProperties() {
         return mRowQueryEstates;
     }
 
     public void setRowQueryEstates(SimpleSQLiteQuery rowQueryEstates) {
-        mRowQueryEstates = rowQueryEstates;
+        mQueryState.setValue(QueryState.QUERY);
+        mRowQueryEstates.setValue(rowQueryEstates);
     }
 }

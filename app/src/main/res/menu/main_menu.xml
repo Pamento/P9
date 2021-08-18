@@ -22,4 +22,9 @@
         android:id="@+id/mi_euro_to_dollar"
         android:focusable="false"
         android:title="@string/mi_title_euro_to_dollar"/>
+
+    <item
+        android:id="@+id/mi_reset_row_query"
+        android:focusable="false"
+        android:title="@string/mi_reset_row_query"/>
 </menu>

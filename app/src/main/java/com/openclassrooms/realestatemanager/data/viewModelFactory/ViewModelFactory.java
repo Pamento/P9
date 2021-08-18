@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModelProvider;
 import com.openclassrooms.realestatemanager.data.local.reposiotries.ImageRepository;
 import com.openclassrooms.realestatemanager.data.local.reposiotries.PropertiesRepository;
 import com.openclassrooms.realestatemanager.data.remote.repository.GoogleMapsRepository;
-import com.openclassrooms.realestatemanager.data.viewmodel.MainActivityViewModel;
 import com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM.AddPropertyViewModel;
 import com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM.DetailViewModel;
 import com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM.EditPropertyViewModel;
@@ -39,9 +38,6 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        if (modelClass.isAssignableFrom(MainActivityViewModel.class)) {
-            return (T) new MainActivityViewModel(mPropertiesRepository, mImageRepository, mExecutor);
-        }
         if (modelClass.isAssignableFrom(AddPropertyViewModel.class)) {
             return (T) new AddPropertyViewModel(mPropertiesRepository, mImageRepository, mGoogleMapsRepository, mExecutor);
         }

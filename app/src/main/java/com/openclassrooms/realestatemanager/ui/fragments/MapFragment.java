@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.sqlite.db.SimpleSQLiteQuery;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,6 +35,7 @@ import com.openclassrooms.realestatemanager.ui.activity.MainActivity;
 import com.openclassrooms.realestatemanager.util.Constants.Constants;
 import com.openclassrooms.realestatemanager.util.Utils;
 import com.openclassrooms.realestatemanager.util.enums.EFragments;
+import com.openclassrooms.realestatemanager.util.enums.QueryState;
 import com.openclassrooms.realestatemanager.util.notification.NotifyBySnackBar;
 import com.openclassrooms.realestatemanager.util.system.LocationUtils;
 
@@ -54,7 +56,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     private View view;
     private FragmentMapBinding binding;
     private GoogleMap mGoogleMaps;
-    private List<PropertyWithImages> mPropertyWithImages = new ArrayList<>();
+    private final List<PropertyWithImages> mPropertyWithImages = new ArrayList<>();
     private boolean isDoubleFragment = false;
 
     public MapFragment() {
@@ -146,11 +148,30 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                     moveCamera(mMapViewModel.getCurrentUserLocation());
                     // display point bleu on the map
                     mGoogleMaps.setMyLocationEnabled(true);
-                    setPropertyWithImages();
+                    setQueryStateObserver();
                 }
             }
         });
     }
+
+    private void setQueryStateObserver() {
+        Log.i(TAG, "MAP__ checkDataToDisplay: RUN");
+        mMapViewModel.getQueryState().observe(getViewLifecycleOwner(), queryStateObserver);
+    }
+
+    private void unsubscribeQueryState() {
+        mMapViewModel.getQueryState().removeObserver(queryStateObserver);
+    }
+
+    final Observer<QueryState> queryStateObserver = queryState -> {
+        if (queryState.equals(QueryState.NULL)) {
+            Log.i(TAG, "MAP__ checkDataToDisplay: IF:: all properties");
+            setPropertyObserver();
+        } else {
+            setRowQueryObserver();
+            Log.i(TAG, "MAP__ checkDataToDisplay: ELSE:: row query");
+        }
+    };
 
     private void setPropertiesMarkersOnMap() {
         if (mGoogleMaps == null) mGoogleMaps = mMapViewModel.getGoogleMap();
@@ -175,20 +196,51 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
-    private void setPropertyWithImages() {
-        if (mMapViewModel.getSimpleSQLiteQuery() != null) {
-            mPropertyWithImages = mMapViewModel.getPropertiesWithImagesFromRowQuery();
-            if (mPropertyWithImages != null) {
+    private void setPropertyObserver() {
+        mMapViewModel.getPropertyWithImages().observe(getViewLifecycleOwner(), getPropertyWithImages);
+    }
+
+    private void unsubscribeProperty() {
+        mMapViewModel.getPropertyWithImages().removeObserver(getPropertyWithImages);
+    }
+
+    private void setRowQueryObserver() {
+        mMapViewModel.getSimpleSQLiteQuery().observe(getViewLifecycleOwner(), rowQueryObserver);
+    }
+
+    private void unsubscribeRowQuery() {
+        mMapViewModel.getSimpleSQLiteQuery().removeObserver(rowQueryObserver);
+    }
+
+    public void resetRowQuery() {
+        Log.i(TAG, "MAP__ resetRowQuery: ");
+        mMapViewModel.setQueryState(QueryState.NULL);
+        setQueryStateObserver();
+    }
+
+    final Observer<SimpleSQLiteQuery> rowQueryObserver = new Observer<SimpleSQLiteQuery>() {
+        @Override
+        public void onChanged(SimpleSQLiteQuery simpleSQLiteQuery) {
+            if (simpleSQLiteQuery != null) {
+                unsubscribeProperty();
+                mPropertyWithImages.clear();
+                List<PropertyWithImages> fromRowQuery = mMapViewModel.getPropertiesWithImagesFromRowQuery();
+                if (fromRowQuery.size() == 0) {
+                    String msg = getResources().getString(R.string.search_give_zero_data);
+                    NotifyBySnackBar.showSnackBar(1, view, msg);
+                }
+                mPropertyWithImages.addAll(fromRowQuery);
                 setPropertiesMarkersOnMap();
             }
-        } else {
-            mMapViewModel.getPropertyWithImages().observe(getViewLifecycleOwner(), getPropertyWithImages);
         }
-    }
+    };
 
     private final Observer<List<PropertyWithImages>> getPropertyWithImages =
             propertyWithImages -> {
-                if (propertyWithImages != null) mPropertyWithImages = propertyWithImages;
+                if (propertyWithImages != null) {
+                    mPropertyWithImages.clear();
+                    mPropertyWithImages.addAll(propertyWithImages);
+                }
                 setPropertiesMarkersOnMap();
             };
 
@@ -200,7 +252,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                     Objects.requireNonNull(LocationUtils.getCurrentDeviceLocation()).observe(getViewLifecycleOwner(), getLocation);
                 } else {
                     String msg = "Please, switch ON location for use plenty of this app.";
-                    NotifyBySnackBar.showSnackBar(1,view,msg);
+                    NotifyBySnackBar.showSnackBar(1, view, msg);
                 }
             }
         });
@@ -232,13 +284,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
 
     private void navigateToFragment(EFragments fragment, String toolbarTitle) {
         MainActivity ma = (MainActivity) requireActivity();
-        ma.displayFragm(fragment, toolbarTitle);
+        if (fragment.equals(LIST)) ma.onBackPressed();
+        else ma.displayFragm(fragment, toolbarTitle);
+        Log.i(TAG, "MAP__ navigateToFragment: onBackPressed from MapFragment");
     }
 
     private String getPropertyType(String propertyId) {
         String pType = "";
         for (PropertyWithImages p : mPropertyWithImages) {
-            if (p.mSingleProperty.getId().equals(propertyId)) pType = p.mSingleProperty.getType();
+            if (p.mSingleProperty.getId().equals(propertyId))
+                pType = p.mSingleProperty.getType();
         }
         return pType;
     }
@@ -247,5 +302,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     public void onDestroyView() {
         binding = null;
         super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.i(TAG, "MAP__ onDestroy ");
+        if (mMapViewModel.getQueryState().hasActiveObservers()) unsubscribeQueryState();
+        if (mMapViewModel.getSimpleSQLiteQuery().hasActiveObservers())
+            unsubscribeRowQuery();
+        if (mMapViewModel.getPropertyWithImages().hasActiveObservers())
+            unsubscribeProperty();
+        super.onDestroy();
     }
 }

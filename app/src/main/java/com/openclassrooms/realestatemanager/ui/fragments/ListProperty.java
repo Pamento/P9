@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.sqlite.db.SimpleSQLiteQuery;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,6 +26,7 @@ import com.openclassrooms.realestatemanager.injection.Injection;
 import com.openclassrooms.realestatemanager.ui.activity.MainActivity;
 import com.openclassrooms.realestatemanager.ui.adapters.ListPropertyAdapter;
 import com.openclassrooms.realestatemanager.util.enums.EFragments;
+import com.openclassrooms.realestatemanager.util.enums.QueryState;
 import com.openclassrooms.realestatemanager.util.notification.NotifyBySnackBar;
 
 import java.util.ArrayList;
@@ -35,12 +37,12 @@ import static com.openclassrooms.realestatemanager.util.enums.EFragments.MAP;
 
 public class ListProperty extends Fragment implements ListPropertyAdapter.OnItemPropertyListClickListener {
 
-    private static final String TAG = "LIST_TO_MAP";
+    private static final String TAG = "ListProperty";
     private ListPropertyViewModel mListPropertyViewModel;
     private View view;
     private FragmentListPropertyBinding binding;
     private RecyclerView recyclerView;
-    private List<PropertyWithImages> mProperties = new ArrayList<>();
+    private final List<PropertyWithImages> mProperties = new ArrayList<>();
 
     public ListProperty() {
         // Required empty public constructor
@@ -54,48 +56,99 @@ public class ListProperty extends Fragment implements ListPropertyAdapter.OnItem
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         initViewModel();
-        binding = FragmentListPropertyBinding.inflate(inflater,container,false);
+        binding = FragmentListPropertyBinding.inflate(inflater, container, false);
         setRecyclerView();
-        setPropertyObserver();
+        setQueryStateObserver();
         return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view,savedInstanceState);
+        super.onViewCreated(view, savedInstanceState);
         this.view = view;
         setFabListener();
     }
 
     private void initViewModel() {
         ViewModelFactory vmF = Injection.sViewModelFactory(requireActivity());
-        mListPropertyViewModel = new ViewModelProvider(requireActivity(),vmF).get(ListPropertyViewModel.class);
+        mListPropertyViewModel = new ViewModelProvider(requireActivity(), vmF).get(ListPropertyViewModel.class);
     }
 
-    private void setPropertyObserver() {
-        Log.i(TAG, "setPropertyObserver");
-        if (mListPropertyViewModel.getSimpleSQLiteQuery() != null) {
-            Log.i(TAG, "setPropertyObserver: inside");
-            mProperties = mListPropertyViewModel.getPropertiesWithImagesFromRowQuery();
-            if (mProperties.size() > 0) displayDataOnRecyclerView();
-            else {
-                String msg = getResources().getString(R.string.search_give_zero_data);
-                NotifyBySnackBar.showSnackBar(1, view, msg);
-            }
-            Log.i(TAG, "setPropertyObserver: mProperties.size():: " + mProperties.size());
-        } else {
-            mListPropertyViewModel.getPropertyWithImages().observe(getViewLifecycleOwner(), getProperties);
-        }
+    private void setQueryStateObserver() {
+        Log.i(TAG, "LIST__ setQueryStateObserver: RUN");
+        mListPropertyViewModel.getQueryState().observe(getViewLifecycleOwner(), queryStateObserver);
     }
+
+    private void unsubscribeQueryState() {
+        mListPropertyViewModel.getQueryState().removeObserver(queryStateObserver);
+    }
+
+    final Observer<QueryState> queryStateObserver = queryState -> {
+        if (queryState.equals(QueryState.NULL)) {
+            Log.i(TAG, "LIST__ queryStateObserver: IF:: all properties ");
+            setPropertiesObserver();
+        } else {
+            Log.i(TAG, "LIST__ queryStateObserver: ELSE:: row query");
+            subscribeRowQuery();
+        }
+    };
+
+    private void setPropertiesObserver() {
+        Log.i(TAG, "setPropertyObserver");
+        mListPropertyViewModel.getPropertyWithImages().observe(getViewLifecycleOwner(), getProperties);
+    }
+
+    private void unsubscribeProperties() {
+        mListPropertyViewModel.getPropertyWithImages().removeObserver(getProperties);
+    }
+
+    private void unsubscribeRowQuery() {
+        mListPropertyViewModel.getSimpleSQLiteQuery().removeObserver(rowQueryObserver);
+    }
+
+    private void subscribeRowQuery() {
+        mListPropertyViewModel.getSimpleSQLiteQuery().observe(getViewLifecycleOwner(), rowQueryObserver);
+    }
+
+    public void resetRowQuery() {
+        Log.i(TAG, "LIST__ resetRowQuery: ");
+        mListPropertyViewModel.setQueryState(QueryState.NULL);
+        setQueryStateObserver();
+    }
+
+    final Observer<SimpleSQLiteQuery> rowQueryObserver = new Observer<SimpleSQLiteQuery>() {
+        @Override
+        public void onChanged(SimpleSQLiteQuery simpleSQLiteQuery) {
+            Log.i(TAG, "LIST__ onChanged: rowQueryObserver RUN");
+            if (simpleSQLiteQuery != null) {
+                unsubscribeProperties();
+                mProperties.clear();
+                List<PropertyWithImages> fromRowQuery = mListPropertyViewModel.getPropertiesWithImagesFromRowQuery();
+                Log.i(TAG, "onChanged: PropertiesFromRowQuery:: " + fromRowQuery.size());
+                if (fromRowQuery.size() == 0) {
+                    String msg = getResources().getString(R.string.search_give_zero_data);
+                    NotifyBySnackBar.showSnackBar(1, view, msg);
+                }
+                mProperties.addAll(fromRowQuery);
+                displayDataOnRecyclerView();
+            }
+        }
+    };
 
     final Observer<List<PropertyWithImages>> getProperties = propertyWithImages -> {
-        if (propertyWithImages != null) mProperties = propertyWithImages;
+        if (propertyWithImages != null) {
+            Log.i(TAG, "LIST__ getProperties_OBSERVER:: " + propertyWithImages.size());
+            mProperties.clear();
+            Log.i(TAG, "LIST__ getProperties_OBSERVER:: " + mProperties.size());
+            mProperties.addAll(propertyWithImages);
+            Log.i(TAG, "LIST__ getProperties_OBSERVER:: " + mProperties.size());
+        }
         displayDataOnRecyclerView();
     };
 
     private void startOtherFragment(EFragments fragment, String param) {
         MainActivity ma = (MainActivity) requireActivity();
-        ma.displayFragm(fragment,param);
+        ma.displayFragm(fragment, param);
     }
 
     private void setFabListener() {
@@ -118,7 +171,7 @@ public class ListProperty extends Fragment implements ListPropertyAdapter.OnItem
 
     @Override
     public void onItemPropertyListClickListener(int position) {
-        if ( mProperties.size() > 0) {
+        if (mProperties.size() > 0) {
             PropertyWithImages prop = mProperties.get(position);
             String id = prop.mSingleProperty.getId();
             String propertyType = prop.mSingleProperty.getType();
@@ -134,5 +187,17 @@ public class ListProperty extends Fragment implements ListPropertyAdapter.OnItem
     public void onDestroyView() {
         binding = null;
         super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.i(TAG, "LIST__ onDestroy ");
+        if (mListPropertyViewModel.getQueryState().hasActiveObservers())
+            unsubscribeQueryState();
+        if (mListPropertyViewModel.getSimpleSQLiteQuery().hasActiveObservers())
+            unsubscribeRowQuery();
+        if (mListPropertyViewModel.getPropertyWithImages().hasActiveObservers())
+            unsubscribeProperties();
+        super.onDestroy();
     }
 }

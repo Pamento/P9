@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +26,6 @@ import com.openclassrooms.realestatemanager.injection.Injection;
 import com.openclassrooms.realestatemanager.ui.activity.MainActivity;
 import com.openclassrooms.realestatemanager.util.Utils;
 import com.openclassrooms.realestatemanager.util.calculation.Calculation;
-import com.openclassrooms.realestatemanager.util.enums.EFragments;
 import com.openclassrooms.realestatemanager.util.notification.NotifyBySnackBar;
 import com.openclassrooms.realestatemanager.util.resources.AppResources;
 
@@ -146,7 +146,6 @@ public class SearchEngine extends Fragment implements DatePickerDialog.OnDateSet
         mSearchEngineViewModel = new ViewModelProvider(requireActivity(), vmF).get(SearchEngineViewModel.class);
     }
 
-    // TODO compare if max value is greater than min value
 
     public void searchProperties() {
         getValues();
@@ -178,8 +177,17 @@ public class SearchEngine extends Fragment implements DatePickerDialog.OnDateSet
         mParamsForQuery.setDateRegister(String.valueOf(mMillisDateToSearchFrom));
         mParamsForQuery.setQuarter(binding.searchFQuarter.getText().toString());
         mParamsForQuery.setSoldEstateInclude(binding.searchFSoldSwitch.isChecked());
-        // TODO execute query
-        sendQuery();
+        checkMinMaxV();
+    }
+
+    private void checkMinMaxV() {
+        boolean price = mParamsForQuery.getMaxPrice() > mParamsForQuery.getMinPrice();
+        boolean surface = mParamsForQuery.getMaxSurface() > mParamsForQuery.getMinSurface();
+        if (price && surface) sendQuery();
+        else {
+            String msg = getResources().getString(R.string.search_min_max_velues_error);
+            NotifyBySnackBar.showSnackBar(1, view, msg);
+        }
     }
 
     private int getIntValues(String value) {
@@ -188,15 +196,9 @@ public class SearchEngine extends Fragment implements DatePickerDialog.OnDateSet
 
     private void sendQuery() {
         mSearchEngineViewModel.buildAndSendSearchEstateQuery(mParamsForQuery);
-
         MainActivity ma = (MainActivity) requireActivity();
-        ma.displayFragm(EFragments.LIST,"");
-    }
-
-    @Override
-    public void onDestroyView() {
-        binding = null;
-        super.onDestroyView();
+        ma.onBackPressed();
+        Log.i(TAG, "SEARCH__ sendQuery: onBackPressed from SearchEngine");
     }
 
     @Override
@@ -208,5 +210,11 @@ public class SearchEngine extends Fragment implements DatePickerDialog.OnDateSet
         Date date = calendar.getTime();
         mMillisDateToSearchFrom = calendar.getTimeInMillis();
         setDateInputField(Utils.getUSFormatOfDate(date));
+    }
+
+    @Override
+    public void onDestroyView() {
+        binding = null;
+        super.onDestroyView();
     }
 }

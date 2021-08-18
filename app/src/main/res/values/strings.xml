@@ -15,6 +15,7 @@
     <string name="mi_dollar_to_euro"><![CDATA[$ → €]]></string>
     <string name="mi_title_euro_to_dollar"><![CDATA[€ → $]]></string>
     <string name="mi_title_loan_calculator">Loan calculator</string>
+    <string name="mi_reset_row_query">Display all estates</string>
     <string name="add_frg_date_init_label">Date of take of the property in manage:</string>
     <!-- commons strings -->
     <string name="description">Description</string>
@@ -111,4 +112,5 @@
     <string name="min_greater_max">Pleas, correct the values. Min is greater than max.</string>
     <string name="detail_address_title">Address</string>
     <string name="search_give_zero_data">There is no estate for this research.</string>
+    <string name="search_min_max_velues_error">The min and max values isn\'t correctly set.</string>
 </resources>

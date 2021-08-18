@@ -246,7 +246,6 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
             int fromPosition = viewHolder.getAbsoluteAdapterPosition();
             int toPosition = target.getAbsoluteAdapterPosition();
             Collections.swap(imagesToAdd, fromPosition, toPosition);
-            // TODO? updateImageAdapter();
             Objects.requireNonNull(imagesRecycler.getAdapter()).notifyItemMoved(fromPosition, toPosition);
             return false;
         }
@@ -422,7 +421,6 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
         String dateR = String.valueOf(mMillisOfRegisterProperty);
         String dateSold = mMillisOfSoldDate == 0 ? "" : String.valueOf(mMillisOfSoldDate);
         mAddPropertyViewModel.createNewProperty(type, desc, surface, price, rooms, bedrooms, bathrooms, dateR, dateSold, address1, address2, city, quarter, postalCode, location, amenities, agent);
-        // TODO save it from here ?
         saveDataAndNotifyUser();
     }
 
@@ -445,7 +443,6 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
             notify.showWarning(requireContext(), SAVE_PROPERTY_OK);
 
         mAddPropertyViewModel.resetImageOfProperty();
-        // TODO destroy AddProperty fragment and display ListProperty fragment.
         goBackToList();
     }
 

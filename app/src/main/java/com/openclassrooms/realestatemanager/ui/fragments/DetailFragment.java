@@ -104,7 +104,6 @@ public class DetailFragment extends Fragment {
         });
         mDetailViewModel.getImagesOfProperty().observe(getViewLifecycleOwner(), imagesOfProperty -> {
             mImageOfPropertyList.addAll(imagesOfProperty);
-            // TODO if mImageOfPropertyList.size() > 1 -> setDetailRecyclerView. else set ImageView
             displayDataOnRecyclerView();
         });
     }
@@ -121,8 +120,7 @@ public class DetailFragment extends Fragment {
                     property = propertiesWithImages.get(propertiesWithImages.size() - 1);
                 }
                 mSingleProperty = property.mSingleProperty;
-                // TODO is network is available
-                if (property.mSingleProperty.getLocation().equals("")) {
+                if (property.mSingleProperty.getLocation().equals("") && Utils.isInternetAvailable(requireContext())) {
                     getLocationFromAddress();
                 } else {
                     mDetailViewModel.setUrlOfStaticMapOfProperty(property.mSingleProperty.getLocation());
