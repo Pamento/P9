@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -40,7 +41,6 @@ import com.openclassrooms.realestatemanager.injection.Injection;
 import com.openclassrooms.realestatemanager.ui.activity.MainActivity;
 import com.openclassrooms.realestatemanager.ui.adapters.ImageListOfAddPropertyAdapter;
 import com.openclassrooms.realestatemanager.util.Utils;
-import com.openclassrooms.realestatemanager.util.enums.EFragments;
 import com.openclassrooms.realestatemanager.util.notification.NotificationsUtils;
 import com.openclassrooms.realestatemanager.util.notification.NotifyBySnackBar;
 import com.openclassrooms.realestatemanager.util.resources.AppResources;
@@ -119,32 +119,27 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
     }
 
     private void setRecyclerViewObserver() {
-        mAddPropertyViewModel.getImagesOfProperty()
-                .observe(getViewLifecycleOwner(),
-                        imageOfProperties -> {
-                            if (imageOfProperties != null) {
-                                Log.i(TAG, "ADD__ setRecyclerViewObserver: OBSERVER. __images-of-property.size():: " + imageOfProperties.size());
-                                Log.i(TAG, "ADD__ setRecyclerViewObserver: imagesToAdd.size():: " + imagesToAdd.size());
-                                if (imagesToAdd.size() == 0) {
-                                    Log.i(TAG, "ADD__ setRecyclerViewObserver: imagesToAdd.size()== 0");
-                                    imagesToAdd.addAll(imageOfProperties);
-                                    Log.i(TAG, "ADD__ setRecyclerViewObserver: imagesToAdd.size():: " + imagesToAdd.size());
-                                    setRecyclerView();
-                                } else {
-                                    Log.i(TAG, "setRecyclerViewObserver: clear()");
-                                    imagesToAdd.clear();
-                                    Log.i(TAG, "ADD__ setRecyclerViewObserver: imagesToAdd.size():: " + imagesToAdd.size());
-                                    imagesToAdd.addAll(imageOfProperties);
-                                    Log.i(TAG, "ADD__ setRecyclerViewObserver: OBSERVER. __imagesToAdd.size():: " + imagesToAdd.size());
-                                    updateImageAdapter(imageOfProperties);
-                                }
-
-                            }
-                        });
+        mAddPropertyViewModel.getImagesOfProperty().observe(getViewLifecycleOwner(), getImageOfProperty);
     }
 
+    private void unsubscribeRecyclerViewObserver() {
+        mAddPropertyViewModel.getImagesOfProperty().removeObserver(getImageOfProperty);
+    }
+
+    final Observer<List<ImageOfProperty>> getImageOfProperty = imageOfProperties -> {
+        if (imageOfProperties != null) {
+            if (imagesToAdd.size() == 0) {
+                imagesToAdd.addAll(imageOfProperties);
+                setRecyclerView();
+            } else {
+                imagesToAdd.clear();
+                imagesToAdd.addAll(imageOfProperties);
+                updateImageAdapter(imageOfProperties);
+            }
+        }
+    };
+
     private void updateImageAdapter(List<ImageOfProperty> ipsum) {
-        Log.i(TAG, "updateImageAdapter: imageToAdd.size():: " + imagesToAdd.size());
         mImageAdapter.updateImagesList(ipsum);
     }
 
@@ -165,8 +160,6 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
     // SET UI
     private void setCreationDate() {
         mMillisOfRegisterProperty = System.currentTimeMillis();
-        Log.i(TAG, "setCreationDate: mMillisOfRegisterProperty:: " + System.currentTimeMillis());
-        Log.i(TAG, "setCreationDate: mMillisOfRegisterProperty:: " + mMillisOfRegisterProperty);
         setDateInputField(Utils.getTodayDate(), 0);
         setListenerDatePicker();
     }
@@ -189,7 +182,6 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
     }
 
     private void handleSoldDateInput() {
-        Log.i(TAG, "handleSoldDateInput: RUN.          - mIsPropertySold:: " + mIsPropertySold);
         binding.addFDateSoldOn.setEnabled(mIsPropertySold);
     }
 
@@ -215,7 +207,6 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
                 binding.addFDateSoldOn.setOnClickListener(null);
             }
         }
-        Log.i(TAG, "handleSwitchEvent: click on 'Switch' button. mIsPropertySold:: " + mIsPropertySold);
         handleSoldDateInput();
     }
 
@@ -450,7 +441,6 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
         MainActivity ma = (MainActivity) requireActivity();
         ma.onBackPressed();
         Log.i(TAG, "ADD__ goBackToList: onBackPressed from AddProperty");
-        //ma.displayFragm(EFragments.LIST,"");
     }
 
     private String getAmenities() {
@@ -496,6 +486,7 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
 
     @Override
     public void onDestroy() {
+        if (mAddPropertyViewModel.getImagesOfProperty().hasActiveObservers()) unsubscribeRecyclerViewObserver();
         super.onDestroy();
         Log.i(TAG, "ADD__ onDestroy");
     }

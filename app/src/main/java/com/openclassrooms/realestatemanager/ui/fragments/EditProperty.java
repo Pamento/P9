@@ -40,7 +40,6 @@ import com.openclassrooms.realestatemanager.ui.activity.MainActivity;
 import com.openclassrooms.realestatemanager.ui.adapters.ImageListOfAddPropertyAdapter;
 import com.openclassrooms.realestatemanager.util.Utils;
 import com.openclassrooms.realestatemanager.util.dateTime.SQLTimeHelper;
-import com.openclassrooms.realestatemanager.util.enums.EFragments;
 import com.openclassrooms.realestatemanager.util.notification.NotificationsUtils;
 import com.openclassrooms.realestatemanager.util.notification.NotifyBySnackBar;
 import com.openclassrooms.realestatemanager.util.resources.AppResources;
@@ -138,6 +137,11 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
     private void setPropertyDataObservers() {
         mEditPropertyViewModel.getSingleProperty().observe(getViewLifecycleOwner(), getProperty);
         mEditPropertyViewModel.getImagesOfProperty().observe(getViewLifecycleOwner(), getImagesOfProperty);
+    }
+
+    private void unsubscribeDataObservers() {
+        mEditPropertyViewModel.getSingleProperty().removeObserver(getProperty);
+        mEditPropertyViewModel.getImagesOfProperty().removeObserver(getImagesOfProperty);
     }
 
     final Observer<SingleProperty> getProperty = new Observer<SingleProperty>() {
@@ -278,7 +282,7 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
 
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-            ImageOfProperty imageOfProperty = mImageAdapter.getImageOfPropertyAt(viewHolder.getAbsoluteAdapterPosition());
+            //ImageOfProperty imageOfProperty = mImageAdapter.getImageOfPropertyAt(viewHolder.getAbsoluteAdapterPosition());
             mImageAdapter.removeDeletedImageFromList(viewHolder.getAbsoluteAdapterPosition());
         }
     };
@@ -366,13 +370,23 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
     }
 
     private void setOnResponseObserver() {
-        mEditPropertyViewModel.getGeoLocationOfProperty().observe(getViewLifecycleOwner(), location -> {
+        mEditPropertyViewModel.getGeoLocationOfProperty().observe(getViewLifecycleOwner(), getLocation);
+    }
+
+    private void unsubscribeGetLocation() {
+        mEditPropertyViewModel.getGeoLocationOfProperty().removeObserver(getLocation);
+    }
+
+    final Observer<Location> getLocation = new Observer<Location>() {
+        @Override
+        public void onChanged(Location location) {
             if (location != null) {
                 mLocation = location;
                 updateImagesOfProperty();
+                unsubscribeGetLocation();
             }
-        });
-    }
+        }
+    };
 
     public void updateProperty() {
         mEditPropertyViewModel.getSingleProperty().removeObserver(getProperty);
@@ -519,5 +533,12 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
         formAddressBinding = null;
         binding = null;
         super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        if (mEditPropertyViewModel.getGeoLocationOfProperty().hasActiveObservers()) unsubscribeGetLocation();
+        unsubscribeDataObservers();
+        super.onDestroy();
     }
 }

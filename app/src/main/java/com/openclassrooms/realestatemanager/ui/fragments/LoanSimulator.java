@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.text.Editable;
@@ -72,28 +73,44 @@ public class LoanSimulator extends Fragment {
     }
 
     private void setOnResultObserver() {
-        mViewModel.getLoanCalculated().observe(getViewLifecycleOwner(), s -> {
-            Log.i(TAG, "setOnResultObserver: s:: " + s);
+        mViewModel.getLoanCalculated().observe(getViewLifecycleOwner(), getLoanCalculated);
+    }
+
+    private void getData() {
+        mViewModel.getSingleProperty().observe(getViewLifecycleOwner(), getSingleProperty);
+    }
+
+    private void unsubscribeResult() {
+        mViewModel.getLoanCalculated().removeObserver(getLoanCalculated);
+    }
+
+    private void unsubscribeProperty() {
+        mViewModel.getSingleProperty().removeObserver(getSingleProperty);
+    }
+
+    final Observer<String> getLoanCalculated = new Observer<String>() {
+        @Override
+        public void onChanged(String s) {
             if (s != null) {
                 loanCalculated = s;
                 String str = String.format(currencyToDisplay, s);
                 binding.loanCalcResult.setText(str);
             }
-        });
-    }
+        }
+    };
 
-    private void getData() {
-        mViewModel.getSingleProperty()
-                .observe(getViewLifecycleOwner(), singleProperty -> {
-                    mSingleProperty = singleProperty;
-                    if (singleProperty != null) {
-                        setOnContributionInputListener();
-                        setOnRatingInputListener();
-                        setOnDurationInputListener();
-                        updateUI();
-                    }
-                });
-    }
+    final Observer<SingleProperty> getSingleProperty = new Observer<SingleProperty>() {
+        @Override
+        public void onChanged(SingleProperty singleProperty) {
+            if (singleProperty != null) {
+                mSingleProperty = singleProperty;
+                setOnContributionInputListener();
+                setOnRatingInputListener();
+                setOnDurationInputListener();
+                updateUI();
+            }
+        }
+    };
 
     private void updateUI() {
         Log.i(TAG, "updateUI: interest value:: " + mViewModel.getInterest());
@@ -225,5 +242,12 @@ public class LoanSimulator extends Fragment {
     public void onDestroyView() {
         binding = null;
         super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        if (mViewModel.getLoanCalculated().hasActiveObservers()) unsubscribeResult();
+        if (mViewModel.getSingleProperty().hasActiveObservers()) unsubscribeProperty();
+        super.onDestroy();
     }
 }

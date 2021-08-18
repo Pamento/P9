@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,6 +19,7 @@ import android.widget.ArrayAdapter;
 import com.bumptech.glide.Glide;
 import com.openclassrooms.realestatemanager.R;
 import com.openclassrooms.realestatemanager.data.local.entities.*;
+import com.openclassrooms.realestatemanager.data.remote.models.geocode.Location;
 import com.openclassrooms.realestatemanager.data.viewModelFactory.ViewModelFactory;
 import com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM.DetailViewModel;
 import com.openclassrooms.realestatemanager.databinding.FragmentDetailBinding;
@@ -144,16 +146,26 @@ public class DetailFragment extends Fragment {
     }
 
     private void setResponseObserver() {
-        mDetailViewModel.getGeoLocationOfProperty().observe(getViewLifecycleOwner(), location -> {
+        mDetailViewModel.getGeoLocationOfProperty().observe(getViewLifecycleOwner(), getLocation);
+    }
+
+    private void unsubscribeGetLocation() {
+        mDetailViewModel.getGeoLocationOfProperty().removeObserver(getLocation);
+    }
+
+    final Observer<Location> getLocation = new Observer<Location>() {
+        @Override
+        public void onChanged(Location location) {
             if (location != null) {
                 String l = String.valueOf(location.getLat()) + "," + String.valueOf(location.getLng());
                 mDetailViewModel.setUrlOfStaticMapOfProperty(l);
                 setStaticMapOfProperty();
                 mSingleProperty.setLocation(l);
                 updatePropertyInRoom();
+                unsubscribeGetLocation();
             }
-        });
-    }
+        }
+    };
 
     private void setDetailRecyclerView() {
         Log.i(TAG, "DETAIL__ setDetailRecyclerView: adapter _____________adapter");
@@ -235,5 +247,11 @@ public class DetailFragment extends Fragment {
     public void onDestroyView() {
         binding = null;
         super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
+        if (mDetailViewModel.getGeoLocationOfProperty().hasActiveObservers()) unsubscribeGetLocation();
+        super.onDestroy();
     }
 }
