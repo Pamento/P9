@@ -1,7 +1,5 @@
 package com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -15,7 +13,6 @@ import com.openclassrooms.realestatemanager.data.remote.models.geocode.Result;
 import com.openclassrooms.realestatemanager.data.remote.repository.GoogleMapsRepository;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -29,7 +26,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class AddPropertyViewModel extends ViewModel {
-    private static final String TAG = "AddProperty";
+
     private final PropertiesRepository mPropertiesRepository;
     private final ImageRepository mImageRepository;
     private final GoogleMapsRepository mGoogleMapsRepository;
@@ -113,14 +110,8 @@ public class AddPropertyViewModel extends ViewModel {
         mImgOfProperty = new ImageOfProperty();
         mImgOfProperty.setPropertyId(mSingleProperty.getId());
         mImgOfProperty.setPath(imageUri);
-        Log.i(TAG, "createOneImageOfProperty: imageUri:: " + imageUri);
-        Log.i(TAG, "createOneImageOfProperty: imagesList.size():: " + mImagesOfPropertyList.size());
-        Log.i(TAG, "createOneImageOfProperty: ");
         mImagesOfPropertyList.add(mImgOfProperty);
-        Log.i(TAG, "createOneImageOfProperty: imagesList.size():: " + mImagesOfPropertyList.size());
         mImagesOfProperty.setValue(mImagesOfPropertyList);
-        if (mImagesOfProperty.getValue() != null) Log.i(TAG, "createOneImageOfProperty: mImagesOfProperty.getValue().size():: " + mImagesOfProperty.getValue().size());
-        else Log.i(TAG, "createOneImageOfProperty: mImagesOfProperty.getValue() = null");
         mImgOfProperty = null;
     }
 
@@ -130,15 +121,8 @@ public class AddPropertyViewModel extends ViewModel {
     }
 
     public void setImagesOfPropertyList(List<ImageOfProperty> imagesOfPropertyList) {
-        Log.i(TAG, "ADD__VM__ setImagesOfPropertyList: param:-: imagesOfPropertyList.size():: " + imagesOfPropertyList.size());
-        Log.i(TAG, "ADD__VM__ setImagesOfPropertyList: imagesList.size():: " + mImagesOfPropertyList.size());
-        Log.i(TAG, "ADD__VM__ setImagesOfPropertyList: imagesList.size():: " + mImagesOfPropertyList.get(0).toString());
         mImagesOfPropertyList.clear();
-        Log.i(TAG, "ADD__VM__ setImagesOfPropertyList: imagesList.clear():: " + mImagesOfPropertyList.size());
-        Log.i(TAG, "ADD__VM__ setImagesOfPropertyList: imagesList.size():: " + mImagesOfPropertyList.size());
         mImagesOfPropertyList.addAll(imagesOfPropertyList);
-        Log.i(TAG, "ADD__VM__ setImagesOfPropertyList: imagesList.size():: " + mImagesOfPropertyList.size());
-        Log.i(TAG, "ADD__VM__ setImagesOfPropertyList: imagesList.size():: " + mImagesOfPropertyList.get(0).toString());
     }
 
     public LiveData<List<ImageOfProperty>> getImagesOfProperty() {
@@ -182,7 +166,6 @@ public class AddPropertyViewModel extends ViewModel {
         final boolean[] response = new boolean[1];
         mExecutor.execute(() -> {
             long res = mPropertiesRepository.createSingleProperty(mSingleProperty);
-            Log.i(TAG, "run: createSingleProperty::rowId -> response:: " + res);
             response[0] = res == -1;
         });
         return response[0];
@@ -195,8 +178,6 @@ public class AddPropertyViewModel extends ViewModel {
         mExecutor.execute(() -> {
             if (mImagesOfProperty.getValue() != null) {
                 long[] res = mImageRepository.createPropertyImages(mImagesOfProperty.getValue());
-                Log.i(TAG, "createImagesOfProperty: RUN:-> images.size():: " + mImagesOfProperty.getValue().size());
-                Log.i(TAG, "createImagesOfProperty: RUN:-> rowID:: " + Arrays.toString(res));
                 for (long i: res) {
                     if (i == 0) {
                         response[0] = true;

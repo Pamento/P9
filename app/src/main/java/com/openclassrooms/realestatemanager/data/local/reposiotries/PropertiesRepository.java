@@ -1,6 +1,5 @@
 package com.openclassrooms.realestatemanager.data.local.reposiotries;
 
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
@@ -15,7 +14,6 @@ import com.openclassrooms.realestatemanager.util.enums.QueryState;
 import java.util.List;
 
 public class PropertiesRepository {
-    private static final String TAG = "AddProperty";
 
     private static volatile PropertiesRepository instance;
     private final SinglePropertyDao mSinglePropertyDao;
@@ -64,7 +62,6 @@ public class PropertiesRepository {
     }
 
     public void setPROPERTY_ID(String PROPERTY_ID) {
-        Log.i(TAG, "PROP_REPO__ setPROPERTY_ID: " + PROPERTY_ID);
         this.PROPERTY_ID = PROPERTY_ID;
     }
 

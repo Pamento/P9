@@ -19,10 +19,6 @@ public abstract class RealEstateDatabase extends RoomDatabase {
     public abstract SinglePropertyDao singlePropertyDao();
     public abstract ImageOfPropertyDao imageOfPropertyDao();
 
-//    private static final int NUMBER_OF_THREADS = 4;
-//    static final ExecutorService databaseWriteExecutor =
-//            Executors.newFixedThreadPool(NUMBER_OF_THREADS);
-
     public static synchronized RealEstateDatabase getInstance(Context context) {
         if (INSTANCE == null) {
             INSTANCE = Room.databaseBuilder(context.getApplicationContext(),

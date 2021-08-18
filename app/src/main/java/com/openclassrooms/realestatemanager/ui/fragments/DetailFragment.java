@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,13 +30,12 @@ import com.openclassrooms.realestatemanager.util.system.AdapterHelper;
 import com.openclassrooms.realestatemanager.util.texts.StringModifier;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class DetailFragment extends Fragment {
-    private static final String TAG = "DetailFragment";
+
     private static final String LAYOUT_MODE = "double";
     private static final String POSITION_OF_LIST = "position_list";
     private boolean isTwoFragmentLayout = false;
@@ -83,8 +81,6 @@ public class DetailFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.i(TAG, "DETAIL__ onViewCreated: isTwoFragments:: " + isTwoFragmentLayout);
-        Log.i(TAG, "DETAIL__ onViewCreated: isTwoFragments::id " + mDetailViewModel.getPropertyId());
         if (isTwoFragmentLayout && mDetailViewModel.getPropertyId() == null) {
             getAllProperties();
         } else {
@@ -111,11 +107,9 @@ public class DetailFragment extends Fragment {
     }
 
     private void getAllProperties() {
-        Log.i(TAG, "DETAIL__ getAllProperties: run");
         mDetailViewModel.getAllProperties().observe(getViewLifecycleOwner(), propertiesWithImages -> {
             if (propertiesWithImages != null) {
                 PropertyWithImages property;
-                Log.i(TAG, "DETAIL__ getAllProperties: size:: " + propertiesWithImages.size());
                 if (isFirstItemOfList) {
                     property = propertiesWithImages.get(0);
                 } else {
@@ -168,7 +162,6 @@ public class DetailFragment extends Fragment {
     };
 
     private void setDetailRecyclerView() {
-        Log.i(TAG, "DETAIL__ setDetailRecyclerView: adapter _____________adapter");
         recyclerV = binding.detailImgRecyclerView;
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
@@ -183,13 +176,11 @@ public class DetailFragment extends Fragment {
 
     private void updateUI() {
         if (mSingleProperty != null) {
-            Log.i(TAG, "DETAIL__ setUI: ");
             if (!mSingleProperty.getDateSold().equals(""))
                 binding.detailAvailable.setText(R.string.detail_text_sold);
             else
                 binding.detailAvailable.setText(R.string.detail_estate_available);
             // continue
-            Log.i(TAG, "DETAIL__ setUI: time::: " + mSingleProperty.getDateRegister());
             binding.detailDateRegister.setText(SQLTimeHelper.getUSFormDateFromTimeInMillis(Long.parseLong(mSingleProperty.getDateRegister())));
             String surfaceMetre = requireActivity().getResources().getString(R.string.detail_surface_integer);
             binding.detailSurface.setText(String.format(surfaceMetre, mSingleProperty.getSurface()));
@@ -237,7 +228,6 @@ public class DetailFragment extends Fragment {
 
     private void setAmenitiesView() {
         String[] amenities = StringModifier.singleStringToArrayString(mSingleProperty.getAmenities());
-        Log.i(TAG, "setAmenitiesView: DETAIL:: " + Arrays.toString(amenities));
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireActivity(), android.R.layout.simple_list_item_1, amenities);
         binding.detailAmenitiesListView.setAdapter(adapter);
         AdapterHelper.setListViewHeightBasedOnChildren(binding.detailAmenitiesListView);

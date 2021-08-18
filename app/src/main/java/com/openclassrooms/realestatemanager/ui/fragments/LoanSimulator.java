@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +35,6 @@ public class LoanSimulator extends Fragment {
     private String euroPerMonth;
     private String currencyToDisplay;
     private String loanCalculated = "0";
-    private static final String TAG = "LOAN_SIMULATOR";
 
     public LoanSimulator() {
         // Required empty public constructor
@@ -113,8 +111,6 @@ public class LoanSimulator extends Fragment {
     };
 
     private void updateUI() {
-        Log.i(TAG, "updateUI: interest value:: " + mViewModel.getInterest());
-
         currencyToDisplay = mViewModel.isDollar() ? dollarPerMonth : euroPerMonth;
         String priceToDisplay = mViewModel.isDollar() ? dollarPrice : euroPrice;
         binding.loanPropertyType.setText(mSingleProperty.getType());

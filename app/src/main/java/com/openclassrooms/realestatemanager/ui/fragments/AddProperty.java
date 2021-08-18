@@ -59,7 +59,7 @@ import static android.app.Activity.RESULT_OK;
 import static com.openclassrooms.realestatemanager.util.Constants.Constants.*;
 
 public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetListener {
-    private static final String TAG = "AddProperty";
+
     private View mView;
     private AddPropertyViewModel mAddPropertyViewModel;
     private FragmentAddPropertyBinding binding;
@@ -219,7 +219,6 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
     }
 
     private void setRecyclerView() {
-        Log.i(TAG, "ADD__ setRecyclerView: imageToAdd.size():: " + imagesToAdd.size());
         imagesRecycler = binding.addFImagesRecycler;
         mImageAdapter = new ImageListOfAddPropertyAdapter(imagesToAdd);
         imagesRecycler.setAdapter(mImageAdapter);
@@ -276,7 +275,6 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
                     startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
                 } catch (ActivityNotFoundException e) {
                     Log.e("ERROR", "takePictureIntent: ", e);
-                    // TODO display error state to the user
                 }
             }
         }
@@ -308,16 +306,13 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {/**/}
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {/**/
-                Log.i(TAG, "ADD__ onTextChanged: text:: " + charSequence.toString());
-            }
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {/**/}
 
             @Override
             public void afterTextChanged(Editable editable) {/**/
                 // TODO
                 //https://www.google.com/search?client=opera&q=android+editable.setFilters&sourceid=opera&ie=UTF-8&oe=UTF-8
                 //https://stackoverflow.com/questions/3349121/how-do-i-use-inputfilter-to-limit-characters-in-an-edittext-in-android
-                Log.i(TAG, "ADD__ afterTextChanged: text:: " + editable.toString());
                 editable.setFilters(new InputFilter[]{priceFilter});
             }
         });
@@ -353,14 +348,12 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
 
         if (checked == 0) {
             mAddPropertyViewModel.setImagesOfPropertyList(mImageAdapter.getImageOfPropertyList());
-            Log.i(TAG, "checkFormValidityBeforeSave: is__Wi-Fi ???:: " + Utils.isInternetAvailable(requireContext()));
             if (Utils.isInternetAvailable(requireContext())) {
                 getGeoLocationOfProperty();
             } else {
                 createProperty();
             }
         } else {
-            Log.i(TAG, "checkFormValidityBeforeSave: we are ready to create SingleProperty:: checked:: " + checked);
             String msg = requireActivity().getResources().getString(R.string.warning_missing_fields);
             NotifyBySnackBar.showSnackBar(1, mView, msg);
         }
@@ -407,8 +400,6 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
         int postalCode = TextUtils.isEmpty(postalCodeStr) ? 0 : Integer.parseInt(postalCodeStr);
         String amenities = getAmenities();
         String agent = binding.addFAgent.getText().toString();
-        Log.i(TAG, "createProperty: location:: " + location);
-        Log.i(TAG, "createProperty: dateRegister:: " + mMillisOfRegisterProperty);
         String dateR = String.valueOf(mMillisOfRegisterProperty);
         String dateSold = mMillisOfSoldDate == 0 ? "" : String.valueOf(mMillisOfSoldDate);
         mAddPropertyViewModel.createNewProperty(type, desc, surface, price, rooms, bedrooms, bathrooms, dateR, dateSold, address1, address2, city, quarter, postalCode, location, amenities, agent);
@@ -422,7 +413,6 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
     private void saveDataAndNotifyUser() {
         boolean res = mAddPropertyViewModel.createSingleProperty();
         boolean resImg = mAddPropertyViewModel.createImagesOfProperty();
-        Log.i(TAG, "saveDataAndNotifyUser: res & resImg:: " + res + " _:: " + resImg);
         NotificationsUtils notify = new NotificationsUtils(requireContext());
         // fail if res = true
         // success if res = false
@@ -440,7 +430,6 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
     private void goBackToList() {
         MainActivity ma = (MainActivity) requireActivity();
         ma.onBackPressed();
-        Log.i(TAG, "ADD__ goBackToList: onBackPressed from AddProperty");
     }
 
     private String getAmenities() {
@@ -480,7 +469,6 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
         formAddressBinding = null;
         amenitiesBinding = null;
         binding = null;
-        Log.i(TAG, "ADD__ onDestroyView");
         super.onDestroyView();
     }
 
@@ -488,6 +476,5 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
     public void onDestroy() {
         if (mAddPropertyViewModel.getImagesOfProperty().hasActiveObservers()) unsubscribeRecyclerViewObserver();
         super.onDestroy();
-        Log.i(TAG, "ADD__ onDestroy");
     }
 }

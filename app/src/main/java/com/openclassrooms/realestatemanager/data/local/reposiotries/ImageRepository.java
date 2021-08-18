@@ -15,7 +15,6 @@ public class ImageRepository {
     private static volatile ImageRepository instance;
     private static String PROPERTY_ID;
     private final ImageOfPropertyDao mImageOfPropertyDao;
-    //private final LiveData<List> imagesOfSingleProperty;
 
     public ImageRepository(ImageOfPropertyDao imageOfPropertyDao) {
         mImageOfPropertyDao = imageOfPropertyDao;
@@ -30,7 +29,6 @@ public class ImageRepository {
 
     // methods
     public long[] createPropertyImages(List<ImageOfProperty> imagesOfProperties) {
-        Log.i("AddProperty", "createPropertyImages: images.size():: " + imagesOfProperties.size());
         return mImageOfPropertyDao.insertImagesOfProperty(imagesOfProperties);
     }
 
@@ -39,8 +37,6 @@ public class ImageRepository {
     }
 
     public LiveData<List<ImageOfProperty>> getAllImagesOfProperty(@Nullable String propertyId) {
-        Log.i("AddProperty", "getAllImagesOfProperty: id:: " + propertyId);
-        Log.i("AddProperty", "getAllImagesOfProperty: id:: " + PROPERTY_ID);
         if (propertyId == null) return mImageOfPropertyDao.getAllImageForProperty(PROPERTY_ID);
         else return mImageOfPropertyDao.getAllImageForProperty(propertyId);
     }

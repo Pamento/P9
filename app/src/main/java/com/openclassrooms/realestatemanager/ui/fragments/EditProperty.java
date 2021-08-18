@@ -58,7 +58,7 @@ import static android.app.Activity.RESULT_OK;
 import static com.openclassrooms.realestatemanager.util.Constants.Constants.*;
 
 public class EditProperty extends Fragment implements DatePickerDialog.OnDateSetListener {
-    private static final String TAG = "EditProperty";
+
     private EditPropertyViewModel mEditPropertyViewModel;
     private FragmentAddPropertyBinding binding;
     private AmenitiesCheckboxesBinding amenitiesBinding;
@@ -239,7 +239,6 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
                 binding.addFDateSoldOn.setOnClickListener(null);
             }
         }
-        Log.i(TAG, "handleSwitchEvent: click on 'Switch' button. mIsPropertySold:: " + mIsPropertySold);
         handleSoldDateInput();
     }
 
@@ -256,7 +255,6 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
     }
 
     private void setRecyclerView() {
-        Log.i(TAG, "ADD__ setRecyclerView: imageToAdd.size():: " + mImageOfPropertyList.size());
         imagesRecycler = binding.addFImagesRecycler;
         imagesRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(mSimpleCallback);
@@ -309,7 +307,6 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
                     startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
                 } catch (ActivityNotFoundException e) {
                     Log.e("ERROR", "takePictureIntent: ", e);
-                    // TODO display error state to the user
                 }
             }
         }
@@ -338,9 +335,6 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
         ip.setPath(imageUri);
         ip.setPropertyId(mSingleProperty.getId());
         mImageAdapter.addNewImage(ip);
-        //for update image use only imagesList in adapter
-        //mImageOfPropertyList.add(ip);
-        //mEditPropertyViewModel.createImageOfProperty(ip);
     }
 
     private void setListenerDatePicker() {
@@ -502,8 +496,6 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
     private void goBackToList() {
         MainActivity ma = (MainActivity) requireActivity();
         ma.onBackPressed();
-        Log.i(TAG, "goBackToList: onBackPressed __ from EditProperty");
-        //ma.displayFragm(EFragments.DETAIL,mSingleProperty.getType());
     }
 
     @Override

@@ -2,7 +2,6 @@ package com.openclassrooms.realestatemanager.ui.activity;
 
 import android.app.Dialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -37,7 +36,7 @@ import static com.openclassrooms.realestatemanager.util.Constants.Constants.*;
 import static com.openclassrooms.realestatemanager.util.enums.EFragments.*;
 
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "MainActivity";
+
     private View view;
     private ActivityMainBinding binding;
     private boolean mActivityHasTwoFragment = false;
@@ -66,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void setToolbarTitle(String toolbarTitle, boolean backUpButton) {
         Objects.requireNonNull(getSupportActionBar()).setTitle(toolbarTitle);
-        Log.i(TAG, "setToolbarTitle: backUpButton:: " + backUpButton);
         if (backUpButton) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowCustomEnabled(true);
@@ -84,22 +82,15 @@ public class MainActivity extends AppCompatActivity {
             FragmentTransaction fTransaction = mFragmentManager.beginTransaction();
             ListProperty listProperty = ListProperty.newInstance();
             fTransaction.replace(R.id.main_activity_fragment_container, listProperty, LIST_FRAGMENT).commit();
-
-            Log.i(TAG, "initListFragment: mActivityHasTwoFragment:: " + mActivityHasTwoFragment);
-            if (!mActivityHasTwoFragment) Log.i(TAG, "initListFragment: SECONDARY:: is ___NUll:: ");
-            else {
-                Log.i(TAG, "initListFragment: SECONDARY:: is ___WORK!");
-                initDetailFragment(true);
-            }
+            if (mActivityHasTwoFragment) initDetailFragment(true);
         } else {
             setFragmentManager();
             initListFragment();
         }
     }
 
+    // The function: initDetailFragment() is called only on the opening the application. She doesn't part of navigation.
     private void initDetailFragment(boolean firstPositionOfList) {
-        Log.i(TAG, "MAIN__ initDetailFragment: run");
-        // The function: initDetailFragment() is called only on the opening the application. She doesn't part of navigation.
         DetailFragment detail = DetailFragment.newInstance(mActivityHasTwoFragment, firstPositionOfList);
         FragmentTransaction ft = mFragmentManager.beginTransaction();
         ft.replace(R.id.main_activity_fragment_container_secondary, detail, DETAIL_FRAGMENT).commit();
@@ -107,13 +98,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void displayFragm(EFragments fragment, String toolbarTitle) {
         mEFragments = fragment;
-        Log.i(TAG, "MAIN__ displayFragm: is:: " + mEFragments);
         if (mFragmentManager != null) {
             FragmentTransaction transaction = mFragmentManager.beginTransaction();
             //transaction.setReorderingAllowed(true);
             switch (fragment) {
                 case LIST:
-                    Log.i(TAG, "MAIN__ displayFragm ((onBackPressed)): LIST");
                     setToolbarTitle(getResources().getString(R.string.app_name), false);
                     ListProperty lp = ListProperty.newInstance();
                     transaction.replace(getFragmentContainer(fragment), lp, LIST_FRAGMENT);
@@ -122,7 +111,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                     break;
                 case MAP:
-                    Log.i(TAG, "MAIN__ displayFragm ((onBackPressed)): MAP");
                     if (isMapsServiceOk()) {
                         setToolbarTitle("New York", false);
                         MapFragment mf = MapFragment.newInstance(mActivityHasTwoFragment);
@@ -133,32 +121,27 @@ public class MainActivity extends AppCompatActivity {
                     }
                     break;
                 case DETAIL:
-                    Log.i(TAG, "MAIN__ displayFragm ((onBackPressed)): DETAIL");
                     setToolbarTitle(toolbarTitle, true);
                     DetailFragment df = DetailFragment.newInstance(mActivityHasTwoFragment, true);
                     // transaction.add add the fragment as a layer without removing the list
                     transaction.add(getFragmentContainer(null), df, DETAIL_FRAGMENT);
                     break;
                 case ADD:
-                    Log.i(TAG, "MAIN__ displayFragm ((onBackPressed)): ADD");
                     setToolbarTitle(toolbarTitle, false);
                     AddProperty ap = AddProperty.newInstance();
                     transaction.add(getFragmentContainer(null), ap, ADD_FRAGMENT);
                     break;
                 case SEARCH:
-                    Log.i(TAG, "MAIN__ displayFragm ((onBackPressed)): SEARCH");
                     setToolbarTitle(toolbarTitle, false);
                     SearchEngine se = SearchEngine.newInstance();
                     transaction.add(getFragmentContainer(null), se, SEARCH_FRAGMENT);
                     break;
                 case SIMULATOR:
-                    Log.i(TAG, "MAIN__ displayFragm ((onBackPressed)): SIMULATOR");
                     setToolbarTitle(toolbarTitle, true);
                     LoanSimulator ls = LoanSimulator.newInstance();
                     transaction.add(getFragmentContainer(null), ls, SIMULATOR_FRAGMENT);
                     break;
                 case EDIT:
-                    Log.i(TAG, "MAIN__ displayFragm ((onBackPressed)): EDIT");
                     setToolbarTitle(toolbarTitle, false);
                     EditProperty ep = EditProperty.newInstance();
                     transaction.add(getFragmentContainer(null), ep, EDIT_FRAGMENT);
@@ -180,9 +163,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             return R.id.main_activity_fragment_container;
         }
-        // TODO the List can be called. Than, (?) need to add verification if mEFragments = LIST (?)
-        //  or add param: fragment. If fragment == LIST -> {update RecyclerView of ListProperty)
-        //int secondFragmentContainer = R.id.main_activity_fragment_container_secondary;
     }
 
     // Check if service Google Maps is available
@@ -203,20 +183,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        int count = mFragmentManager.getBackStackEntryCount();
-        Log.i(TAG, "onBackPressed: mEFragments::  " + mEFragments + " & count::" + count);
         mEFragments = findFragmentItIs();
-        Log.i(TAG, "onBackPressed: mEFragments::  " + mEFragments + " & count::" + count);
         switch (mEFragments) {
             case LIST:
                 setToolbarTitle(getResources().getString(R.string.app_name), false);
                 break;
-            case MAP:
-                Log.i(TAG, "onBackPressed: NEW YORK");
-                break;
             case DETAIL:
-                // TODO need to manage this case when the action of edit is cancel and we back to Detail Fragment.
-                //  Which of item from LIST was chosen to Edit (To display his name in Toolbar title) ?
                 setToolbarTitle("Detail is back", true);
                 break;
         }
@@ -250,8 +222,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        Log.i(TAG, "MAIN__ onPrepareOptionsMenu: RUN");
-        Log.i(TAG, "onPrepareOptionsMenu: FRAGMENT:: " + mEFragments);
         menu.clear();
         MenuInflater inflater = getMenuInflater();
         if (mEFragments.equals(LIST) || mEFragments.equals(MAP)) {
@@ -293,7 +263,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void runCommand(int commandCode) {
-        Log.i(TAG, "runCommand: mEFragments:: " + mEFragments);
         switch (mEFragments) {
             case ADD:
                 AddProperty aF = (AddProperty) mFragmentManager.findFragmentByTag(ADD_FRAGMENT);
@@ -315,7 +284,6 @@ public class MainActivity extends AppCompatActivity {
                 DetailFragment dF = (DetailFragment) mFragmentManager.findFragmentByTag(DETAIL_FRAGMENT);
                 if (dF != null) dF.handleCurrency(commandCode);
             case LIST:
-                Log.i(TAG, "runCommand: LIST::");
                 ListProperty list = (ListProperty) mFragmentManager.findFragmentByTag(LIST_FRAGMENT);
                 if (list != null) list.resetRowQuery();
                 break;
