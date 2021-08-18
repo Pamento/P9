@@ -310,6 +310,10 @@ public class MainActivity extends AppCompatActivity {
             case SIMULATOR:
                 LoanSimulator lF = (LoanSimulator) mFragmentManager.findFragmentByTag(SIMULATOR_FRAGMENT);
                 if (lF != null) lF.handleCurrency(commandCode);
+                break;
+            case DETAIL:
+                DetailFragment dF = (DetailFragment) mFragmentManager.findFragmentByTag(DETAIL_FRAGMENT);
+                if (dF != null) dF.handleCurrency(commandCode);
             case LIST:
                 Log.i(TAG, "runCommand: LIST::");
                 ListProperty list = (ListProperty) mFragmentManager.findFragmentByTag(LIST_FRAGMENT);

@@ -102,7 +102,7 @@ public class DetailFragment extends Fragment {
                     mDetailViewModel.setUrlOfStaticMapOfProperty(singleProperty.getLocation());
                 }
             }
-            setUI();
+            updateUI();
         });
         mDetailViewModel.getImagesOfProperty().observe(getViewLifecycleOwner(), imagesOfProperty -> {
             mImageOfPropertyList.addAll(imagesOfProperty);
@@ -127,7 +127,7 @@ public class DetailFragment extends Fragment {
                 } else {
                     mDetailViewModel.setUrlOfStaticMapOfProperty(property.mSingleProperty.getLocation());
                 }
-                setUI();
+                updateUI();
                 mImageOfPropertyList.addAll(property.ImagesOfProperty);
                 displayDataOnRecyclerView();
             }
@@ -181,7 +181,7 @@ public class DetailFragment extends Fragment {
         recyclerV.setAdapter(adapter);
     }
 
-    private void setUI() {
+    private void updateUI() {
         if (mSingleProperty != null) {
             Log.i(TAG, "DETAIL__ setUI: ");
             if (!mSingleProperty.getDateSold().equals(""))
@@ -193,8 +193,10 @@ public class DetailFragment extends Fragment {
             binding.detailDateRegister.setText(SQLTimeHelper.getUSFormDateFromTimeInMillis(Long.parseLong(mSingleProperty.getDateRegister())));
             String surfaceMetre = requireActivity().getResources().getString(R.string.detail_surface_integer);
             binding.detailSurface.setText(String.format(surfaceMetre, mSingleProperty.getSurface()));
-            String estatePrice = requireActivity().getResources().getString(R.string.price_dollar);
-            String priceComa = StringModifier.addComaInPrice(String.valueOf(mSingleProperty.getPrice()));
+            String estatePrice = mDetailViewModel.isDollar() ? requireActivity().getResources().getString(R.string.price_dollar) :
+                    requireActivity().getResources().getString(R.string.price_euro);
+            int price = mDetailViewModel.isDollar() ? mSingleProperty.getPrice() : Utils.convertDollarToEuro(mSingleProperty.getPrice());
+            String priceComa = StringModifier.addComaInPrice(String.valueOf(price));
             binding.detailPrice.setText(String.format(estatePrice, priceComa));
             String estateRooms = requireActivity().getResources().getString(R.string.detail_rooms);
             binding.detailRoomsNumber.setText(String.format(estateRooms, mSingleProperty.getRooms()));
@@ -215,6 +217,13 @@ public class DetailFragment extends Fragment {
             setAmenitiesView();
             binding.detailAgent.setText(mSingleProperty.getAgent());
         }
+    }
+
+    public void handleCurrency(int oneIsDollar) {
+        // Value of oneIsDollar = 1 -> $ (one is dollar)
+        if (oneIsDollar == 2 && mDetailViewModel.isDollar()) mDetailViewModel.setDollar(false);
+        else if (oneIsDollar == 1 && !mDetailViewModel.isDollar()) mDetailViewModel.setDollar(true);
+        updateUI();
     }
 
     private void setStaticMapOfProperty() {

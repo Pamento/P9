@@ -31,6 +31,7 @@ public class DetailViewModel extends ViewModel {
     private String mUrlOfStaticMapOfProperty;
     private final CompositeDisposable mDisposable = new CompositeDisposable();
     private final MutableLiveData<Location> mLocationOfAddress = new MutableLiveData<>();
+    private boolean isDollar = true;
 
     public DetailViewModel(PropertiesRepository propertiesRepository, ImageRepository imageRepository, GoogleMapsRepository googleMapsRepository) {
         mPropertiesRepository = propertiesRepository;
@@ -93,5 +94,13 @@ public class DetailViewModel extends ViewModel {
 
     public void updateSingleProperty(SingleProperty singleProperty) {
         mPropertiesRepository.updateSingleProperty(singleProperty);
+    }
+
+    public boolean isDollar() {
+        return isDollar;
+    }
+
+    public void setDollar(boolean dollar) {
+        isDollar = dollar;
     }
 }
