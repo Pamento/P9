@@ -12,6 +12,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.openclassrooms.realestatemanager.data.local.database.RealEstateDatabase;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +34,11 @@ public class RealEstatePropertiesProviderTest {
                 RealEstateDatabase.class)
                 .allowMainThreadQueries().build();
         mContentResolver = InstrumentationRegistry.getInstrumentation().getContext().getContentResolver();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        InstrumentationRegistry.getInstrumentation().getTargetContext().deleteDatabase("real_estate_manager_database");
     }
 
     @Test
