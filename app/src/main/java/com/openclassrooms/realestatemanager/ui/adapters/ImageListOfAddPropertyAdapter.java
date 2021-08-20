@@ -133,8 +133,10 @@ public class ImageListOfAddPropertyAdapter extends
     }
 
     public void removeDeletedImageFromList(int imageOfProperty) {
-        mImageOfPropertyList.remove(imageOfProperty);
-        this.notifyItemRemoved(imageOfProperty);
-        this.notifyItemRangeChanged(imageOfProperty, mImageOfPropertyList.size());
+        if (mImageOfPropertyList.size() >= 1) {
+            mImageOfPropertyList.remove(imageOfProperty);
+            this.notifyItemRemoved(imageOfProperty);
+            this.notifyItemRangeChanged(imageOfProperty, mImageOfPropertyList.size());
+        }
     }
 }

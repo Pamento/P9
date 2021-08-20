@@ -371,6 +371,7 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
         String city = formAddressBinding.addAddressFormCity.getEditableText().toString();
         String quarter = formAddressBinding.addAddressFormQuarter.getEditableText().toString();
         String address = StringModifier.formatAddressToGeocoding(address1, city, quarter);
+        Log.i(TAG, "ADD__ getGeoLocationOfProperty: address:: " + address);
         mAddPropertyViewModel.getLocationFromAddress(address);
         setOnResponseObserver();
     }
@@ -420,21 +421,54 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
     }
 
     private void saveDataAndNotifyUser() {
-        boolean res = mAddPropertyViewModel.createSingleProperty();
-        boolean resImg = mAddPropertyViewModel.createImagesOfProperty();
-        Log.i(TAG, "saveDataAndNotifyUser: res & resImg:: " + res + " _:: " + resImg);
-        NotificationsUtils notify = new NotificationsUtils(requireContext());
-        // fail if res = true
-        // success if res = false
-        if (res)
-            notify.showWarning(requireContext(), SAVE_PROPERTY_FAIL);
-        else if (resImg)
-            notify.showWarning(requireContext(), SAVE_IMAGES_FAIL);
-        else
-            notify.showWarning(requireContext(), SAVE_PROPERTY_OK);
+        mAddPropertyViewModel.createProperty();
+        mAddPropertyViewModel.getCreatePropertyResponse().observe(getViewLifecycleOwner(), createPropertyObserver);
+    }
 
-        mAddPropertyViewModel.resetImageOfProperty();
-        goBackToList();
+    private void saveImagesOfProperty() {
+        mAddPropertyViewModel.saveImagesOfProperty();
+        mAddPropertyViewModel.getSaveImagesResponse().observe(getViewLifecycleOwner(), saveImagesObserver);
+    }
+
+    final Observer<long[]> saveImagesObserver = longs -> {
+        boolean res = readSaveImageResponse(longs);
+        Log.i(TAG, "ADD__ saveImagesObserver:: " + res);
+        if (res) {
+            NotificationsUtils notify = new NotificationsUtils(requireContext());
+            notify.showWarning(requireContext(), SAVE_IMAGES_FAIL);
+        } else {
+            mAddPropertyViewModel.resetImageOfProperty();
+            unsubscribeSavePropertyObserver();
+            goBackToList();
+        }
+    };
+
+    final Observer<Long> createPropertyObserver = aLong -> {
+        boolean res = aLong == -1;
+        Log.i(TAG, "ADD__ createPropertyObserver_onChanged:: " + res);
+        NotificationsUtils notify = new NotificationsUtils(requireContext());
+        if (res) {
+            notify.showWarning(requireContext(), SAVE_PROPERTY_FAIL);
+        } else {
+            notify.showWarning(requireContext(), SAVE_PROPERTY_OK);
+            saveImagesOfProperty();
+        }
+    };
+    private void unsubscribeSaveImagesObserver() {
+        mAddPropertyViewModel.getSaveImagesResponse().removeObserver(saveImagesObserver);
+    }
+
+    private void unsubscribeSavePropertyObserver() {
+        mAddPropertyViewModel.getCreatePropertyResponse().removeObserver(createPropertyObserver);
+    }
+
+    private boolean readSaveImageResponse(long[] longs) {
+        for (long i : longs) {
+            if (i == 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void goBackToList() {
@@ -486,7 +520,9 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
 
     @Override
     public void onDestroy() {
-        if (mAddPropertyViewModel.getImagesOfProperty().hasActiveObservers()) unsubscribeRecyclerViewObserver();
+        if (mAddPropertyViewModel.getImagesOfProperty().hasActiveObservers())
+            unsubscribeRecyclerViewObserver();
+        if (mAddPropertyViewModel.getSaveImagesResponse().hasActiveObservers()) unsubscribeSaveImagesObserver();
         super.onDestroy();
         Log.i(TAG, "ADD__ onDestroy");
     }

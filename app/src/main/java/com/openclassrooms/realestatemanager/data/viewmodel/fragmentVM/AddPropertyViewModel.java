@@ -40,6 +40,8 @@ public class AddPropertyViewModel extends ViewModel {
     private MutableLiveData<List<ImageOfProperty>> mImagesOfProperty;
     private ImageOfProperty mImgOfProperty;
     private MutableLiveData<Location> mLocationOfAddress;
+    private MutableLiveData<Long> mCreatePropertyResponse = new MutableLiveData<Long>();
+    private MutableLiveData<long[]> mSaveImagesOfPropertyResponse = new MutableLiveData<>();
 
     public AddPropertyViewModel(PropertiesRepository propertiesRepository,
                                 ImageRepository imageRepository,
@@ -119,7 +121,8 @@ public class AddPropertyViewModel extends ViewModel {
         mImagesOfPropertyList.add(mImgOfProperty);
         Log.i(TAG, "createOneImageOfProperty: imagesList.size():: " + mImagesOfPropertyList.size());
         mImagesOfProperty.setValue(mImagesOfPropertyList);
-        if (mImagesOfProperty.getValue() != null) Log.i(TAG, "createOneImageOfProperty: mImagesOfProperty.getValue().size():: " + mImagesOfProperty.getValue().size());
+        if (mImagesOfProperty.getValue() != null)
+            Log.i(TAG, "createOneImageOfProperty: mImagesOfProperty.getValue().size():: " + mImagesOfProperty.getValue().size());
         else Log.i(TAG, "createOneImageOfProperty: mImagesOfProperty.getValue() = null");
         mImgOfProperty = null;
     }
@@ -178,35 +181,54 @@ public class AddPropertyViewModel extends ViewModel {
     }
 
     // Save data
-    public boolean createSingleProperty() {
-        final boolean[] response = new boolean[1];
+    public void createProperty() {
         mExecutor.execute(() -> {
-            long res = mPropertiesRepository.createSingleProperty(mSingleProperty);
-            Log.i(TAG, "run: createSingleProperty::rowId -> response:: " + res);
-            response[0] = res == -1;
+            mCreatePropertyResponse.postValue(mPropertiesRepository.createSingleProperty(mSingleProperty));
         });
-        return response[0];
+//        final boolean[] response = new boolean[1];
+//        mExecutor.execute(() -> {
+//            long res = mPropertiesRepository.createSingleProperty(mSingleProperty);
+//            Log.i(TAG, "run: createSingleProperty::rowId -> response:: " + res);
+//            response[0] = res == -1;
+//        });
+//        return response[0];
     }
 
-    // Save list of images
-    public boolean createImagesOfProperty() {
+    public void saveImagesOfProperty() {
         // If true, the insert method was felt
-        final boolean[] response = new boolean[1];
-        mExecutor.execute(() -> {
-            if (mImagesOfProperty.getValue() != null) {
-                long[] res = mImageRepository.createPropertyImages(mImagesOfProperty.getValue());
-                Log.i(TAG, "createImagesOfProperty: RUN:-> images.size():: " + mImagesOfProperty.getValue().size());
-                Log.i(TAG, "createImagesOfProperty: RUN:-> rowID:: " + Arrays.toString(res));
-                for (long i: res) {
-                    if (i == 0) {
-                        response[0] = true;
-                        break;
-                    }
-                }
-            }
-            response[0] = false;
-        });
-        return response[0];
+        if (mImagesOfProperty.getValue() != null) {
+            mExecutor.execute(() -> {
+                mSaveImagesOfPropertyResponse.postValue(mImageRepository.createPropertyImages(mImagesOfProperty.getValue()));
+            });
+        }
+//        final boolean[] response = new boolean[1];
+//        if (mImagesOfProperty.getValue() != null) {
+//            mExecutor.execute(() -> {
+//                long[] res = mImageRepository.createPropertyImages(mImagesOfProperty.getValue());
+//                Log.i(TAG, "createImagesOfProperty: RUN:-> images.size():: " + mImagesOfProperty.getValue().size());
+//                Log.i(TAG, "createImagesOfProperty: RUN:-> rowID:: " + Arrays.toString(res));
+//                for (long i : res) {
+//                    if (i == 0) {
+//                        response[0] = true;
+//                        break;
+//                    } else {
+//                        response[0] = false;
+//                    }
+//                }
+//                Log.i(TAG, "createImagesOfProperty: res:: " + response[0]);
+//                // }
+//                Log.i(TAG, "createImagesOfProperty: res:: " + response[0]);
+//            });
+//        }
+//        return response[0];
+    }
+
+    public LiveData<long[]> getSaveImagesResponse() {
+        return mSaveImagesOfPropertyResponse;
+    }
+
+    public LiveData<Long> getCreatePropertyResponse() {
+        return mCreatePropertyResponse;
     }
 
     // Save single image

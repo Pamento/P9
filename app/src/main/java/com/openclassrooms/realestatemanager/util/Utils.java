@@ -5,8 +5,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 
-import com.openclassrooms.realestatemanager.util.system.RealEstateManagerApp;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -64,11 +62,11 @@ public class Utils {
     @SuppressWarnings("deprecation")
     public static Boolean isInternetAvailable(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            return cm.isDefaultNetworkActive();
-        } else {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            return cm.isDefaultNetworkActive();
+//        } else {
             NetworkInfo nI = cm.getActiveNetworkInfo();
             return nI != null && nI.getState() == NetworkInfo.State.CONNECTED;
-        }
+        //}
     }
 }

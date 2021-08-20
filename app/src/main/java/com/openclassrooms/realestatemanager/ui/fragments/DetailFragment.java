@@ -227,6 +227,7 @@ public class DetailFragment extends Fragment {
     }
 
     private void setStaticMapOfProperty() {
+        Log.i(TAG, "setStaticMapOfProperty: GLIDE//load:: " + mDetailViewModel.getUrlOfStaticMapOfProperty());
         Glide.with(requireContext())
                 .load(mDetailViewModel.getUrlOfStaticMapOfProperty())
                 .placeholder(R.drawable.image_placeholder)
