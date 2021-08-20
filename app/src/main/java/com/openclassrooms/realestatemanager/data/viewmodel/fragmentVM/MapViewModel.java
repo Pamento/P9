@@ -1,7 +1,6 @@
 package com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM;
 
 import android.location.Location;
-import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
@@ -36,8 +35,6 @@ public class MapViewModel extends ViewModel {
     }
 
     public LiveData<SimpleSQLiteQuery> getSimpleSQLiteQuery() {
-        Log.i("AddProperty", "MAP_VM__ getSimpleSQLiteQuery: SQLite__SQLite__SQLite__SQLite__SQLite__");
-        Log.i("AddProperty", "MAP_VM__ getSimpleSQLiteQuery: SQLite__SQLite__SQLite__SQLite__SQLite__");
         return mPropertiesRepository.getRowQueryProperties();
     }
 

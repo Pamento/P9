@@ -1,7 +1,5 @@
 package com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM;
 
-import android.util.Log;
-
 import androidx.lifecycle.ViewModel;
 import androidx.sqlite.db.SimpleSQLiteQuery;
 
@@ -9,7 +7,6 @@ import com.openclassrooms.realestatemanager.data.local.models.RowQueryEstates;
 import com.openclassrooms.realestatemanager.data.local.reposiotries.PropertiesRepository;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.openclassrooms.realestatemanager.util.Constants.ColumnName.*;
@@ -26,8 +23,6 @@ public class SearchEngineViewModel extends ViewModel {
 
     public void buildAndSendSearchEstateQuery(RowQueryEstates rowQueryEstates) {
         String query = buildQuery(rowQueryEstates);
-        Log.i("BUILD_QUERY", "args:: " + Arrays.toString(args.toArray()));
-        Log.i("BUILD_QUERY", "query::\n" + query);
         mQuery = new SimpleSQLiteQuery(query, args.toArray());
         sendRowEstateQuery();
     }

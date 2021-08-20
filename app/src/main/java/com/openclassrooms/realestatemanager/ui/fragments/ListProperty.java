@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.sqlite.db.SimpleSQLiteQuery;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +36,6 @@ import static com.openclassrooms.realestatemanager.util.enums.EFragments.MAP;
 
 public class ListProperty extends Fragment implements ListPropertyAdapter.OnItemPropertyListClickListener {
 
-    private static final String TAG = "ListProperty";
     private ListPropertyViewModel mListPropertyViewModel;
     private View view;
     private FragmentListPropertyBinding binding;
@@ -75,7 +73,6 @@ public class ListProperty extends Fragment implements ListPropertyAdapter.OnItem
     }
 
     private void setQueryStateObserver() {
-        Log.i(TAG, "LIST__ setQueryStateObserver: RUN");
         mListPropertyViewModel.getQueryState().observe(getViewLifecycleOwner(), queryStateObserver);
     }
 
@@ -85,16 +82,13 @@ public class ListProperty extends Fragment implements ListPropertyAdapter.OnItem
 
     final Observer<QueryState> queryStateObserver = queryState -> {
         if (queryState.equals(QueryState.NULL)) {
-            Log.i(TAG, "LIST__ queryStateObserver: IF:: all properties ");
             setPropertiesObserver();
         } else {
-            Log.i(TAG, "LIST__ queryStateObserver: ELSE:: row query");
             subscribeRowQuery();
         }
     };
 
     private void setPropertiesObserver() {
-        Log.i(TAG, "setPropertyObserver");
         mListPropertyViewModel.getPropertyWithImages().observe(getViewLifecycleOwner(), getProperties);
     }
 
@@ -111,7 +105,6 @@ public class ListProperty extends Fragment implements ListPropertyAdapter.OnItem
     }
 
     public void resetRowQuery() {
-        Log.i(TAG, "LIST__ resetRowQuery: ");
         mListPropertyViewModel.setQueryState(QueryState.NULL);
         setQueryStateObserver();
     }
@@ -119,12 +112,10 @@ public class ListProperty extends Fragment implements ListPropertyAdapter.OnItem
     final Observer<SimpleSQLiteQuery> rowQueryObserver = new Observer<SimpleSQLiteQuery>() {
         @Override
         public void onChanged(SimpleSQLiteQuery simpleSQLiteQuery) {
-            Log.i(TAG, "LIST__ onChanged: rowQueryObserver RUN");
             if (simpleSQLiteQuery != null) {
                 unsubscribeProperties();
                 mProperties.clear();
                 List<PropertyWithImages> fromRowQuery = mListPropertyViewModel.getPropertiesWithImagesFromRowQuery();
-                Log.i(TAG, "onChanged: PropertiesFromRowQuery:: " + fromRowQuery.size());
                 if (fromRowQuery.size() == 0) {
                     String msg = getResources().getString(R.string.search_give_zero_data);
                     NotifyBySnackBar.showSnackBar(1, view, msg);
@@ -137,11 +128,8 @@ public class ListProperty extends Fragment implements ListPropertyAdapter.OnItem
 
     final Observer<List<PropertyWithImages>> getProperties = propertyWithImages -> {
         if (propertyWithImages != null) {
-            Log.i(TAG, "LIST__ getProperties_OBSERVER:: " + propertyWithImages.size());
             mProperties.clear();
-            Log.i(TAG, "LIST__ getProperties_OBSERVER:: " + mProperties.size());
             mProperties.addAll(propertyWithImages);
-            Log.i(TAG, "LIST__ getProperties_OBSERVER:: " + mProperties.size());
         }
         displayDataOnRecyclerView();
     };
@@ -152,10 +140,7 @@ public class ListProperty extends Fragment implements ListPropertyAdapter.OnItem
     }
 
     private void setFabListener() {
-        binding.fabList.setOnClickListener(view -> {
-            Log.i(TAG, "onClick: LIST _ fab;;");
-            startOtherFragment(MAP, "");
-        });
+        binding.fabList.setOnClickListener(view -> startOtherFragment(MAP, ""));
     }
 
     private void setRecyclerView() {
@@ -178,8 +163,6 @@ public class ListProperty extends Fragment implements ListPropertyAdapter.OnItem
             // setPropertyId in local data Repositories for Detail, Edit fragment and others: Loan simulator, ...
             mListPropertyViewModel.setPropertyId(id);
             startOtherFragment(DETAIL, propertyType);
-            Log.i(TAG, "LIST__ onItemPropertyListClickListener:: " + propertyType);
-            Log.i(TAG, "LIST__ onItemPropertyListClickListener__ propertyID:: " + id);
         } else startOtherFragment(DETAIL, "Property Type");
     }
 
@@ -191,7 +174,6 @@ public class ListProperty extends Fragment implements ListPropertyAdapter.OnItem
 
     @Override
     public void onDestroy() {
-        Log.i(TAG, "LIST__ onDestroy ");
         if (mListPropertyViewModel.getQueryState().hasActiveObservers())
             unsubscribeQueryState();
         if (mListPropertyViewModel.getSimpleSQLiteQuery().hasActiveObservers())

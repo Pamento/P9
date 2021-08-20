@@ -219,11 +219,10 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
     }
 
     private void setRecyclerView() {
-        Log.i(TAG, "ADD__ setRecyclerView: imageToAdd.size():: " + imagesToAdd.size());
         imagesRecycler = binding.addFImagesRecycler;
         mImageAdapter = new ImageListOfAddPropertyAdapter(imagesToAdd);
         imagesRecycler.setAdapter(mImageAdapter);
-        //imagesRecycler.setHasFixedSize(true);
+        imagesRecycler.setHasFixedSize(true);
         imagesRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(mSimpleCallback);
         itemTouchHelper.attachToRecyclerView(imagesRecycler);
@@ -308,16 +307,12 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {/**/}
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {/**/
-                Log.i(TAG, "ADD__ onTextChanged: text:: " + charSequence.toString());
-            }
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {/**/}
 
             @Override
             public void afterTextChanged(Editable editable) {/**/
-                // TODO
                 //https://www.google.com/search?client=opera&q=android+editable.setFilters&sourceid=opera&ie=UTF-8&oe=UTF-8
                 //https://stackoverflow.com/questions/3349121/how-do-i-use-inputfilter-to-limit-characters-in-an-edittext-in-android
-                Log.i(TAG, "ADD__ afterTextChanged: text:: " + editable.toString());
                 editable.setFilters(new InputFilter[]{priceFilter});
             }
         });
@@ -353,14 +348,12 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
 
         if (checked == 0) {
             mAddPropertyViewModel.setImagesOfPropertyList(mImageAdapter.getImageOfPropertyList());
-            Log.i(TAG, "checkFormValidityBeforeSave: is__Wi-Fi ???:: " + Utils.isInternetAvailable(requireContext()));
             if (Utils.isInternetAvailable(requireContext())) {
                 getGeoLocationOfProperty();
             } else {
                 createProperty();
             }
         } else {
-            Log.i(TAG, "checkFormValidityBeforeSave: we are ready to create SingleProperty:: checked:: " + checked);
             String msg = requireActivity().getResources().getString(R.string.warning_missing_fields);
             NotifyBySnackBar.showSnackBar(1, mView, msg);
         }
@@ -371,7 +364,6 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
         String city = formAddressBinding.addAddressFormCity.getEditableText().toString();
         String quarter = formAddressBinding.addAddressFormQuarter.getEditableText().toString();
         String address = StringModifier.formatAddressToGeocoding(address1, city, quarter);
-        Log.i(TAG, "ADD__ getGeoLocationOfProperty: address:: " + address);
         mAddPropertyViewModel.getLocationFromAddress(address);
         setOnResponseObserver();
     }
@@ -408,8 +400,6 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
         int postalCode = TextUtils.isEmpty(postalCodeStr) ? 0 : Integer.parseInt(postalCodeStr);
         String amenities = getAmenities();
         String agent = binding.addFAgent.getText().toString();
-        Log.i(TAG, "createProperty: location:: " + location);
-        Log.i(TAG, "createProperty: dateRegister:: " + mMillisOfRegisterProperty);
         String dateR = String.valueOf(mMillisOfRegisterProperty);
         String dateSold = mMillisOfSoldDate == 0 ? "" : String.valueOf(mMillisOfSoldDate);
         mAddPropertyViewModel.createNewProperty(type, desc, surface, price, rooms, bedrooms, bathrooms, dateR, dateSold, address1, address2, city, quarter, postalCode, location, amenities, agent);
@@ -432,7 +422,6 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
 
     final Observer<long[]> saveImagesObserver = longs -> {
         boolean res = readSaveImageResponse(longs);
-        Log.i(TAG, "ADD__ saveImagesObserver:: " + res);
         if (res) {
             NotificationsUtils notify = new NotificationsUtils(requireContext());
             notify.showWarning(requireContext(), SAVE_IMAGES_FAIL);
@@ -445,7 +434,6 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
 
     final Observer<Long> createPropertyObserver = aLong -> {
         boolean res = aLong == -1;
-        Log.i(TAG, "ADD__ createPropertyObserver_onChanged:: " + res);
         NotificationsUtils notify = new NotificationsUtils(requireContext());
         if (res) {
             notify.showWarning(requireContext(), SAVE_PROPERTY_FAIL);
@@ -474,7 +462,6 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
     private void goBackToList() {
         MainActivity ma = (MainActivity) requireActivity();
         ma.onBackPressed();
-        Log.i(TAG, "ADD__ goBackToList: onBackPressed from AddProperty");
     }
 
     private String getAmenities() {
@@ -514,7 +501,6 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
         formAddressBinding = null;
         amenitiesBinding = null;
         binding = null;
-        Log.i(TAG, "ADD__ onDestroyView");
         super.onDestroyView();
     }
 
@@ -524,6 +510,5 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
             unsubscribeRecyclerViewObserver();
         if (mAddPropertyViewModel.getSaveImagesResponse().hasActiveObservers()) unsubscribeSaveImagesObserver();
         super.onDestroy();
-        Log.i(TAG, "ADD__ onDestroy");
     }
 }

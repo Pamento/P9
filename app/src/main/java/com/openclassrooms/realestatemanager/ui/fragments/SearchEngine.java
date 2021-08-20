@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +32,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class SearchEngine extends Fragment implements DatePickerDialog.OnDateSetListener {
-    private static final String TAG = "SearchEngine";
+
     private SearchEngineViewModel mSearchEngineViewModel;
     private FragmentSearchEngineBinding binding;
     private View view;
@@ -198,7 +197,6 @@ public class SearchEngine extends Fragment implements DatePickerDialog.OnDateSet
         mSearchEngineViewModel.buildAndSendSearchEstateQuery(mParamsForQuery);
         MainActivity ma = (MainActivity) requireActivity();
         ma.onBackPressed();
-        Log.i(TAG, "SEARCH__ sendQuery: onBackPressed from SearchEngine");
     }
 
     @Override

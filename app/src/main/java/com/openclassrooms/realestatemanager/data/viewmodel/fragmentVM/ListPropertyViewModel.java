@@ -1,7 +1,5 @@
 package com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.sqlite.db.SimpleSQLiteQuery;
@@ -24,8 +22,6 @@ public class ListPropertyViewModel extends ViewModel {
     }
 
     public LiveData<SimpleSQLiteQuery> getSimpleSQLiteQuery() {
-        Log.i("AddProperty", "LIST_VM__ getSimpleSQLiteQuery: SQLite__SQLite__SQLite__SQLite__SQLite__");
-        Log.i("AddProperty", "LIST_VM__ getSimpleSQLiteQuery: SQLite__SQLite__SQLite__SQLite__SQLite__");
         return mPropertiesRepository.getRowQueryProperties();
     }
 

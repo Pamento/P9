@@ -1,7 +1,5 @@
 package com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -15,9 +13,7 @@ import com.openclassrooms.realestatemanager.data.remote.models.geocode.Result;
 import com.openclassrooms.realestatemanager.data.remote.repository.GoogleMapsRepository;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.Executor;
 
@@ -29,7 +25,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class AddPropertyViewModel extends ViewModel {
-    private static final String TAG = "AddProperty";
+
     private final PropertiesRepository mPropertiesRepository;
     private final ImageRepository mImageRepository;
     private final GoogleMapsRepository mGoogleMapsRepository;
@@ -38,10 +34,9 @@ public class AddPropertyViewModel extends ViewModel {
     private SingleProperty mSingleProperty;
     private final List<ImageOfProperty> mImagesOfPropertyList = new ArrayList<>();
     private MutableLiveData<List<ImageOfProperty>> mImagesOfProperty;
-    private ImageOfProperty mImgOfProperty;
     private MutableLiveData<Location> mLocationOfAddress;
-    private MutableLiveData<Long> mCreatePropertyResponse = new MutableLiveData<Long>();
-    private MutableLiveData<long[]> mSaveImagesOfPropertyResponse = new MutableLiveData<>();
+    private final MutableLiveData<Long> mCreatePropertyResponse = new MutableLiveData<>();
+    private final MutableLiveData<long[]> mSaveImagesOfPropertyResponse = new MutableLiveData<>();
 
     public AddPropertyViewModel(PropertiesRepository propertiesRepository,
                                 ImageRepository imageRepository,
@@ -69,10 +64,6 @@ public class AddPropertyViewModel extends ViewModel {
 
     public void setSingleProperty(SingleProperty singleProperty) {
         mSingleProperty = singleProperty;
-    }
-
-    public void setImgOfProperty(ImageOfProperty imgOfProperty) {
-        mImgOfProperty = imgOfProperty;
     }
 
     public void createNewProperty(String type,
@@ -112,19 +103,11 @@ public class AddPropertyViewModel extends ViewModel {
     }
 
     public void createOneImageOfProperty(String imageUri) {
-        mImgOfProperty = new ImageOfProperty();
-        mImgOfProperty.setPropertyId(mSingleProperty.getId());
-        mImgOfProperty.setPath(imageUri);
-        Log.i(TAG, "createOneImageOfProperty: imageUri:: " + imageUri);
-        Log.i(TAG, "createOneImageOfProperty: imagesList.size():: " + mImagesOfPropertyList.size());
-        Log.i(TAG, "createOneImageOfProperty: ");
-        mImagesOfPropertyList.add(mImgOfProperty);
-        Log.i(TAG, "createOneImageOfProperty: imagesList.size():: " + mImagesOfPropertyList.size());
+        ImageOfProperty imgOfProperty = new ImageOfProperty();
+        imgOfProperty.setPropertyId(mSingleProperty.getId());
+        imgOfProperty.setPath(imageUri);
+        mImagesOfPropertyList.add(imgOfProperty);
         mImagesOfProperty.setValue(mImagesOfPropertyList);
-        if (mImagesOfProperty.getValue() != null)
-            Log.i(TAG, "createOneImageOfProperty: mImagesOfProperty.getValue().size():: " + mImagesOfProperty.getValue().size());
-        else Log.i(TAG, "createOneImageOfProperty: mImagesOfProperty.getValue() = null");
-        mImgOfProperty = null;
     }
 
     public void removeOneImageOfProperty(ImageOfProperty imageOfProperty) {
@@ -133,15 +116,8 @@ public class AddPropertyViewModel extends ViewModel {
     }
 
     public void setImagesOfPropertyList(List<ImageOfProperty> imagesOfPropertyList) {
-        Log.i(TAG, "ADD__VM__ setImagesOfPropertyList: param:-: imagesOfPropertyList.size():: " + imagesOfPropertyList.size());
-        Log.i(TAG, "ADD__VM__ setImagesOfPropertyList: imagesList.size():: " + mImagesOfPropertyList.size());
-        Log.i(TAG, "ADD__VM__ setImagesOfPropertyList: imagesList.size():: " + mImagesOfPropertyList.get(0).toString());
         mImagesOfPropertyList.clear();
-        Log.i(TAG, "ADD__VM__ setImagesOfPropertyList: imagesList.clear():: " + mImagesOfPropertyList.size());
-        Log.i(TAG, "ADD__VM__ setImagesOfPropertyList: imagesList.size():: " + mImagesOfPropertyList.size());
         mImagesOfPropertyList.addAll(imagesOfPropertyList);
-        Log.i(TAG, "ADD__VM__ setImagesOfPropertyList: imagesList.size():: " + mImagesOfPropertyList.size());
-        Log.i(TAG, "ADD__VM__ setImagesOfPropertyList: imagesList.size():: " + mImagesOfPropertyList.get(0).toString());
     }
 
     public LiveData<List<ImageOfProperty>> getImagesOfProperty() {
@@ -182,45 +158,14 @@ public class AddPropertyViewModel extends ViewModel {
 
     // Save data
     public void createProperty() {
-        mExecutor.execute(() -> {
-            mCreatePropertyResponse.postValue(mPropertiesRepository.createSingleProperty(mSingleProperty));
-        });
-//        final boolean[] response = new boolean[1];
-//        mExecutor.execute(() -> {
-//            long res = mPropertiesRepository.createSingleProperty(mSingleProperty);
-//            Log.i(TAG, "run: createSingleProperty::rowId -> response:: " + res);
-//            response[0] = res == -1;
-//        });
-//        return response[0];
+        mExecutor.execute(() -> mCreatePropertyResponse.postValue(mPropertiesRepository.createSingleProperty(mSingleProperty)));
     }
 
     public void saveImagesOfProperty() {
         // If true, the insert method was felt
         if (mImagesOfProperty.getValue() != null) {
-            mExecutor.execute(() -> {
-                mSaveImagesOfPropertyResponse.postValue(mImageRepository.createPropertyImages(mImagesOfProperty.getValue()));
-            });
+            mExecutor.execute(() -> mSaveImagesOfPropertyResponse.postValue(mImageRepository.createPropertyImages(mImagesOfProperty.getValue())));
         }
-//        final boolean[] response = new boolean[1];
-//        if (mImagesOfProperty.getValue() != null) {
-//            mExecutor.execute(() -> {
-//                long[] res = mImageRepository.createPropertyImages(mImagesOfProperty.getValue());
-//                Log.i(TAG, "createImagesOfProperty: RUN:-> images.size():: " + mImagesOfProperty.getValue().size());
-//                Log.i(TAG, "createImagesOfProperty: RUN:-> rowID:: " + Arrays.toString(res));
-//                for (long i : res) {
-//                    if (i == 0) {
-//                        response[0] = true;
-//                        break;
-//                    } else {
-//                        response[0] = false;
-//                    }
-//                }
-//                Log.i(TAG, "createImagesOfProperty: res:: " + response[0]);
-//                // }
-//                Log.i(TAG, "createImagesOfProperty: res:: " + response[0]);
-//            });
-//        }
-//        return response[0];
     }
 
     public LiveData<long[]> getSaveImagesResponse() {
@@ -229,15 +174,5 @@ public class AddPropertyViewModel extends ViewModel {
 
     public LiveData<Long> getCreatePropertyResponse() {
         return mCreatePropertyResponse;
-    }
-
-    // Save single image
-    public boolean createImageOfProperty() {
-        final boolean[] response = new boolean[1];
-        mExecutor.execute(() -> {
-            long res = mImageRepository.createPropertyImage(Objects.requireNonNull(mImagesOfProperty.getValue()).get(0));
-            response[0] = res == -1;
-        });
-        return response[0];
     }
 }

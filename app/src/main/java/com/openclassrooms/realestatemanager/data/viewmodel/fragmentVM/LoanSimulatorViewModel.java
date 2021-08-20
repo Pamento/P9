@@ -1,7 +1,5 @@
 package com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -13,7 +11,7 @@ import static com.openclassrooms.realestatemanager.util.Constants.Constants.THIR
 
 public class LoanSimulatorViewModel extends ViewModel {
 
-    private MutableLiveData<String> loanCalculated = new MutableLiveData<>();
+    private final MutableLiveData<String> loanCalculated = new MutableLiveData<>();
     private boolean isDollar = true;
     private boolean isInterestEdited = false;
     private boolean isYearDuration = true;
@@ -52,7 +50,6 @@ public class LoanSimulatorViewModel extends ViewModel {
     }
 
     public void setInterestEdited(boolean interestEdited) {
-        Log.i("LOAN_SIMULATOR", "setInterestEdited: " + interestEdited);
         isInterestEdited = interestEdited;
     }
 

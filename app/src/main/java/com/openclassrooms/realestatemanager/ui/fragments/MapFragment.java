@@ -11,7 +11,6 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.sqlite.db.SimpleSQLiteQuery;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +39,6 @@ import com.openclassrooms.realestatemanager.util.notification.NotifyBySnackBar;
 import com.openclassrooms.realestatemanager.util.system.LocationUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -50,7 +48,6 @@ import static com.openclassrooms.realestatemanager.util.enums.EFragments.LIST;
 public class MapFragment extends Fragment implements OnMapReadyCallback,
         GoogleMap.OnMarkerClickListener {
 
-    private static final String TAG = "MapFragment";
     public static final String FAB_DECIDER = "display_fab";
     private MapViewModel mMapViewModel;
     private View view;
@@ -116,9 +113,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public boolean onMarkerClick(@NonNull Marker marker) {
         if (marker.getTag() != null) {
-            Log.i(TAG, "onMarkerClick: tag:: " + marker.getTag().toString());
-            Log.i(TAG, "onMarkerClick: propertyId:: " + mPropertyWithImages.get(0).mSingleProperty.getId());
-            Log.i(TAG, "onMarkerClick: type:: " + getPropertyType(marker.getTag().toString()));
             mMapViewModel.setPropertyId(marker.getTag().toString());
             navigateToFragment(DETAIL, getPropertyType(marker.getTag().toString()));
         }
@@ -133,7 +127,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         Permissions.check(requireContext(), Constants.PERMISSIONS, null, null, new PermissionHandler() {
             @Override
             public void onGranted() {
-                Log.i(TAG, "MVF__ onGranted: PERMISSIONS");
                 setMap();
             }
         });
@@ -155,7 +148,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     private void setQueryStateObserver() {
-        Log.i(TAG, "MAP__ checkDataToDisplay: RUN");
         mMapViewModel.getQueryState().observe(getViewLifecycleOwner(), queryStateObserver);
     }
 
@@ -165,11 +157,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
 
     final Observer<QueryState> queryStateObserver = queryState -> {
         if (queryState.equals(QueryState.NULL)) {
-            Log.i(TAG, "MAP__ checkDataToDisplay: IF:: all properties");
             setPropertyObserver();
         } else {
             setRowQueryObserver();
-            Log.i(TAG, "MAP__ checkDataToDisplay: ELSE:: row query");
         }
     };
 
@@ -183,7 +173,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
                     Marker marker;
                     if (sp != null && !sp.mSingleProperty.getLocation().equals("")) {
                         String[] latLang = sp.mSingleProperty.getLocation().split(",");
-                        Log.i(TAG, "setPropertiesMarkersOnMap: LOCATION:: " + Arrays.toString(latLang));
                         LatLng latLng = new LatLng(Double.parseDouble(latLang[0]), Double.parseDouble(latLang[1]));
                         marker = mGoogleMaps.addMarker(new MarkerOptions()
                                 .position(latLng)
@@ -213,7 +202,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     public void resetRowQuery() {
-        Log.i(TAG, "MAP__ resetRowQuery: ");
         mMapViewModel.setQueryState(QueryState.NULL);
         setQueryStateObserver();
     }
@@ -276,17 +264,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     }
 
     private void setFabListener() {
-        binding.fabList.setOnClickListener(view -> {
-            Log.i(TAG, "onClick: LIST _ fab;;");
-            navigateToFragment(LIST, "");
-        });
+        binding.fabList.setOnClickListener(view -> navigateToFragment(LIST, ""));
     }
 
     private void navigateToFragment(EFragments fragment, String toolbarTitle) {
         MainActivity ma = (MainActivity) requireActivity();
         if (fragment.equals(LIST)) ma.onBackPressed();
         else ma.displayFragm(fragment, toolbarTitle);
-        Log.i(TAG, "MAP__ navigateToFragment: onBackPressed from MapFragment");
     }
 
     private String getPropertyType(String propertyId) {
@@ -306,7 +290,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void onDestroy() {
-        Log.i(TAG, "MAP__ onDestroy ");
         if (mMapViewModel.getQueryState().hasActiveObservers()) unsubscribeQueryState();
         if (mMapViewModel.getSimpleSQLiteQuery().hasActiveObservers())
             unsubscribeRowQuery();

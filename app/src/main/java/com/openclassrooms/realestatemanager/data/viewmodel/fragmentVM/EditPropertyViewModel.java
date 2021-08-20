@@ -30,6 +30,9 @@ public class EditPropertyViewModel extends ViewModel {
     private final Executor mExecutor;
     private final CompositeDisposable mDisposable = new CompositeDisposable();
     private final MutableLiveData<Location> mLocationOfAddress = new MutableLiveData<>();
+    private final MutableLiveData<Integer> mUpdatePropertyResponse = new MutableLiveData<>();
+    private final MutableLiveData<Long> mCreateImgResponse = new MutableLiveData();
+    private final MutableLiveData<Integer> mUpdateImgResponse = new MutableLiveData<>();
 
     public EditPropertyViewModel(PropertiesRepository propertiesRepository,
                                  ImageRepository imageRepository,
@@ -44,6 +47,7 @@ public class EditPropertyViewModel extends ViewModel {
     public LiveData<SingleProperty> getSingleProperty() {
         return mPropertiesRepository.getSingleProperty(null);
     }
+
     public LiveData<List<ImageOfProperty>> getImagesOfProperty() {
         return mImageRepository.getAllImagesOfProperty(null);
     }
@@ -76,13 +80,16 @@ public class EditPropertyViewModel extends ViewModel {
     }
 
     // Handle data
-    public boolean updateImageOfProperty(ImageOfProperty imageOfProperty) {
-        final boolean[] response = new boolean[1];
-        mExecutor.execute(()->{
-            int res = mImageRepository.updateImageOfProperty(imageOfProperty);
-            response[0] = res == 0;
+    public void updateImageOfProperty(ImageOfProperty imageOfProperty) {
+        mExecutor.execute(() -> {
+            mUpdateImgResponse.postValue(mImageRepository.updateImageOfProperty(imageOfProperty));
         });
-        return response[0];
+//        final boolean[] response = new boolean[1];
+//        mExecutor.execute(() -> {
+//            int res = mImageRepository.updateImageOfProperty(imageOfProperty);
+//            response[0] = res == 0;
+//        });
+//        return response[0];
     }
 
     public void deleteImageOfProperty(int imageId) {
@@ -90,23 +97,41 @@ public class EditPropertyViewModel extends ViewModel {
     }
 
     // Insert new image
-    public boolean createImageOfProperty(ImageOfProperty imageOfProperty) {
-        final boolean[] response = new boolean[1];
+    public void createImageOfProperty(ImageOfProperty imageOfProperty) {
         mExecutor.execute(() -> {
-            long res = mImageRepository.createPropertyImage(imageOfProperty);
-            response[0] = res == -1;
+            mCreateImgResponse.postValue(mImageRepository.createPropertyImage(imageOfProperty));
         });
-        return response[0];
+//        final boolean[] response = new boolean[1];
+//        mExecutor.execute(() -> {
+//            long res = mImageRepository.createPropertyImage(imageOfProperty);
+//            response[0] = res == -1;
+//        });
+//        return response[0];
     }
 
     // Save changes
-    public boolean updateProperty(SingleProperty singleProperty) {
-        final boolean[] response = new boolean[1];
+    public void updateProperty(SingleProperty singleProperty) {
         mExecutor.execute(() -> {
-            int res = mPropertiesRepository.updateSingleProperty(singleProperty);
-            response[0] = res == 0;
+            mUpdatePropertyResponse.postValue(mPropertiesRepository.updateSingleProperty(singleProperty));
         });
-        return response[0];
+//        final boolean[] response = new boolean[1];
+//        mExecutor.execute(() -> {
+//            int res = mPropertiesRepository.updateSingleProperty(singleProperty);
+//            response[0] = res == 0;
+//        });
+//        return response[0];
+    }
+
+    public LiveData<Integer> getUpdatePropertyResponse() {
+        return mUpdatePropertyResponse;
+    }
+
+    public LiveData<Long> getCreateImgResponse() {
+        return mCreateImgResponse;
+    }
+
+    public LiveData<Integer> getUpdateImgResponse() {
+        return mUpdateImgResponse;
     }
 
 }

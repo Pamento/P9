@@ -23,11 +23,10 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class ImageListOfAddPropertyAdapter extends
         RecyclerView.Adapter<ImageListOfAddPropertyAdapter.ImageListOfAddPropertyViewHolder> {
-    private static final String TAG = "AddProperty";
+
     private final List<ImageOfProperty> mImageOfPropertyList;
 
     public ImageListOfAddPropertyAdapter(List<ImageOfProperty> imageOfPropertyList) {
-        Log.i(TAG, "ADAPTER__ CONSTRUCTOR// ImageListOfAddPropertyAdapter: imageOfPropertyList.size():: " + imageOfPropertyList);
         mImageOfPropertyList = imageOfPropertyList;
     }
 
@@ -100,8 +99,6 @@ public class ImageListOfAddPropertyAdapter extends
     public void updateImagesList(List<ImageOfProperty> images) {
         this.notifyDataSetChanged();
         this.mImageOfPropertyList.clear();
-        Log.i(TAG, "ADAPTER__ updateImagesList: images.size():: " + images.size());
-        Log.i(TAG, "ADAPTER__ updateImagesList: mImageOfProperty.size():: " + mImageOfPropertyList.size());
         this.mImageOfPropertyList.addAll(images);
         this.notifyDataSetChanged();
     }
