@@ -255,7 +255,7 @@
                 android:id="@+id/detail_amenities_list_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/size_b" />
+                android:layout_marginHorizontal="@dimen/size_n" />
 
         </LinearLayout>
 
