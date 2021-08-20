@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
             FragmentTransaction fTransaction = mFragmentManager.beginTransaction();
             ListProperty listProperty = ListProperty.newInstance();
             fTransaction.replace(R.id.main_activity_fragment_container, listProperty, LIST_FRAGMENT).commit();
+
             if (mActivityHasTwoFragment) initDetailFragment(true);
         } else {
             setFragmentManager();
@@ -89,8 +90,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // The function: initDetailFragment() is called only on the opening the application. She doesn't part of navigation.
     private void initDetailFragment(boolean firstPositionOfList) {
+        // The function: initDetailFragment() is called only on the opening the application. She doesn't part of navigation.
         DetailFragment detail = DetailFragment.newInstance(mActivityHasTwoFragment, firstPositionOfList);
         FragmentTransaction ft = mFragmentManager.beginTransaction();
         ft.replace(R.id.main_activity_fragment_container_secondary, detail, DETAIL_FRAGMENT).commit();
@@ -188,8 +189,14 @@ public class MainActivity extends AppCompatActivity {
             case LIST:
                 setToolbarTitle(getResources().getString(R.string.app_name), false);
                 break;
+            case MAP:
+                setToolbarTitle(getResources().getString(R.string.frg_map_title), false);
+                break;
             case DETAIL:
-                setToolbarTitle("Detail is back", true);
+                String propertyType = "Real Estate:";
+                DetailFragment d = (DetailFragment) mFragmentManager.findFragmentByTag(DETAIL_FRAGMENT);
+                if (d != null) propertyType = d.getPropertyType();
+                setToolbarTitle(propertyType, true);
                 break;
         }
     }

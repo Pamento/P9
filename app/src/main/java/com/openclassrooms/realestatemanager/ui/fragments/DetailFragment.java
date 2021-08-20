@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,12 +31,13 @@ import com.openclassrooms.realestatemanager.util.system.AdapterHelper;
 import com.openclassrooms.realestatemanager.util.texts.StringModifier;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class DetailFragment extends Fragment {
-
+    private static final String TAG = "DetailFragment";
     private static final String LAYOUT_MODE = "double";
     private static final String POSITION_OF_LIST = "position_list";
     private boolean isTwoFragmentLayout = false;
@@ -89,7 +91,21 @@ public class DetailFragment extends Fragment {
     }
 
     private void setOnDataObservers() {
-        mDetailViewModel.getSingleProperty().observe(getViewLifecycleOwner(), singleProperty -> {
+        mDetailViewModel.getSingleProperty().observe(getViewLifecycleOwner(), getProperty);
+        mDetailViewModel.getImagesOfProperty().observe(getViewLifecycleOwner(), getImagesOfProperty);
+    }
+
+    private final Observer<List<ImageOfProperty>> getImagesOfProperty = imageOfProperties -> {
+        if (imageOfProperties != null) {
+            if (mImageOfPropertyList.size() > 0) mImageOfPropertyList.clear();
+            mImageOfPropertyList.addAll(imageOfProperties);
+            displayDataOnRecyclerView();
+        }
+    };
+
+    private final Observer<SingleProperty> getProperty = new Observer<SingleProperty>() {
+        @Override
+        public void onChanged(SingleProperty singleProperty) {
             if (singleProperty != null) {
                 mSingleProperty = singleProperty;
                 if (mSingleProperty.getLocation().equals("")) {
@@ -99,21 +115,30 @@ public class DetailFragment extends Fragment {
                 }
             }
             updateUI();
-        });
-        mDetailViewModel.getImagesOfProperty().observe(getViewLifecycleOwner(), imagesOfProperty -> {
-            mImageOfPropertyList.addAll(imagesOfProperty);
-            displayDataOnRecyclerView();
-        });
+        }
+    };
+
+    private void unsubscribeImagesOfProperty() {
+        mDetailViewModel.getImagesOfProperty().removeObserver(getImagesOfProperty);
+    }
+
+    private void unsubscribeGetProperty() {
+        mDetailViewModel.getSingleProperty().removeObserver(getProperty);
     }
 
     private void getAllProperties() {
-        mDetailViewModel.getAllProperties().observe(getViewLifecycleOwner(), propertiesWithImages -> {
-            if (propertiesWithImages != null) {
+        mDetailViewModel.getAllProperties().observe(getViewLifecycleOwner(), getPropertyWithImages);
+    }
+
+    private final Observer<List<PropertyWithImages>> getPropertyWithImages = new Observer<List<PropertyWithImages>>() {
+        @Override
+        public void onChanged(List<PropertyWithImages> propertyWithImages) {
+            if (propertyWithImages != null) {
                 PropertyWithImages property;
                 if (isFirstItemOfList) {
-                    property = propertiesWithImages.get(0);
+                    property = propertyWithImages.get(0);
                 } else {
-                    property = propertiesWithImages.get(propertiesWithImages.size() - 1);
+                    property = propertyWithImages.get(propertyWithImages.size() - 1);
                 }
                 mSingleProperty = property.mSingleProperty;
                 if (property.mSingleProperty.getLocation().equals("") && Utils.isInternetAvailable(requireContext())) {
@@ -122,10 +147,15 @@ public class DetailFragment extends Fragment {
                     mDetailViewModel.setUrlOfStaticMapOfProperty(property.mSingleProperty.getLocation());
                 }
                 updateUI();
+                if (mImageOfPropertyList.size() > 0) mImageOfPropertyList.clear();
                 mImageOfPropertyList.addAll(property.ImagesOfProperty);
                 displayDataOnRecyclerView();
             }
-        });
+        }
+    };
+
+    private void unsubscribeGetProperties() {
+        mDetailViewModel.getAllProperties().removeObserver(getPropertyWithImages);
     }
 
     private void getLocationFromAddress() {
@@ -210,6 +240,11 @@ public class DetailFragment extends Fragment {
         }
     }
 
+    public String getPropertyType() {
+        if (mSingleProperty != null) return mSingleProperty.getType();
+        else return "...";
+    }
+
     public void handleCurrency(int oneIsDollar) {
         // Value of oneIsDollar = 1 -> $ (one is dollar)
         if (oneIsDollar == 2 && mDetailViewModel.isDollar()) mDetailViewModel.setDollar(false);
@@ -235,7 +270,7 @@ public class DetailFragment extends Fragment {
 
     private void initViewModel() {
         ViewModelFactory vmF = Injection.sViewModelFactory(requireActivity());
-        mDetailViewModel = new ViewModelProvider(requireActivity(), vmF).get(DetailViewModel.class);
+        mDetailViewModel = new ViewModelProvider(this, vmF).get(DetailViewModel.class);
     }
 
     private void updatePropertyInRoom() {
@@ -251,6 +286,9 @@ public class DetailFragment extends Fragment {
     @Override
     public void onDestroy() {
         if (mDetailViewModel.getGeoLocationOfProperty().hasActiveObservers()) unsubscribeGetLocation();
+        if (mDetailViewModel.getAllProperties().hasActiveObservers()) unsubscribeGetProperties();
+        if (mDetailViewModel.getSingleProperty().hasActiveObservers()) unsubscribeGetProperty();
+        if (mDetailViewModel.getImagesOfProperty().hasActiveObservers()) unsubscribeImagesOfProperty();
         super.onDestroy();
     }
 }

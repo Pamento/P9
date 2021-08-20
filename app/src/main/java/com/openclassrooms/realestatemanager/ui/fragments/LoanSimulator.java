@@ -33,7 +33,7 @@ public class LoanSimulator extends Fragment {
     private String euroPrice;
     private String dollarPerMonth;
     private String euroPerMonth;
-    private String currencyToDisplay;
+    private String currencyToDisplay = "";
     private String loanCalculated = "0";
 
     public LoanSimulator() {

@@ -1,6 +1,5 @@
 package com.openclassrooms.realestatemanager.data.local.reposiotries;
 
-
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

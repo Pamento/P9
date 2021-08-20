@@ -14,7 +14,6 @@ import com.openclassrooms.realestatemanager.data.remote.repository.GoogleMapsRep
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.Executor;
 
@@ -35,8 +34,9 @@ public class AddPropertyViewModel extends ViewModel {
     private SingleProperty mSingleProperty;
     private final List<ImageOfProperty> mImagesOfPropertyList = new ArrayList<>();
     private MutableLiveData<List<ImageOfProperty>> mImagesOfProperty;
-    private ImageOfProperty mImgOfProperty;
     private MutableLiveData<Location> mLocationOfAddress;
+    private final MutableLiveData<Long> mCreatePropertyResponse = new MutableLiveData<>();
+    private final MutableLiveData<long[]> mSaveImagesOfPropertyResponse = new MutableLiveData<>();
 
     public AddPropertyViewModel(PropertiesRepository propertiesRepository,
                                 ImageRepository imageRepository,
@@ -64,10 +64,6 @@ public class AddPropertyViewModel extends ViewModel {
 
     public void setSingleProperty(SingleProperty singleProperty) {
         mSingleProperty = singleProperty;
-    }
-
-    public void setImgOfProperty(ImageOfProperty imgOfProperty) {
-        mImgOfProperty = imgOfProperty;
     }
 
     public void createNewProperty(String type,
@@ -107,12 +103,11 @@ public class AddPropertyViewModel extends ViewModel {
     }
 
     public void createOneImageOfProperty(String imageUri) {
-        mImgOfProperty = new ImageOfProperty();
-        mImgOfProperty.setPropertyId(mSingleProperty.getId());
-        mImgOfProperty.setPath(imageUri);
-        mImagesOfPropertyList.add(mImgOfProperty);
+        ImageOfProperty imgOfProperty = new ImageOfProperty();
+        imgOfProperty.setPropertyId(mSingleProperty.getId());
+        imgOfProperty.setPath(imageUri);
+        mImagesOfPropertyList.add(imgOfProperty);
         mImagesOfProperty.setValue(mImagesOfPropertyList);
-        mImgOfProperty = null;
     }
 
     public void removeOneImageOfProperty(ImageOfProperty imageOfProperty) {
@@ -162,41 +157,22 @@ public class AddPropertyViewModel extends ViewModel {
     }
 
     // Save data
-    public boolean createSingleProperty() {
-        final boolean[] response = new boolean[1];
-        mExecutor.execute(() -> {
-            long res = mPropertiesRepository.createSingleProperty(mSingleProperty);
-            response[0] = res == -1;
-        });
-        return response[0];
+    public void createProperty() {
+        mExecutor.execute(() -> mCreatePropertyResponse.postValue(mPropertiesRepository.createSingleProperty(mSingleProperty)));
     }
 
-    // Save list of images
-    public boolean createImagesOfProperty() {
+    public void saveImagesOfProperty() {
         // If true, the insert method was felt
-        final boolean[] response = new boolean[1];
-        mExecutor.execute(() -> {
-            if (mImagesOfProperty.getValue() != null) {
-                long[] res = mImageRepository.createPropertyImages(mImagesOfProperty.getValue());
-                for (long i: res) {
-                    if (i == 0) {
-                        response[0] = true;
-                        break;
-                    }
-                }
-            }
-            response[0] = false;
-        });
-        return response[0];
+        if (mImagesOfProperty.getValue() != null) {
+            mExecutor.execute(() -> mSaveImagesOfPropertyResponse.postValue(mImageRepository.createPropertyImages(mImagesOfProperty.getValue())));
+        }
     }
 
-    // Save single image
-    public boolean createImageOfProperty() {
-        final boolean[] response = new boolean[1];
-        mExecutor.execute(() -> {
-            long res = mImageRepository.createPropertyImage(Objects.requireNonNull(mImagesOfProperty.getValue()).get(0));
-            response[0] = res == -1;
-        });
-        return response[0];
+    public LiveData<long[]> getSaveImagesResponse() {
+        return mSaveImagesOfPropertyResponse;
+    }
+
+    public LiveData<Long> getCreatePropertyResponse() {
+        return mCreatePropertyResponse;
     }
 }

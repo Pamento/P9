@@ -75,6 +75,10 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
     private File photoFile;
     private Location mLocation;
     private boolean isDateRegister;
+    // variable util for update new change after EditProperty ands.
+    private int errorRes = 0;
+    private List<Integer> index = new ArrayList<>();
+    private List<ImageOfProperty> temp = new ArrayList<>();
 
     public EditProperty() {
         // Required empty public constructor
@@ -280,7 +284,6 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
 
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-            //ImageOfProperty imageOfProperty = mImageAdapter.getImageOfPropertyAt(viewHolder.getAbsoluteAdapterPosition());
             mImageAdapter.removeDeletedImageFromList(viewHolder.getAbsoluteAdapterPosition());
         }
     };
@@ -293,7 +296,7 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
 
             if (photoFile != null) {
                 Uri fp;
-                if ((Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP)){
+                if ((Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP)) {
                     fp = FileProvider.getUriForFile(
                             requireActivity(),
                             "com.openclassrooms.realestatemanager.fileprovider",
@@ -358,7 +361,7 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
         String address1 = formAddressBinding.addAddress1FormAddress.getEditableText().toString();
         String city = formAddressBinding.addAddressFormCity.getEditableText().toString();
         String quarter = formAddressBinding.addAddressFormQuarter.getEditableText().toString();
-        String address = StringModifier.formatAddressToGeocoding(address1,city,quarter);
+        String address = StringModifier.formatAddressToGeocoding(address1, city, quarter);
         mEditPropertyViewModel.getLocationFromAddress(address);
         setOnResponseObserver();
     }
@@ -376,6 +379,8 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
         public void onChanged(Location location) {
             if (location != null) {
                 mLocation = location;
+                getAllImageFromAdapter();
+                setIndexImageToDelete();
                 updateImagesOfProperty();
                 unsubscribeGetLocation();
             }
@@ -388,6 +393,8 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
         if (Utils.isInternetAvailable(requireContext())) {
             getGeoLocationOfProperty();
         } else {
+            getAllImageFromAdapter();
+            setIndexImageToDelete();
             updateImagesOfProperty();
         }
     }
@@ -417,8 +424,9 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
         String quarter = formAddressBinding.addAddressFormQuarter.getEditableText().toString();
         if (!quarter.equals("")) mSingleProperty.setQuarter(quarter);
         String postalCode = formAddressBinding.addAddressFormPostalCode.getEditableText().toString();
-        if (!TextUtils.isEmpty(bedrooms)) mSingleProperty.setPostalCode(Integer.parseInt(postalCode));
-        mSingleProperty.setLocation(mLocation == null ? "" :  formatLocationInString());
+        if (!TextUtils.isEmpty(bedrooms))
+            mSingleProperty.setPostalCode(Integer.parseInt(postalCode));
+        mSingleProperty.setLocation(mLocation == null ? "" : formatLocationInString());
         mSingleProperty.setAmenities(getAmenities());
         if (mMillisOfRegisterProperty > 0)
             mSingleProperty.setDateRegister(String.valueOf(mMillisOfRegisterProperty));
@@ -434,29 +442,57 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
         return String.valueOf(mLocation.getLat()) + "," + String.valueOf(mLocation.getLng());
     }
 
-    private void updateImagesOfProperty() {
-        int i;
-        int errorRes = 0;
-        List<Integer> index = new ArrayList<>();
+    private void getAllImageFromAdapter() {
+        temp.addAll(mImageAdapter.getImageOfPropertyList());
+    }
 
-        List<ImageOfProperty> temp = mImageAdapter.getImageOfPropertyList();
-        for (ImageOfProperty ip: temp) {
-            if (ip.getId() == null) {
-                boolean res = mEditPropertyViewModel.createImageOfProperty(ip);
-                if (res) {
-                    errorRes += 1;
-                }                
+    private void updateImagesOfProperty() {
+        if (temp.size() > 0) {
+            ImageOfProperty img = temp.get(0);
+            if (img.getId() == null) {
+                mEditPropertyViewModel.createImageOfProperty(img);
+                mEditPropertyViewModel.getCreateImgResponse().observe(getViewLifecycleOwner(), createImageRes);
             } else {
-                index.add(mImageOfPropertyListToCompare.indexOf(ip));
-                boolean res = mEditPropertyViewModel.updateImageOfProperty(ip);
-                if (res) {
-                    errorRes += 1;
-                }    
+                mEditPropertyViewModel.updateImageOfProperty(img);
+                mEditPropertyViewModel.getUpdateImgResponse().observe(getViewLifecycleOwner(), updateImageRes);
+            }
+        } else {
+            deleteImages();
+        }
+    }
+
+    private void setIndexImageToDelete() {
+        if (temp.size() > 0) {
+            for (ImageOfProperty ip: temp) {
+                if (ip.getId() != null) {
+                    index.add(mImageOfPropertyListToCompare.indexOf(ip));
+                }
             }
         }
+    }
+
+    private final Observer<Long> createImageRes = integer -> {
+        if (integer == -1) errorRes += 1;
+        deleteFirstPositionInTempVar(true);
+    };
+
+    private final Observer<Integer> updateImageRes = integer -> {
+        if (integer == 0) errorRes += 1;
+        deleteFirstPositionInTempVar(false);
+    };
+
+    private void deleteFirstPositionInTempVar(boolean isCreateImage) {
+        if (isCreateImage) mEditPropertyViewModel.getCreateImgResponse().removeObserver(createImageRes);
+        else mEditPropertyViewModel.getUpdateImgResponse().removeObserver(updateImageRes);
+        // Remove first element. Run like while loop.
+        temp.remove(0);
+        updateImagesOfProperty();
+    }
+
+    private void deleteImages() {
         if (index.size() < mImageOfPropertyListToCompare.size()) {
-            i = mImageOfPropertyListToCompare.size();
-            for (int k = 0; k < i; k++ ) {
+            int i = mImageOfPropertyListToCompare.size();
+            for (int k = 0; k < i; k++) {
                 if (!index.contains(k)) {
                     mEditPropertyViewModel.deleteImageOfProperty(mImageOfPropertyListToCompare.get(k).getId());
                 }
@@ -481,19 +517,23 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
 
     // Handle data
     private void saveDataAndNotifyUser() {
-        boolean res = mEditPropertyViewModel.updateProperty(mSingleProperty);
-        NotificationsUtils notify = new NotificationsUtils(requireContext());
-        // fail if res = true
-        // success if res = false
-        if (res)
-            notify.showWarning(requireContext(), SAVE_PROPERTY_FAIL);
-        else
-            notify.showWarning(requireContext(), SAVE_PROPERTY_OK);
-
-        goBackToList();
+        mEditPropertyViewModel.updateProperty(mSingleProperty);
+        mEditPropertyViewModel.getUpdateImgResponse().observe(getViewLifecycleOwner(), updatePropertyObserver);
     }
 
-    private void goBackToList() {
+    private final Observer<Integer> updatePropertyObserver = integer -> {
+        NotificationsUtils notify = new NotificationsUtils(requireContext());
+        // fail if integer = 0
+        if (integer == 0)
+            notify.showWarning(requireContext(), SAVE_PROPERTY_FAIL);
+        else {
+            notify.showWarning(requireContext(), SAVE_PROPERTY_OK);
+            goBackToDetail();
+        }
+
+    };
+
+    private void goBackToDetail() {
         MainActivity ma = (MainActivity) requireActivity();
         ma.onBackPressed();
     }
@@ -529,7 +569,8 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
 
     @Override
     public void onDestroy() {
-        if (mEditPropertyViewModel.getGeoLocationOfProperty().hasActiveObservers()) unsubscribeGetLocation();
+        if (mEditPropertyViewModel.getGeoLocationOfProperty().hasActiveObservers())
+            unsubscribeGetLocation();
         unsubscribeDataObservers();
         super.onDestroy();
     }

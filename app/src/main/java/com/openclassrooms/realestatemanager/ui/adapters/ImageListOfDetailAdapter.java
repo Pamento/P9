@@ -37,19 +37,21 @@ public class ImageListOfDetailAdapter extends RecyclerView.Adapter<ImageListOfDe
 
     @Override
     public void onBindViewHolder(@NonNull DetailImageViewHolder holder, int position) {
-        ImageOfProperty propertyImg = mImageOfPropertyList.get(position);
-        Uri uri = Uri.parse(propertyImg.getPath());
-        if (uri != null) {
-            Glide.with(holder.mDetailImgItem.getContext())
-                    .load(uri)
-                    .error(R.drawable.image_not_found_square)
-                    .placeholder(R.drawable.image_placeholder)
-                    .transform(new RoundedCornersTransformation(20, 16))
-                    .apply(RequestOptions.centerCropTransform())
-                    .into(holder.mDetailImgItem);
+        if (mImageOfPropertyList != null ) {
+            ImageOfProperty propertyImg = mImageOfPropertyList.get(position);
+            Uri uri = Uri.parse(propertyImg.getPath());
+            if (uri != null) {
+                Glide.with(holder.mDetailImgItem.getContext())
+                        .load(uri)
+                        .error(R.drawable.image_not_found_square)
+                        .placeholder(R.drawable.image_placeholder)
+                        .transform(new RoundedCornersTransformation(20, 16))
+                        .apply(RequestOptions.centerCropTransform())
+                        .into(holder.mDetailImgItem);
+            }
+            if (propertyImg.getDescription() != null)
+                holder.mImageDescription.setText(propertyImg.getDescription());
         }
-        if (propertyImg.getDescription() != null)
-            holder.mImageDescription.setText(propertyImg.getDescription());
     }
 
     @Override

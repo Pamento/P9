@@ -1,7 +1,5 @@
 package com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM;
 
-import android.util.Log;
-
 import androidx.lifecycle.ViewModel;
 import androidx.sqlite.db.SimpleSQLiteQuery;
 
@@ -9,7 +7,6 @@ import com.openclassrooms.realestatemanager.data.local.models.RowQueryEstates;
 import com.openclassrooms.realestatemanager.data.local.reposiotries.PropertiesRepository;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.openclassrooms.realestatemanager.util.Constants.ColumnName.*;

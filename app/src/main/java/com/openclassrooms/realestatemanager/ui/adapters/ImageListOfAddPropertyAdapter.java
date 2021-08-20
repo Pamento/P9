@@ -23,7 +23,7 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class ImageListOfAddPropertyAdapter extends
         RecyclerView.Adapter<ImageListOfAddPropertyAdapter.ImageListOfAddPropertyViewHolder> {
-    private static final String TAG = "AddProperty";
+
     private final List<ImageOfProperty> mImageOfPropertyList;
 
     public ImageListOfAddPropertyAdapter(List<ImageOfProperty> imageOfPropertyList) {
@@ -130,8 +130,10 @@ public class ImageListOfAddPropertyAdapter extends
     }
 
     public void removeDeletedImageFromList(int imageOfProperty) {
-        mImageOfPropertyList.remove(imageOfProperty);
-        this.notifyItemRemoved(imageOfProperty);
-        this.notifyItemRangeChanged(imageOfProperty, mImageOfPropertyList.size());
+        if (mImageOfPropertyList.size() >= 1) {
+            mImageOfPropertyList.remove(imageOfProperty);
+            this.notifyItemRemoved(imageOfProperty);
+            this.notifyItemRangeChanged(imageOfProperty, mImageOfPropertyList.size());
+        }
     }
 }

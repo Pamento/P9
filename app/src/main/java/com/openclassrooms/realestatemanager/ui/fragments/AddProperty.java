@@ -59,7 +59,7 @@ import static android.app.Activity.RESULT_OK;
 import static com.openclassrooms.realestatemanager.util.Constants.Constants.*;
 
 public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetListener {
-
+    private static final String TAG = "AddProperty";
     private View mView;
     private AddPropertyViewModel mAddPropertyViewModel;
     private FragmentAddPropertyBinding binding;
@@ -222,7 +222,7 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
         imagesRecycler = binding.addFImagesRecycler;
         mImageAdapter = new ImageListOfAddPropertyAdapter(imagesToAdd);
         imagesRecycler.setAdapter(mImageAdapter);
-        //imagesRecycler.setHasFixedSize(true);
+        imagesRecycler.setHasFixedSize(true);
         imagesRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(mSimpleCallback);
         itemTouchHelper.attachToRecyclerView(imagesRecycler);
@@ -275,6 +275,7 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
                     startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
                 } catch (ActivityNotFoundException e) {
                     Log.e("ERROR", "takePictureIntent: ", e);
+                    // TODO display error state to the user
                 }
             }
         }
@@ -289,6 +290,7 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Uri imageUri = Uri.fromFile(photoFile);
+            //String uri = ImageFilePathUtil.getRealPathFromURI_API19(requireContext(), imageUri);
             mAddPropertyViewModel.createOneImageOfProperty(imageUri.toString());
         } else if (requestCode == PICK_IMAGE_GALLERY && resultCode == RESULT_OK) {
             if (data != null) {
@@ -409,20 +411,52 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
     }
 
     private void saveDataAndNotifyUser() {
-        boolean res = mAddPropertyViewModel.createSingleProperty();
-        boolean resImg = mAddPropertyViewModel.createImagesOfProperty();
-        NotificationsUtils notify = new NotificationsUtils(requireContext());
-        // fail if res = true
-        // success if res = false
-        if (res)
-            notify.showWarning(requireContext(), SAVE_PROPERTY_FAIL);
-        else if (resImg)
-            notify.showWarning(requireContext(), SAVE_IMAGES_FAIL);
-        else
-            notify.showWarning(requireContext(), SAVE_PROPERTY_OK);
+        mAddPropertyViewModel.createProperty();
+        mAddPropertyViewModel.getCreatePropertyResponse().observe(getViewLifecycleOwner(), createPropertyObserver);
+    }
 
-        mAddPropertyViewModel.resetImageOfProperty();
-        goBackToList();
+    private void saveImagesOfProperty() {
+        mAddPropertyViewModel.saveImagesOfProperty();
+        mAddPropertyViewModel.getSaveImagesResponse().observe(getViewLifecycleOwner(), saveImagesObserver);
+    }
+
+    final Observer<long[]> saveImagesObserver = longs -> {
+        boolean res = readSaveImageResponse(longs);
+        if (res) {
+            NotificationsUtils notify = new NotificationsUtils(requireContext());
+            notify.showWarning(requireContext(), SAVE_IMAGES_FAIL);
+        } else {
+            mAddPropertyViewModel.resetImageOfProperty();
+            unsubscribeSavePropertyObserver();
+            goBackToList();
+        }
+    };
+
+    final Observer<Long> createPropertyObserver = aLong -> {
+        boolean res = aLong == -1;
+        NotificationsUtils notify = new NotificationsUtils(requireContext());
+        if (res) {
+            notify.showWarning(requireContext(), SAVE_PROPERTY_FAIL);
+        } else {
+            notify.showWarning(requireContext(), SAVE_PROPERTY_OK);
+            saveImagesOfProperty();
+        }
+    };
+    private void unsubscribeSaveImagesObserver() {
+        mAddPropertyViewModel.getSaveImagesResponse().removeObserver(saveImagesObserver);
+    }
+
+    private void unsubscribeSavePropertyObserver() {
+        mAddPropertyViewModel.getCreatePropertyResponse().removeObserver(createPropertyObserver);
+    }
+
+    private boolean readSaveImageResponse(long[] longs) {
+        for (long i : longs) {
+            if (i == 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void goBackToList() {
@@ -472,7 +506,9 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
 
     @Override
     public void onDestroy() {
-        if (mAddPropertyViewModel.getImagesOfProperty().hasActiveObservers()) unsubscribeRecyclerViewObserver();
+        if (mAddPropertyViewModel.getImagesOfProperty().hasActiveObservers())
+            unsubscribeRecyclerViewObserver();
+        if (mAddPropertyViewModel.getSaveImagesResponse().hasActiveObservers()) unsubscribeSaveImagesObserver();
         super.onDestroy();
     }
 }
