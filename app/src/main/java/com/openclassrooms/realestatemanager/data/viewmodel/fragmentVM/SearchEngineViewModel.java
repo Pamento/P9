@@ -1,5 +1,7 @@
 package com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM;
 
+import android.util.Log;
+
 import androidx.lifecycle.ViewModel;
 import androidx.sqlite.db.SimpleSQLiteQuery;
 
@@ -88,9 +90,13 @@ public class SearchEngineViewModel extends ViewModel {
     }
 
     private String toAppendNotNull(int sLong, boolean includeSoldEstate) {
-        if (sLong == 22 && includeSoldEstate) return " WHERE " + DATE_SOLD + " >= ''";
-        else if (sLong == 22) return " WHERE " + DATE_SOLD + " IS NULL";
-        else if (sLong > 22 && includeSoldEstate) return " AND " + DATE_SOLD + " >= ''";
+        if (sLong == 22 && includeSoldEstate) return "";
+        else if (sLong == 22) return " WHERE " + DATE_SOLD + " = ''";
+        else if (sLong > 22 && includeSoldEstate) return "";
         else return " AND " + DATE_SOLD + " = ''";
+//        if (sLong == 22 && includeSoldEstate) return " WHERE " + DATE_SOLD + " >= ''";
+//        else if (sLong == 22) return " WHERE " + DATE_SOLD + " = ''";
+//        else if (sLong > 22 && includeSoldEstate) return " AND " + DATE_SOLD + " >= ''";
+//        else return " AND " + DATE_SOLD + " = ''";
     }
 }
