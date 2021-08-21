@@ -5,7 +5,7 @@ public class ColumnName {
     public static final String SURFACE = "surface";
     public static final String PRICE = "price";
     public static final String ROOMS = "rooms";
-    public static final String BEDROOMS = "bedrooms";
+    public static final String BEDROOMS = "bedroom";
     public static final String BATHROOMS = "bedroom";
     public static final String DATE_REGISTER = "date_register";
     public static final String DATE_SOLD = "date_sold";

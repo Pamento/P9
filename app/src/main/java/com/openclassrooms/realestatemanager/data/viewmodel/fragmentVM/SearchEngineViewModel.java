@@ -83,14 +83,14 @@ public class SearchEngineViewModel extends ViewModel {
     }
 
     private String toAppendIntOne(int sLong, String column) {
-        if (sLong == 22) return " WHERE property." + column + " > ?";
-        else return " AND property." + column + " > ?";
+        if (sLong == 22) return " WHERE property." + column + " >= ?";
+        else return " AND property." + column + " >= ?";
     }
 
     private String toAppendNotNull(int sLong, boolean includeSoldEstate) {
-        if (sLong == 22 && includeSoldEstate) return " WHERE " + DATE_SOLD + " > ''";
+        if (sLong == 22 && includeSoldEstate) return " WHERE " + DATE_SOLD + " >= ''";
         else if (sLong == 22) return " WHERE " + DATE_SOLD + " IS NULL";
-        else if (sLong > 22 && includeSoldEstate) return " AND " + DATE_SOLD + " > ''";
+        else if (sLong > 22 && includeSoldEstate) return " AND " + DATE_SOLD + " >= ''";
         else return " AND " + DATE_SOLD + " = ''";
     }
 }
