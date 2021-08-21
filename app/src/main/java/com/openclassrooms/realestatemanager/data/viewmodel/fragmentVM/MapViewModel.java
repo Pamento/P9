@@ -3,6 +3,7 @@ package com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM;
 import android.location.Location;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.sqlite.db.SimpleSQLiteQuery;
 
@@ -13,21 +14,27 @@ import com.openclassrooms.realestatemanager.data.local.reposiotries.PropertiesRe
 import com.openclassrooms.realestatemanager.util.enums.QueryState;
 
 import java.util.List;
+import java.util.concurrent.Executor;
 
 public class MapViewModel extends ViewModel {
 
     private final PropertiesRepository mPropertiesRepository;
     private final ImageRepository mImageRepository;
+    private final Executor mExecutor;
     private GoogleMap mGoogleMap;
     private Location mCurrentUserLocation;
+    private final MutableLiveData<List<PropertyWithImages>> mPropertyWithImageQuery = new MutableLiveData<>();
 
-    public MapViewModel(PropertiesRepository propertiesRepository, ImageRepository imageRepository) {
+    public MapViewModel(PropertiesRepository propertiesRepository, ImageRepository imageRepository, Executor executor) {
         mPropertiesRepository = propertiesRepository;
         mImageRepository = imageRepository;
+        mExecutor = executor;
     }
 
-    public List<PropertyWithImages> getPropertiesWithImagesFromRowQuery() {
-        return mPropertiesRepository.getPropertiesWithImagesQuery();
+    public void getPropertiesWithImagesFromRowQuery() {
+        mExecutor.execute(() ->
+            mPropertyWithImageQuery.postValue(mPropertiesRepository.getPropertiesWithImagesQuery())
+        );
     }
 
     public LiveData<List<PropertyWithImages>> getPropertyWithImages() {
@@ -66,5 +73,9 @@ public class MapViewModel extends ViewModel {
 
     public void setQueryState(QueryState queryState) {
         mPropertiesRepository.setQueryState(queryState);
+    }
+
+    public LiveData<List<PropertyWithImages>> getPropertyWithImageQuery() {
+        return mPropertyWithImageQuery;
     }
 }

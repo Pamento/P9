@@ -164,6 +164,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
     };
 
     private void setPropertiesMarkersOnMap() {
+        // unsubscribe
+        if (mMapViewModel.getPropertyWithImageQuery().hasActiveObservers()) unsubscribeRowQueryResponse();
         if (mGoogleMaps == null) mGoogleMaps = mMapViewModel.getGoogleMap();
         if (mGoogleMaps != null) {
             mGoogleMaps.clear();
@@ -201,6 +203,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
         mMapViewModel.getSimpleSQLiteQuery().removeObserver(rowQueryObserver);
     }
 
+    private void unsubscribeRowQueryResponse() {
+        mMapViewModel.getPropertyWithImageQuery().removeObserver(getPropertiesWithImagesFromQuery);
+    }
+
     public void resetRowQuery() {
         mMapViewModel.setQueryState(QueryState.NULL);
         setQueryStateObserver();
@@ -212,14 +218,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
             if (simpleSQLiteQuery != null) {
                 unsubscribeProperty();
                 mPropertyWithImages.clear();
-                List<PropertyWithImages> fromRowQuery = mMapViewModel.getPropertiesWithImagesFromRowQuery();
-                if (fromRowQuery.size() == 0) {
-                    String msg = getResources().getString(R.string.search_give_zero_data);
-                    NotifyBySnackBar.showSnackBar(1, view, msg);
-                }
-                mPropertyWithImages.addAll(fromRowQuery);
-                setPropertiesMarkersOnMap();
+                mMapViewModel.getPropertiesWithImagesFromRowQuery();
+                mMapViewModel.getPropertyWithImageQuery().observe(getViewLifecycleOwner(), getPropertiesWithImagesFromQuery);
             }
+        }
+    };
+
+    private final Observer<List<PropertyWithImages>> getPropertiesWithImagesFromQuery = new Observer<List<PropertyWithImages>>() {
+        @Override
+        public void onChanged(List<PropertyWithImages> propertyWithImages) {
+            if (propertyWithImages.size() == 0) {
+                String msg = getResources().getString(R.string.search_give_zero_data);
+                NotifyBySnackBar.showSnackBar(1, view, msg);
+            }
+            mPropertyWithImages.addAll(propertyWithImages);
+            setPropertiesMarkersOnMap();
         }
     };
 
@@ -295,6 +308,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
             unsubscribeRowQuery();
         if (mMapViewModel.getPropertyWithImages().hasActiveObservers())
             unsubscribeProperty();
+        if (mMapViewModel.getPropertyWithImageQuery().hasActiveObservers()) unsubscribeRowQueryResponse();
         super.onDestroy();
     }
 }

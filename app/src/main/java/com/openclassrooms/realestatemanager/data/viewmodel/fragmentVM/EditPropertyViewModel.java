@@ -84,12 +84,6 @@ public class EditPropertyViewModel extends ViewModel {
         mExecutor.execute(() -> {
             mUpdateImgResponse.postValue(mImageRepository.updateImageOfProperty(imageOfProperty));
         });
-//        final boolean[] response = new boolean[1];
-//        mExecutor.execute(() -> {
-//            int res = mImageRepository.updateImageOfProperty(imageOfProperty);
-//            response[0] = res == 0;
-//        });
-//        return response[0];
     }
 
     public void deleteImageOfProperty(int imageId) {
@@ -101,12 +95,6 @@ public class EditPropertyViewModel extends ViewModel {
         mExecutor.execute(() -> {
             mCreateImgResponse.postValue(mImageRepository.createPropertyImage(imageOfProperty));
         });
-//        final boolean[] response = new boolean[1];
-//        mExecutor.execute(() -> {
-//            long res = mImageRepository.createPropertyImage(imageOfProperty);
-//            response[0] = res == -1;
-//        });
-//        return response[0];
     }
 
     // Save changes
@@ -114,12 +102,6 @@ public class EditPropertyViewModel extends ViewModel {
         mExecutor.execute(() -> {
             mUpdatePropertyResponse.postValue(mPropertiesRepository.updateSingleProperty(singleProperty));
         });
-//        final boolean[] response = new boolean[1];
-//        mExecutor.execute(() -> {
-//            int res = mPropertiesRepository.updateSingleProperty(singleProperty);
-//            response[0] = res == 0;
-//        });
-//        return response[0];
     }
 
     public LiveData<Integer> getUpdatePropertyResponse() {

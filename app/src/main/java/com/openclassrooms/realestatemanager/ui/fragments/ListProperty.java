@@ -100,6 +100,10 @@ public class ListProperty extends Fragment implements ListPropertyAdapter.OnItem
         mListPropertyViewModel.getSimpleSQLiteQuery().removeObserver(rowQueryObserver);
     }
 
+    private void unsubscribeRowQueryResponse() {
+        mListPropertyViewModel.getPropertiesWithImagesFromQuery().removeObserver(getPropertiesWithImagesFromQuery);
+    }
+
     private void subscribeRowQuery() {
         mListPropertyViewModel.getSimpleSQLiteQuery().observe(getViewLifecycleOwner(), rowQueryObserver);
     }
@@ -109,24 +113,31 @@ public class ListProperty extends Fragment implements ListPropertyAdapter.OnItem
         setQueryStateObserver();
     }
 
-    final Observer<SimpleSQLiteQuery> rowQueryObserver = new Observer<SimpleSQLiteQuery>() {
+    private final Observer<SimpleSQLiteQuery> rowQueryObserver = new Observer<SimpleSQLiteQuery>() {
         @Override
         public void onChanged(SimpleSQLiteQuery simpleSQLiteQuery) {
             if (simpleSQLiteQuery != null) {
                 unsubscribeProperties();
                 mProperties.clear();
-                List<PropertyWithImages> fromRowQuery = mListPropertyViewModel.getPropertiesWithImagesFromRowQuery();
-                if (fromRowQuery.size() == 0) {
-                    String msg = getResources().getString(R.string.search_give_zero_data);
-                    NotifyBySnackBar.showSnackBar(1, view, msg);
-                }
-                mProperties.addAll(fromRowQuery);
-                displayDataOnRecyclerView();
+                mListPropertyViewModel.getPropertiesWithImagesFromRowQuery();
+                mListPropertyViewModel.getPropertiesWithImagesFromQuery().observe(getViewLifecycleOwner(), getPropertiesWithImagesFromQuery);
             }
         }
     };
 
-    final Observer<List<PropertyWithImages>> getProperties = propertyWithImages -> {
+    private final Observer<List<PropertyWithImages>> getPropertiesWithImagesFromQuery = new Observer<List<PropertyWithImages>>() {
+        @Override
+        public void onChanged(List<PropertyWithImages> propertyWithImages) {
+            if (propertyWithImages.size() == 0) {
+                String msg = getResources().getString(R.string.search_give_zero_data);
+                NotifyBySnackBar.showSnackBar(1, view, msg);
+            }
+            mProperties.addAll(propertyWithImages);
+            displayDataOnRecyclerView();
+        }
+    };
+
+    private final Observer<List<PropertyWithImages>> getProperties = propertyWithImages -> {
         if (propertyWithImages != null) {
             mProperties.clear();
             mProperties.addAll(propertyWithImages);
@@ -150,6 +161,7 @@ public class ListProperty extends Fragment implements ListPropertyAdapter.OnItem
     }
 
     private void displayDataOnRecyclerView() {
+        if (mListPropertyViewModel.getPropertiesWithImagesFromQuery().hasActiveObservers()) unsubscribeRowQueryResponse();
         ListPropertyAdapter adapter = new ListPropertyAdapter(mProperties, this);
         recyclerView.setAdapter(adapter);
     }
@@ -180,6 +192,8 @@ public class ListProperty extends Fragment implements ListPropertyAdapter.OnItem
             unsubscribeRowQuery();
         if (mListPropertyViewModel.getPropertyWithImages().hasActiveObservers())
             unsubscribeProperties();
+        if (mListPropertyViewModel.getPropertiesWithImagesFromQuery().hasActiveObservers())
+            unsubscribeRowQueryResponse();
         super.onDestroy();
     }
 }
