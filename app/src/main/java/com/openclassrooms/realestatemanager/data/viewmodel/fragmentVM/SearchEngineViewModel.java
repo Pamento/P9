@@ -94,9 +94,5 @@ public class SearchEngineViewModel extends ViewModel {
         else if (sLong == 22) return " WHERE " + DATE_SOLD + " = ''";
         else if (sLong > 22 && includeSoldEstate) return "";
         else return " AND " + DATE_SOLD + " = ''";
-//        if (sLong == 22 && includeSoldEstate) return " WHERE " + DATE_SOLD + " >= ''";
-//        else if (sLong == 22) return " WHERE " + DATE_SOLD + " = ''";
-//        else if (sLong > 22 && includeSoldEstate) return " AND " + DATE_SOLD + " >= ''";
-//        else return " AND " + DATE_SOLD + " = ''";
     }
 }
