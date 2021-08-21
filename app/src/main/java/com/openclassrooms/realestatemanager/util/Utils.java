@@ -62,11 +62,7 @@ public class Utils {
     @SuppressWarnings("deprecation")
     public static Boolean isInternetAvailable(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            return cm.isDefaultNetworkActive();
-//        } else {
-            NetworkInfo nI = cm.getActiveNetworkInfo();
-            return nI != null && nI.getState() == NetworkInfo.State.CONNECTED;
-        //}
+        NetworkInfo nI = cm.getActiveNetworkInfo();
+        return nI != null && nI.getState() == NetworkInfo.State.CONNECTED;
     }
 }
