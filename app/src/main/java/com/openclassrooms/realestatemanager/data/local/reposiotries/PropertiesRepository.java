@@ -8,9 +8,21 @@ import androidx.sqlite.db.SimpleSQLiteQuery;
 import com.openclassrooms.realestatemanager.data.local.dao.SinglePropertyDao;
 import com.openclassrooms.realestatemanager.data.local.entities.PropertyWithImages;
 import com.openclassrooms.realestatemanager.data.local.entities.SingleProperty;
+import com.openclassrooms.realestatemanager.data.local.models.RowQueryEstates;
 import com.openclassrooms.realestatemanager.util.enums.QueryState;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.openclassrooms.realestatemanager.util.Constants.ColumnName.BATHROOMS;
+import static com.openclassrooms.realestatemanager.util.Constants.ColumnName.BEDROOMS;
+import static com.openclassrooms.realestatemanager.util.Constants.ColumnName.DATE_REGISTER;
+import static com.openclassrooms.realestatemanager.util.Constants.ColumnName.DATE_SOLD;
+import static com.openclassrooms.realestatemanager.util.Constants.ColumnName.PRICE;
+import static com.openclassrooms.realestatemanager.util.Constants.ColumnName.QUARTER;
+import static com.openclassrooms.realestatemanager.util.Constants.ColumnName.ROOMS;
+import static com.openclassrooms.realestatemanager.util.Constants.ColumnName.SURFACE;
+import static com.openclassrooms.realestatemanager.util.Constants.ColumnName.TYPE;
 
 public class PropertiesRepository {
 
@@ -21,6 +33,7 @@ public class PropertiesRepository {
     private String PROPERTY_ID;
     private final MutableLiveData<SimpleSQLiteQuery> mRowQueryEstates;
     private final MutableLiveData<QueryState> mQueryState = new MutableLiveData<>();
+    private List<Object> args;
 
     public PropertiesRepository(SinglePropertyDao singlePropertyDao) {
         mSinglePropertyDao = singlePropertyDao;
@@ -83,5 +96,75 @@ public class PropertiesRepository {
     public void setRowQueryEstates(SimpleSQLiteQuery rowQueryEstates) {
         mQueryState.setValue(QueryState.QUERY);
         mRowQueryEstates.setValue(rowQueryEstates);
+    }
+
+    // Build query in according to values set by user
+    public void buildAndSetSearchEstateQuery(RowQueryEstates rowQueryEstates) {
+        String queryBuild = buildQuery(rowQueryEstates);
+        SimpleSQLiteQuery query = new SimpleSQLiteQuery(queryBuild, args.toArray());
+        setRowQueryEstates(query);
+    }
+
+    private String buildQuery(RowQueryEstates rowQueryEstates) {
+        args = new ArrayList<>();
+        StringBuilder query = new StringBuilder("SELECT * FROM property");
+        if (!rowQueryEstates.getType().equals("")) {
+            query.append(toAppendStr(query.length(), TYPE));
+            args.add(rowQueryEstates.getType().toLowerCase());
+        }
+        if (rowQueryEstates.getMinSurface() > 0 || rowQueryEstates.getMaxSurface() > 0) {
+            query.append(toAppendIntTwo(query.length(), SURFACE));
+            args.add(rowQueryEstates.getMinSurface());
+            args.add(rowQueryEstates.getMaxSurface());
+        }
+        if (rowQueryEstates.getMinPrice() > 0 || rowQueryEstates.getMaxPrice() > 0) {
+            query.append(toAppendIntTwo(query.length(), PRICE));
+            args.add(rowQueryEstates.getMinPrice());
+            args.add(rowQueryEstates.getMaxPrice());
+        }
+        if (rowQueryEstates.getRooms() > 0) {
+            query.append(toAppendIntOne(query.length(), ROOMS));
+            args.add(rowQueryEstates.getRooms());
+        }
+        if (rowQueryEstates.getBedroom() > 0) {
+            query.append(toAppendIntOne(query.length(), BEDROOMS));
+            args.add(rowQueryEstates.getBedroom());
+        }
+        if (rowQueryEstates.getBathroom() > 0) {
+            query.append(toAppendIntOne(query.length(), BATHROOMS));
+            args.add(rowQueryEstates.getBathroom());
+        }
+        if (!rowQueryEstates.getDateRegister().equals("0")) {
+            query.append(toAppendStr(query.length(), DATE_REGISTER));
+            args.add(rowQueryEstates.getDateRegister());
+        }
+        query.append(toAppendNotNull(query.length(), rowQueryEstates.isSoldEstateInclude()));
+        if (!rowQueryEstates.getQuarter().equals("")) {
+            query.append(toAppendStr(query.length(), QUARTER));
+            args.add(rowQueryEstates.getQuarter());
+        }
+        return query.toString();
+    }
+
+    private String toAppendStr(int sLong, String column) {
+        if (sLong == 22) return " WHERE property." + column + " LIKE ?";
+        else return " AND property." + column + " LIKE ?";
+    }
+
+    private String toAppendIntTwo(int sLong, String column) {
+        if (sLong == 22) return " WHERE property." + column + " BETWEEN ? AND ?";
+        else return " AND property." + column + " BETWEEN ? AND ?";
+    }
+
+    private String toAppendIntOne(int sLong, String column) {
+        if (sLong == 22) return " WHERE property." + column + " >= ?";
+        else return " AND property." + column + " >= ?";
+    }
+
+    private String toAppendNotNull(int sLong, boolean includeSoldEstate) {
+        if (sLong == 22 && includeSoldEstate) return "";
+        else if (sLong == 22) return " WHERE " + DATE_SOLD + " = ''";
+        else if (sLong > 22 && includeSoldEstate) return "";
+        else return " AND " + DATE_SOLD + " = ''";
     }
 }
