@@ -175,4 +175,10 @@ public class AddPropertyViewModel extends ViewModel {
     public LiveData<Long> getCreatePropertyResponse() {
         return mCreatePropertyResponse;
     }
+
+    public void disposeDisposable() {
+        if (mDisposable.isDisposed()) {
+            mDisposable.dispose();
+        }
+    }
 }

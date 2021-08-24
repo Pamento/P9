@@ -280,6 +280,7 @@ public class DetailFragment extends Fragment {
     @Override
     public void onDestroyView() {
         binding = null;
+        mDetailViewModel.clearDisposable();
         super.onDestroyView();
     }
 
@@ -289,6 +290,7 @@ public class DetailFragment extends Fragment {
         if (mDetailViewModel.getAllProperties().hasActiveObservers()) unsubscribeGetProperties();
         if (mDetailViewModel.getSingleProperty().hasActiveObservers()) unsubscribeGetProperty();
         if (mDetailViewModel.getImagesOfProperty().hasActiveObservers()) unsubscribeImagesOfProperty();
+        mDetailViewModel.disposeDisposable();
         super.onDestroy();
     }
 }

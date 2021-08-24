@@ -142,7 +142,7 @@ public class SearchEngine extends Fragment implements DatePickerDialog.OnDateSet
 
     private void initViewModel() {
         ViewModelFactory vmF = Injection.sViewModelFactory(requireActivity());
-        mSearchEngineViewModel = new ViewModelProvider(requireActivity(), vmF).get(SearchEngineViewModel.class);
+        mSearchEngineViewModel = new ViewModelProvider(this, vmF).get(SearchEngineViewModel.class);
     }
 
 

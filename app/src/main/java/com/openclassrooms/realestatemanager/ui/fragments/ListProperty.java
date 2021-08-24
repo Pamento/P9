@@ -69,7 +69,7 @@ public class ListProperty extends Fragment implements ListPropertyAdapter.OnItem
 
     private void initViewModel() {
         ViewModelFactory vmF = Injection.sViewModelFactory(requireActivity());
-        mListPropertyViewModel = new ViewModelProvider(requireActivity(), vmF).get(ListPropertyViewModel.class);
+        mListPropertyViewModel = new ViewModelProvider(this, vmF).get(ListPropertyViewModel.class);
     }
 
     private void setQueryStateObserver() {

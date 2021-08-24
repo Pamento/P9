@@ -116,4 +116,8 @@ public class EditPropertyViewModel extends ViewModel {
         return mUpdateImgResponse;
     }
 
+    public void disposeDisposable() {
+        if (mDisposable.isDisposed()) mDisposable.dispose();
+    }
+
 }

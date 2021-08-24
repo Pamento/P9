@@ -101,7 +101,7 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
 
     private void initViewModel() {
         ViewModelFactory vmF = Injection.sViewModelFactory(requireActivity());
-        mAddPropertyViewModel = new ViewModelProvider(requireActivity(), vmF).get(AddPropertyViewModel.class);
+        mAddPropertyViewModel = new ViewModelProvider(this, vmF).get(AddPropertyViewModel.class);
         mAddPropertyViewModel.init();
     }
 
@@ -509,6 +509,7 @@ public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetL
         if (mAddPropertyViewModel.getImagesOfProperty().hasActiveObservers())
             unsubscribeRecyclerViewObserver();
         if (mAddPropertyViewModel.getSaveImagesResponse().hasActiveObservers()) unsubscribeSaveImagesObserver();
+        mAddPropertyViewModel.disposeDisposable();
         super.onDestroy();
     }
 }

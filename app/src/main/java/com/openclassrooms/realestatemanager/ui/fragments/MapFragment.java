@@ -88,7 +88,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback,
 
     private void initViewModel() {
         ViewModelFactory vmF = Injection.sViewModelFactory(requireActivity());
-        mMapViewModel = new ViewModelProvider(requireActivity(), vmF).get(MapViewModel.class);
+        mMapViewModel = new ViewModelProvider(this, vmF).get(MapViewModel.class);
     }
 
     @Override
