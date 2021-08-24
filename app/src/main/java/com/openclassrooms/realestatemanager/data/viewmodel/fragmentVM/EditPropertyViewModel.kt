@@ -1,123 +1,107 @@
-package com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM;
+package com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
+import com.openclassrooms.realestatemanager.data.local.reposiotries.PropertiesRepository
+import com.openclassrooms.realestatemanager.data.local.reposiotries.ImageRepository
+import com.openclassrooms.realestatemanager.data.remote.repository.GoogleMapsRepository
+import androidx.lifecycle.ViewModel
+import io.reactivex.disposables.CompositeDisposable
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
+import com.openclassrooms.realestatemanager.data.local.entities.SingleProperty
+import com.openclassrooms.realestatemanager.data.local.entities.ImageOfProperty
+import com.openclassrooms.realestatemanager.data.remote.models.geocode.Location
+import com.openclassrooms.realestatemanager.data.remote.models.geocode.Result
+import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
+import java.util.concurrent.Executor
 
-import com.openclassrooms.realestatemanager.data.local.entities.ImageOfProperty;
-import com.openclassrooms.realestatemanager.data.local.entities.SingleProperty;
-import com.openclassrooms.realestatemanager.data.local.reposiotries.ImageRepository;
-import com.openclassrooms.realestatemanager.data.local.reposiotries.PropertiesRepository;
-import com.openclassrooms.realestatemanager.data.remote.models.geocode.Location;
-import com.openclassrooms.realestatemanager.data.remote.models.geocode.Result;
-import com.openclassrooms.realestatemanager.data.remote.repository.GoogleMapsRepository;
+class EditPropertyViewModel(
+    private val mPropertiesRepository: PropertiesRepository,
+    private val mImageRepository: ImageRepository,
+    private val mGoogleMapsRepository: GoogleMapsRepository,
+    private val mExecutor: Executor
+) : ViewModel() {
+    private val mDisposable = CompositeDisposable()
+    private val mLocationOfAddress = MutableLiveData<Location>()
+    private val mUpdatePropertyResponse = MutableLiveData<Int>()
+    private val mCreateImgResponse: MutableLiveData<Long?> = MutableLiveData<Long?>()
+    private val mUpdateImgResponse = MutableLiveData<Int>()
+    val singleProperty: LiveData<SingleProperty>
+        get() = mPropertiesRepository.getSingleProperty(null)
+    val imagesOfProperty: LiveData<List<ImageOfProperty>>
+        get() = mImageRepository.getAllImagesOfProperty(null)
 
-import java.util.List;
-import java.util.concurrent.Executor;
-
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-
-public class EditPropertyViewModel extends ViewModel {
-
-    private final PropertiesRepository mPropertiesRepository;
-    private final ImageRepository mImageRepository;
-    private final GoogleMapsRepository mGoogleMapsRepository;
-    private final Executor mExecutor;
-    private final CompositeDisposable mDisposable = new CompositeDisposable();
-    private final MutableLiveData<Location> mLocationOfAddress = new MutableLiveData<>();
-    private final MutableLiveData<Integer> mUpdatePropertyResponse = new MutableLiveData<>();
-    private final MutableLiveData<Long> mCreateImgResponse = new MutableLiveData();
-    private final MutableLiveData<Integer> mUpdateImgResponse = new MutableLiveData<>();
-
-    public EditPropertyViewModel(PropertiesRepository propertiesRepository,
-                                 ImageRepository imageRepository,
-                                 GoogleMapsRepository googleMapsRepository,
-                                 Executor executor) {
-        mPropertiesRepository = propertiesRepository;
-        mImageRepository = imageRepository;
-        mGoogleMapsRepository = googleMapsRepository;
-        mExecutor = executor;
-    }
-
-    public LiveData<SingleProperty> getSingleProperty() {
-        return mPropertiesRepository.getSingleProperty(null);
-    }
-
-    public LiveData<List<ImageOfProperty>> getImagesOfProperty() {
-        return mImageRepository.getAllImagesOfProperty(null);
-    }
-
-    public void getLocationFromAddress(String address) {
+    fun getLocationFromAddress(address: String?) {
         mGoogleMapsRepository.getGoogleGeoCodeOfAddress(address)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Result>() {
-                    @Override
-                    public void onSubscribe(@NonNull Disposable d) {
-                        mDisposable.add(d);
-                    }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<Result> {
+                override fun onSubscribe(d: Disposable) {
+                    mDisposable.add(d)
+                }
 
-                    @Override
-                    public void onNext(@NonNull Result result) {
-                        mLocationOfAddress.setValue(result.getGeometry().getLocation());
-                    }
+                override fun onNext(result: Result) {
+                    mLocationOfAddress.value = result.geometry.location
+                }
 
-                    @Override
-                    public void onError(@NonNull Throwable e) {/**/}
+                override fun onError(e: Throwable) { /**/
+                }
 
-                    @Override
-                    public void onComplete() {/**/}
-                });
+                override fun onComplete() { /**/
+                }
+            })
     }
 
-    public LiveData<Location> getGeoLocationOfProperty() {
-        return mLocationOfAddress;
-    }
+    val geoLocationOfProperty: LiveData<Location>
+        get() = mLocationOfAddress
 
     // Handle data
-    public void updateImageOfProperty(ImageOfProperty imageOfProperty) {
-        mExecutor.execute(() -> {
-            mUpdateImgResponse.postValue(mImageRepository.updateImageOfProperty(imageOfProperty));
-        });
+    fun updateImageOfProperty(imageOfProperty: ImageOfProperty?) {
+        mExecutor.execute {
+            mUpdateImgResponse.postValue(
+                mImageRepository.updateImageOfProperty(
+                    imageOfProperty
+                )
+            )
+        }
     }
 
-    public void deleteImageOfProperty(int imageId) {
-        mImageRepository.deletePropertyImage(imageId);
+    fun deleteImageOfProperty(imageId: Int) {
+        mImageRepository.deletePropertyImage(imageId)
     }
 
     // Insert new image
-    public void createImageOfProperty(ImageOfProperty imageOfProperty) {
-        mExecutor.execute(() -> {
-            mCreateImgResponse.postValue(mImageRepository.createPropertyImage(imageOfProperty));
-        });
+    fun createImageOfProperty(imageOfProperty: ImageOfProperty?) {
+        mExecutor.execute {
+            mCreateImgResponse.postValue(
+                mImageRepository.createPropertyImage(
+                    imageOfProperty
+                )
+            )
+        }
     }
 
     // Save changes
-    public void updateProperty(SingleProperty singleProperty) {
-        mExecutor.execute(() -> {
-            mUpdatePropertyResponse.postValue(mPropertiesRepository.updateSingleProperty(singleProperty));
-        });
+    fun updateProperty(singleProperty: SingleProperty?) {
+        mExecutor.execute {
+            mUpdatePropertyResponse.postValue(
+                mPropertiesRepository.updateSingleProperty(
+                    singleProperty
+                )
+            )
+        }
     }
 
-    public LiveData<Integer> getUpdatePropertyResponse() {
-        return mUpdatePropertyResponse;
-    }
+    val updatePropertyResponse: LiveData<Int>
+        get() = mUpdatePropertyResponse
+    val createImgResponse: LiveData<Long?>
+        get() = mCreateImgResponse
+    val updateImgResponse: LiveData<Int>
+        get() = mUpdateImgResponse
 
-    public LiveData<Long> getCreateImgResponse() {
-        return mCreateImgResponse;
+    fun disposeDisposable() {
+        if (mDisposable.isDisposed) mDisposable.dispose()
     }
-
-    public LiveData<Integer> getUpdateImgResponse() {
-        return mUpdateImgResponse;
-    }
-
-    public void disposeDisposable() {
-        if (mDisposable.isDisposed()) mDisposable.dispose();
-    }
-
 }
