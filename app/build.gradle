@@ -2,6 +2,7 @@ plugins {
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 //apply plugin: 'com.google.gms.google-services'
 
 
@@ -109,4 +110,9 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:17.0.1'
     implementation 'com.google.android.gms:play-services-location:18.0.0'
     implementation "androidx.work:work-runtime:2.7.0-alpha05"
+    implementation "androidx.core:core-ktx:+"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+repositories {
+    mavenCentral()
 }
