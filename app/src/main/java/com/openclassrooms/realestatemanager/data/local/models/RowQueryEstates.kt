@@ -1,15 +1,15 @@
 package com.openclassrooms.realestatemanager.data.local.models
 
 data class RowQueryEstates(
-    var type: String? = null,
-    var minSurface: Int? = null,
-    var maxSurface: Int? = null,
-    var minPrice: Int? = null,
-    var maxPrice: Int? = null,
-    var rooms: Int? = null,
-    var bedroom: Int? = null,
-    var bathroom: Int? = null,
-    var quarter: String? = null,
-    var dateRegister: String? = null,
+    var type: String = "",
+    var minSurface: Int = 0,
+    var maxSurface: Int = 0,
+    var minPrice: Int = 0,
+    var maxPrice: Int = 0,
+    var rooms: Int = 0,
+    var bedroom: Int = 0,
+    var bathroom: Int = 0,
+    var quarter: String = "",
+    var dateRegister: String = "0",
     var isSoldEstateInclude: Boolean = false,
 )
