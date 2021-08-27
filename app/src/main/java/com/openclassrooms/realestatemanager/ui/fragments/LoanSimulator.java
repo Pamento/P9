@@ -222,7 +222,7 @@ public class LoanSimulator extends Fragment {
 
     private void initViewModel() {
         ViewModelFactory vmF = Injection.sViewModelFactory(requireActivity());
-        mViewModel = new ViewModelProvider(requireActivity(), vmF).get(LoanSimulatorViewModel.class);
+        mViewModel = new ViewModelProvider(this, vmF).get(LoanSimulatorViewModel.class);
     }
 
     public void handleCurrency(int oneIsDollar) {

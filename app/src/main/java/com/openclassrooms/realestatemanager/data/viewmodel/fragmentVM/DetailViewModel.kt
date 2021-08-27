@@ -66,4 +66,12 @@ class DetailViewModel(private val mPropertiesRepository: PropertiesRepository, p
     fun updateSingleProperty(singleProperty: SingleProperty?) {
         mPropertiesRepository.updateSingleProperty(singleProperty)
     }
+
+    fun clearDisposable() {
+        if (mDisposable.isDisposed) mDisposable.clear()
+    }
+
+    fun disposeDisposable() {
+        if (mDisposable.isDisposed) mDisposable.dispose()
+    }
 }

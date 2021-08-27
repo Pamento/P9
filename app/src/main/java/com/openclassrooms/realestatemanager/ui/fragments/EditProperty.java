@@ -114,7 +114,7 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
 
     private void initViewModel() {
         ViewModelFactory vmF = Injection.sViewModelFactory(requireActivity());
-        mEditPropertyViewModel = new ViewModelProvider(requireActivity(), vmF).get(EditPropertyViewModel.class);
+        mEditPropertyViewModel = new ViewModelProvider(this, vmF).get(EditPropertyViewModel.class);
     }
 
     private void bindIncludesLayouts() {
@@ -572,6 +572,7 @@ public class EditProperty extends Fragment implements DatePickerDialog.OnDateSet
         if (mEditPropertyViewModel.getGeoLocationOfProperty().hasActiveObservers())
             unsubscribeGetLocation();
         unsubscribeDataObservers();
+        mEditPropertyViewModel.disposeDisposable();
         super.onDestroy();
     }
 }
