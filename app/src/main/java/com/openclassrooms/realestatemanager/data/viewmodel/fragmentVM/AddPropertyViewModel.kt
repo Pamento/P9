@@ -44,24 +44,24 @@ class AddPropertyViewModel(
     fun createNewProperty(
         type: String,
         description: String,
-        surface: Int?,
-        price: Int?,
-        rooms: Int?,
-        bedroom: Int?,
-        bathroom: Int?,
-        dateRegister: String?,
-        dateSold: String?,
-        address1: String?,
-        address2: String?,
+        surface: Int,
+        price: Int,
+        rooms: Int,
+        bedroom: Int,
+        bathroom: Int,
+        dateRegister: String,
+        dateSold: String,
+        address1: String,
+        address2: String,
         city: String,
         quarter: String,
-        postalCode: Int?,
-        location: String?,
+        postalCode: Int,
+        location: String,
         amenities: String,
-        agent: String?
+        agent: String,
     ) {
-        singleProperty!!.type = if (type == "") null else type
-        singleProperty!!.description = if (description == "") null else description
+        singleProperty!!.type = type
+        singleProperty!!.description = description
         singleProperty!!.surface = surface
         singleProperty!!.price = price
         singleProperty!!.rooms = rooms
@@ -71,15 +71,15 @@ class AddPropertyViewModel(
         singleProperty!!.dateSold = dateSold
         singleProperty!!.address1 = address1
         singleProperty!!.address2 = address2
-        singleProperty!!.quarter = if (quarter == "") null else quarter
-        singleProperty!!.city = if (city == "") null else city
+        singleProperty!!.quarter = quarter
+        singleProperty!!.city = city
         singleProperty!!.postalCode = postalCode
         singleProperty!!.location = location
-        singleProperty!!.amenities = if (amenities == "") null else amenities
+        singleProperty!!.amenities = amenities
         singleProperty!!.agent = agent
     }
 
-    fun createOneImageOfProperty(imageUri: String?) {
+    fun createOneImageOfProperty(imageUri: String) {
         val imgOfProperty = ImageOfProperty()
         imgOfProperty.propertyId = singleProperty!!.id
         imgOfProperty.path = imageUri

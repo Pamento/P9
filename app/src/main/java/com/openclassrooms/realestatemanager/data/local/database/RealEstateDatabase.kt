@@ -25,8 +25,7 @@ abstract class RealEstateDatabase : RoomDatabase() {
                 INSTANCE = Room.databaseBuilder(
                     context.applicationContext,
                     RealEstateDatabase::class.java, "real_estate_manager_database"
-                )
-                    .fallbackToDestructiveMigration().allowMainThreadQueries().build()
+                ).allowMainThreadQueries().build()
             }
             return INSTANCE
         }
