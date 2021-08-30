@@ -11,13 +11,13 @@ import java.util.concurrent.Executors
 
 object Injection {
 
-    private fun sPropertiesRepository(context: Context?): PropertiesRepository {
-        val db = context?.let { RealEstateDatabase.getInstance(it) }
+    private fun sPropertiesRepository(context: Context): PropertiesRepository {
+        val db = context.let { RealEstateDatabase.getInstance(it) }
         return PropertiesRepository.getInstance(db?.singlePropertyDao())
     }
 
-    private fun sImageRepository(context: Context?): ImageRepository {
-        val db = context?.let { RealEstateDatabase.getInstance(it) }
+    private fun sImageRepository(context: Context): ImageRepository {
+        val db = context.let { RealEstateDatabase.getInstance(it) }
         return ImageRepository.getInstance(db?.imageOfPropertyDao())
     }
 
@@ -30,7 +30,7 @@ object Injection {
     }
 
     @JvmStatic
-    fun sViewModelFactory(context: Context?): ViewModelFactory {
+    fun sViewModelFactory(context: Context): ViewModelFactory {
         val propertiesRepository = sPropertiesRepository(context)
         val imageRepository = sImageRepository(context)
         val googleMapsRepository = sGoogleMapsRepository()
