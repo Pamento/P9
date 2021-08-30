@@ -12,13 +12,13 @@ import java.util.concurrent.Executors
 object Injection {
 
     private fun sPropertiesRepository(context: Context?): PropertiesRepository {
-        val db = RealEstateDatabase.getInstance(context)
-        return PropertiesRepository.getInstance(db.singlePropertyDao())
+        val db = context?.let { RealEstateDatabase.getInstance(it) }
+        return PropertiesRepository.getInstance(db?.singlePropertyDao())
     }
 
     private fun sImageRepository(context: Context?): ImageRepository {
-        val db = RealEstateDatabase.getInstance(context)
-        return ImageRepository.getInstance(db.imageOfPropertyDao())
+        val db = context?.let { RealEstateDatabase.getInstance(it) }
+        return ImageRepository.getInstance(db?.imageOfPropertyDao())
     }
 
     private fun sGoogleMapsRepository(): GoogleMapsRepository {
