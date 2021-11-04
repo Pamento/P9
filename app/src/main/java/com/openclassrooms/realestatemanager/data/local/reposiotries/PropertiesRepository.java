@@ -30,7 +30,7 @@ public class PropertiesRepository {
     private final SinglePropertyDao mSinglePropertyDao;
     // data
     private final LiveData<List<PropertyWithImages>> mAllProperties;
-    private String PROPERTY_ID;
+    private String PROPERTY_ID = "";
     private final MutableLiveData<SimpleSQLiteQuery> mRowQueryEstates;
     private final MutableLiveData<QueryState> mQueryState = new MutableLiveData<>();
     private List<Object> args;

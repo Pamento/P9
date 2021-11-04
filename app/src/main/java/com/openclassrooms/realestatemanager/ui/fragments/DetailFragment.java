@@ -83,11 +83,10 @@ public class DetailFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (isTwoFragmentLayout && mDetailViewModel.getPropertyId() == null) {
-            getAllProperties();
-        } else {
-            setOnDataObservers();
+        if (isTwoFragmentLayout) {
+            mDetailViewModel.getPropertyId();
         }
+        setOnDataObservers();
     }
 
     private void setOnDataObservers() {
