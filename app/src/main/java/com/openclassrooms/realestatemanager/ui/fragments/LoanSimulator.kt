@@ -1,249 +1,266 @@
-package com.openclassrooms.realestatemanager.ui.fragments;
+package com.openclassrooms.realestatemanager.ui.fragments
 
-import android.os.Bundle;
+import com.openclassrooms.realestatemanager.injection.Injection.sViewModelFactory
+import com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM.LoanSimulatorViewModel
+import com.openclassrooms.realestatemanager.data.local.entities.SingleProperty
+import android.os.Bundle
+import com.openclassrooms.realestatemanager.R
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import com.openclassrooms.realestatemanager.util.texts.StringModifier
+import android.text.TextWatcher
+import android.text.Editable
+import android.view.View
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import com.openclassrooms.realestatemanager.util.resources.AppResources
+import com.openclassrooms.realestatemanager.util.calculation.Calculation
+import androidx.lifecycle.ViewModelProvider
+import com.openclassrooms.realestatemanager.databinding.FragmentLoanSimulatorBinding
+import com.openclassrooms.realestatemanager.util.Utils
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import com.openclassrooms.realestatemanager.R;
-import com.openclassrooms.realestatemanager.data.local.entities.SingleProperty;
-import com.openclassrooms.realestatemanager.data.viewModelFactory.ViewModelFactory;
-import com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM.LoanSimulatorViewModel;
-import com.openclassrooms.realestatemanager.databinding.FragmentLoanSimulatorBinding;
-import com.openclassrooms.realestatemanager.injection.Injection;
-import com.openclassrooms.realestatemanager.util.Utils;
-import com.openclassrooms.realestatemanager.util.calculation.Calculation;
-import com.openclassrooms.realestatemanager.util.resources.AppResources;
-import com.openclassrooms.realestatemanager.util.texts.StringModifier;
-
-public class LoanSimulator extends Fragment {
-    private LoanSimulatorViewModel mViewModel;
-    private FragmentLoanSimulatorBinding binding;
-    private SingleProperty mSingleProperty;
-    private String dollarPrice;
-    private String euroPrice;
-    private String dollarPerMonth;
-    private String euroPerMonth;
-    private String currencyToDisplay = "";
-    private String loanCalculated = "0";
-
-    public LoanSimulator() {
-        // Required empty public constructor
+class LoanSimulator : Fragment() {
+    private var mViewModel: LoanSimulatorViewModel? = null
+    private var binding: FragmentLoanSimulatorBinding? = null
+    private var mSingleProperty: SingleProperty? = null
+    private var dollarPrice: String? = null
+    private var euroPrice: String? = null
+    private var dollarPerMonth: String? = null
+    private var euroPerMonth: String? = null
+    private var currencyToDisplay: String? = ""
+    private var loanCalculated = "0"
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        dollarPerMonth = requireActivity().resources.getString(R.string.loan_per_month_dollar)
+        euroPerMonth = requireActivity().resources.getString(R.string.loan_per_month_euro)
+        dollarPrice = requireActivity().resources.getString(R.string.price_dollar)
+        euroPrice = requireActivity().resources.getString(R.string.price_euro)
     }
 
-    public static LoanSimulator newInstance() {
-        return new LoanSimulator();
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        initViewModel()
+        binding = FragmentLoanSimulatorBinding.inflate(inflater, container, false)
+        return binding!!.root
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        dollarPerMonth = requireActivity().getResources().getString(R.string.loan_per_month_dollar);
-        euroPerMonth = requireActivity().getResources().getString(R.string.loan_per_month_euro);
-        dollarPrice = requireActivity().getResources().getString(R.string.price_dollar);
-        euroPrice = requireActivity().getResources().getString(R.string.price_euro);
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        data
+        updateButtonDurationState()
+        setOnButtonsDurationListener()
+        setOnResultObserver()
     }
 
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        initViewModel();
-        binding = FragmentLoanSimulatorBinding.inflate(inflater, container, false);
-        return binding.getRoot();
+    private fun setOnResultObserver() {
+        mViewModel!!.getLoanCalculated().observe(viewLifecycleOwner, getLoanCalculated)
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        getData();
-        updateButtonDurationState();
-        setOnButtonsDurationListener();
-        setOnResultObserver();
-    }
-
-    private void setOnResultObserver() {
-        mViewModel.getLoanCalculated().observe(getViewLifecycleOwner(), getLoanCalculated);
-    }
-
-    private void getData() {
-        mViewModel.getSingleProperty().observe(getViewLifecycleOwner(), getSingleProperty);
-    }
-
-    private void unsubscribeResult() {
-        mViewModel.getLoanCalculated().removeObserver(getLoanCalculated);
-    }
-
-    private void unsubscribeProperty() {
-        mViewModel.getSingleProperty().removeObserver(getSingleProperty);
-    }
-
-    final Observer<String> getLoanCalculated = new Observer<String>() {
-        @Override
-        public void onChanged(String s) {
-            if (s != null) {
-                loanCalculated = s;
-                String str = String.format(currencyToDisplay, s);
-                binding.loanCalcResult.setText(str);
-            }
+    private val data: Unit
+        get() {
+            mViewModel!!.singleProperty.observe(viewLifecycleOwner, getSingleProperty)
         }
-    };
 
-    final Observer<SingleProperty> getSingleProperty = new Observer<SingleProperty>() {
-        @Override
-        public void onChanged(SingleProperty singleProperty) {
-            if (singleProperty != null) {
-                mSingleProperty = singleProperty;
-                setOnContributionInputListener();
-                setOnRatingInputListener();
-                setOnDurationInputListener();
-                updateUI();
-            }
-        }
-    };
-
-    private void updateUI() {
-        currencyToDisplay = mViewModel.isDollar() ? dollarPerMonth : euroPerMonth;
-        String priceToDisplay = mViewModel.isDollar() ? dollarPrice : euroPrice;
-        binding.loanPropertyType.setText(mSingleProperty.getType());
-        binding.loanPropertyQuarter.setText(mSingleProperty.getQuarter());
-        String price = mViewModel.isDollar() ?
-                String.valueOf(mSingleProperty.getPrice()) :
-                String.valueOf(Utils.convertDollarToEuro(mSingleProperty.getPrice()));
-        binding.loanPropertyPrice.setText(String.format(priceToDisplay, StringModifier.addComaInPrice(price)));
-        binding.loanCalcInterest.setText(String.valueOf(mViewModel.getInterest()));
-        binding.loanCalcResult.setText(String.format(currencyToDisplay, loanCalculated));
+    private fun unsubscribeResult() {
+        mViewModel!!.getLoanCalculated().removeObserver(getLoanCalculated)
     }
 
-    private void updateButtonDurationState() {
-        binding.loanCalcBtnYear.setBackgroundColor(mViewModel.isYearDuration() ?
-                requireActivity().getResources().getColor(R.color.colorWhite) :
-                requireActivity().getResources().getColor(R.color.colorPrimary));
-        binding.loanCalcBtnYear.setTextColor(mViewModel.isYearDuration() ?
-                requireActivity().getResources().getColor(R.color.colorPrimary) :
-                requireActivity().getResources().getColor(R.color.colorWhite));
+    private fun unsubscribeProperty() {
+        mViewModel!!.singleProperty.removeObserver(getSingleProperty)
+    }
+
+    private val getLoanCalculated: Observer<String> = Observer { s ->
+        if (s != null) {
+            loanCalculated = s
+            val str = String.format(currencyToDisplay!!, s)
+            binding!!.loanCalcResult.text = str
+        }
+    }
+    private val getSingleProperty: Observer<SingleProperty> = Observer { singleProperty ->
+        if (singleProperty != null) {
+            mSingleProperty = singleProperty
+            setOnContributionInputListener()
+            setOnRatingInputListener()
+            setOnDurationInputListener()
+            updateUI()
+        }
+    }
+
+    private fun updateUI() {
+        currencyToDisplay = if (mViewModel!!.isDollar) dollarPerMonth else euroPerMonth
+        val priceToDisplay = if (mViewModel!!.isDollar) dollarPrice else euroPrice
+        binding!!.loanPropertyType.text = mSingleProperty!!.type
+        binding!!.loanPropertyQuarter.text = mSingleProperty!!.quarter
+        val price =
+            if (mViewModel!!.isDollar) mSingleProperty!!.price.toString() else Utils.convertDollarToEuro(
+                mSingleProperty!!.price
+            ).toString()
+        binding!!.loanPropertyPrice.text =
+            String.format(priceToDisplay!!, StringModifier.addComaInPrice(price))
+        binding!!.loanCalcInterest.setText(java.lang.String.valueOf(mViewModel!!.interest))
+        binding!!.loanCalcResult.text = String.format(currencyToDisplay!!, loanCalculated)
+    }
+
+    private fun updateButtonDurationState() {
+        binding!!.loanCalcBtnYear.setBackgroundColor(
+            if (mViewModel!!.isYearDuration) requireActivity().resources.getColor(
+                R.color.colorWhite
+            ) else requireActivity().resources.getColor(R.color.colorPrimary)
+        )
+        binding!!.loanCalcBtnYear.setTextColor(
+            if (mViewModel!!.isYearDuration) requireActivity().resources.getColor(
+                R.color.colorPrimary
+            ) else requireActivity().resources.getColor(R.color.colorWhite)
+        )
         // month
-        binding.loanCalcBtnMonth.setBackgroundColor(mViewModel.isYearDuration() ?
-                requireActivity().getResources().getColor(R.color.colorPrimary) :
-                requireActivity().getResources().getColor(R.color.colorWhite));
-        binding.loanCalcBtnMonth.setTextColor(mViewModel.isYearDuration() ?
-                requireActivity().getResources().getColor(R.color.colorWhite) :
-                requireActivity().getResources().getColor(R.color.colorPrimary));
+        binding!!.loanCalcBtnMonth.setBackgroundColor(
+            if (mViewModel!!.isYearDuration) requireActivity().resources.getColor(
+                R.color.colorPrimary
+            ) else requireActivity().resources.getColor(R.color.colorWhite)
+        )
+        binding!!.loanCalcBtnMonth.setTextColor(
+            if (mViewModel!!.isYearDuration) requireActivity().resources.getColor(
+                R.color.colorWhite
+            ) else requireActivity().resources.getColor(R.color.colorPrimary)
+        )
     }
 
-    private void setOnButtonsDurationListener() {
-        binding.loanCalcBtnYear.setOnClickListener(view -> handButtonDurationState());
-        binding.loanCalcBtnMonth.setOnClickListener(view -> handButtonDurationState());
+    private fun setOnButtonsDurationListener() {
+        binding!!.loanCalcBtnYear.setOnClickListener { view: View? -> handButtonDurationState() }
+        binding!!.loanCalcBtnMonth.setOnClickListener { view: View? -> handButtonDurationState() }
     }
 
-    private void handButtonDurationState() {
-        mViewModel.setYearDuration();
-        updateButtonDurationState();
+    private fun handButtonDurationState() {
+        mViewModel!!.setYearDuration()
+        updateButtonDurationState()
     }
 
-    private void setOnContributionInputListener() {
-        binding.loanCalcContribution.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {/**/}
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {/**/}
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                mViewModel.setContribution(editable.toString().equals("") ? 0 : Integer.parseInt(editable.toString()));
-                calculateLoan();
+    private fun setOnContributionInputListener() {
+        binding!!.loanCalcContribution.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(
+                charSequence: CharSequence,
+                i: Int,
+                i1: Int,
+                i2: Int
+            ) { /**/
             }
-        });
+
+            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) { /**/
+            }
+
+            override fun afterTextChanged(editable: Editable) {
+                mViewModel!!.contribution =
+                    if (editable.toString() == "") 0 else editable.toString().toInt()
+                calculateLoan()
+            }
+        })
     }
 
-    private void setOnRatingInputListener() {
-        binding.loanCalcInterest.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {/**/}
+    private fun setOnRatingInputListener() {
+        binding!!.loanCalcInterest.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(
+                charSequence: CharSequence,
+                i: Int,
+                i1: Int,
+                i2: Int
+            ) { /**/
+            }
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
                 if (AppResources.getInterestFixedRate(charSequence.toString()) == null) {
-                    mViewModel.setInterestEdited(true);
+                    mViewModel!!.isInterestEdited = true
                 }
             }
 
-            @Override
-            public void afterTextChanged(Editable editable) {
-                mViewModel.setInterest(editable.toString().equals("") ?
-                        AppResources.getInterestFixedRate(mViewModel.getDuration()) :
-                        Double.parseDouble(editable.toString()));
-                calculateLoan();
+            override fun afterTextChanged(editable: Editable) {
+                mViewModel!!.interest =
+                    if (editable.toString() == "") AppResources.getInterestFixedRate(
+                        mViewModel!!.duration
+                    ) else editable.toString().toDouble()
+                calculateLoan()
             }
-        });
+        })
     }
 
-    private void setOnDurationInputListener() {
-        binding.loanCalcDuration.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {/**/}
+    private fun setOnDurationInputListener() {
+        binding!!.loanCalcDuration.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(
+                charSequence: CharSequence,
+                i: Int,
+                i1: Int,
+                i2: Int
+            ) { /**/
+            }
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {/**/}
+            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) { /**/
+            }
 
-            @Override
-            public void afterTextChanged(Editable editable) {
-                String duration = editable.toString().equals("") ? "0" : editable.toString();
-                mViewModel.setDuration(mViewModel.isYearDuration() ? Integer.parseInt(duration) * 12 : Integer.parseInt(duration));
-                if (!mViewModel.isInterestEdited()) {
-                    updateInterestAccordingDuration();
+            override fun afterTextChanged(editable: Editable) {
+                val duration = if (editable.toString() == "") "0" else editable.toString()
+                mViewModel!!.duration =
+                    if (mViewModel!!.isYearDuration) duration.toInt() * 12 else duration.toInt()
+                if (!mViewModel!!.isInterestEdited) {
+                    updateInterestAccordingDuration()
                 }
-                calculateLoan();
+                calculateLoan()
             }
-        });
+        })
     }
 
-    private void updateInterestAccordingDuration() {
-        double str = AppResources.getInterestFixedRate(mViewModel.getDuration());
-        mViewModel.setInterest(str);
-        updateUI();
+    private fun updateInterestAccordingDuration() {
+        val str = AppResources.getInterestFixedRate(mViewModel!!.duration)
+        mViewModel!!.interest = str
+        updateUI()
     }
 
-    private void calculateLoan() {
-        if (mViewModel.getDuration() > 0) {
-            int price = mViewModel.isDollar() ? mSingleProperty.getPrice() : Utils.convertDollarToEuro(mSingleProperty.getPrice());
-            mViewModel.setLoanCalculated(Calculation.calculateMonthlyLoan(price, mViewModel.getContribution(), mViewModel.getInterest(), mViewModel.getDuration()));
+    private fun calculateLoan() {
+        if (mViewModel!!.duration > 0) {
+            val price =
+                if (mViewModel!!.isDollar) mSingleProperty!!.price else Utils.convertDollarToEuro(
+                    mSingleProperty!!.price
+                )
+            mViewModel!!.setLoanCalculated(
+                Calculation.calculateMonthlyLoan(
+                    price,
+                    mViewModel!!.contribution,
+                    mViewModel!!.interest,
+                    mViewModel!!.duration
+                )
+            )
         }
     }
 
-    private void initViewModel() {
-        ViewModelFactory vmF = Injection.sViewModelFactory(requireActivity());
-        mViewModel = new ViewModelProvider(this, vmF).get(LoanSimulatorViewModel.class);
+    private fun initViewModel() {
+        val vmF = sViewModelFactory(requireActivity())
+        mViewModel = ViewModelProvider(this, vmF).get(LoanSimulatorViewModel::class.java)
     }
 
-    public void handleCurrency(int oneIsDollar) {
+    fun handleCurrency(oneIsDollar: Int) {
         // Value of oneIsDollar = 1 -> $ (one is dollar)
-        if (oneIsDollar == 2 && mViewModel.isDollar()) mViewModel.setDollar(false);
-        else if (oneIsDollar == 1 && !mViewModel.isDollar()) mViewModel.setDollar(true);
+        if (oneIsDollar == 2 && mViewModel!!.isDollar) mViewModel!!.isDollar =
+            false else if (oneIsDollar == 1 && !mViewModel!!.isDollar) mViewModel!!.isDollar = true
         // For update the numbers on UI we need to recalculate the loan after currency change
-        calculateLoan();
-        updateUI();
+        calculateLoan()
+        updateUI()
     }
 
-    @Override
-    public void onDestroyView() {
-        binding = null;
-        super.onDestroyView();
+    override fun onDestroyView() {
+        binding = null
+        super.onDestroyView()
     }
 
-    @Override
-    public void onDestroy() {
-        if (mViewModel.getLoanCalculated().hasActiveObservers()) unsubscribeResult();
-        if (mViewModel.getSingleProperty().hasActiveObservers()) unsubscribeProperty();
-        super.onDestroy();
+    override fun onDestroy() {
+        if (mViewModel!!.getLoanCalculated().hasActiveObservers()) unsubscribeResult()
+        if (mViewModel!!.singleProperty.hasActiveObservers()) unsubscribeProperty()
+        super.onDestroy()
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(): LoanSimulator {
+            return LoanSimulator()
+        }
     }
 }
