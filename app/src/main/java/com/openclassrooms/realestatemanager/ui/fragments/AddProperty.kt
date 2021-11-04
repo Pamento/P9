@@ -1,515 +1,550 @@
-package com.openclassrooms.realestatemanager.ui.fragments;
+package com.openclassrooms.realestatemanager.ui.fragments
 
-import android.app.DatePickerDialog;
-import android.content.ActivityNotFoundException;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
+import com.openclassrooms.realestatemanager.injection.Injection.sViewModelFactory
+import android.app.DatePickerDialog.OnDateSetListener
+import com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM.AddPropertyViewModel
+import androidx.recyclerview.widget.RecyclerView
+import com.openclassrooms.realestatemanager.data.local.entities.ImageOfProperty
+import com.openclassrooms.realestatemanager.ui.adapters.ImageListOfAddPropertyAdapter
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
+import com.openclassrooms.realestatemanager.util.resources.AppResources
+import android.widget.ArrayAdapter
+import android.app.DatePickerDialog
+import com.openclassrooms.realestatemanager.R
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.ItemTouchHelper
+import android.content.Intent
+import android.provider.MediaStore
+import com.openclassrooms.realestatemanager.util.system.ImageFileUtils
+import android.os.Build
+import androidx.core.content.FileProvider
+import android.content.ActivityNotFoundException
+import android.app.Activity
+import android.net.Uri
+import android.text.TextWatcher
+import android.text.Editable
+import android.text.InputFilter
+import android.text.Spanned
+import com.openclassrooms.realestatemanager.util.texts.StringModifier
+import com.openclassrooms.realestatemanager.util.notification.NotifyBySnackBar
+import android.text.TextUtils
+import android.util.Log
+import android.view.View
+import android.widget.DatePicker
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import com.openclassrooms.realestatemanager.data.remote.models.geocode.Location
+import com.openclassrooms.realestatemanager.databinding.AmenitiesCheckboxesBinding
+import com.openclassrooms.realestatemanager.databinding.FormAddressPropertyBinding
+import com.openclassrooms.realestatemanager.databinding.FragmentAddPropertyBinding
+import com.openclassrooms.realestatemanager.util.notification.NotificationsUtils
+import com.openclassrooms.realestatemanager.ui.activity.MainActivity
+import com.openclassrooms.realestatemanager.util.Constants.Constants
+import com.openclassrooms.realestatemanager.util.Utils
+import java.io.File
+import java.util.*
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.FileProvider;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+class AddProperty : Fragment(), OnDateSetListener {
 
-import android.provider.MediaStore;
-import android.text.Editable;
-import android.text.InputFilter;
-import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
-
-import com.openclassrooms.realestatemanager.R;
-import com.openclassrooms.realestatemanager.data.local.entities.ImageOfProperty;
-import com.openclassrooms.realestatemanager.data.remote.models.geocode.Location;
-import com.openclassrooms.realestatemanager.data.viewModelFactory.ViewModelFactory;
-import com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM.AddPropertyViewModel;
-import com.openclassrooms.realestatemanager.databinding.AmenitiesCheckboxesBinding;
-import com.openclassrooms.realestatemanager.databinding.FormAddressPropertyBinding;
-import com.openclassrooms.realestatemanager.databinding.FragmentAddPropertyBinding;
-import com.openclassrooms.realestatemanager.injection.Injection;
-import com.openclassrooms.realestatemanager.ui.activity.MainActivity;
-import com.openclassrooms.realestatemanager.ui.adapters.ImageListOfAddPropertyAdapter;
-import com.openclassrooms.realestatemanager.util.Utils;
-import com.openclassrooms.realestatemanager.util.notification.NotificationsUtils;
-import com.openclassrooms.realestatemanager.util.notification.NotifyBySnackBar;
-import com.openclassrooms.realestatemanager.util.resources.AppResources;
-import com.openclassrooms.realestatemanager.util.system.ImageFileUtils;
-import com.openclassrooms.realestatemanager.util.texts.StringModifier;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-
-import static android.app.Activity.RESULT_OK;
-import static com.openclassrooms.realestatemanager.util.Constants.Constants.*;
-
-public class AddProperty extends Fragment implements DatePickerDialog.OnDateSetListener {
-    private static final String TAG = "AddProperty";
-    private View mView;
-    private AddPropertyViewModel mAddPropertyViewModel;
-    private FragmentAddPropertyBinding binding;
-    private AmenitiesCheckboxesBinding amenitiesBinding;
-    private FormAddressPropertyBinding formAddressBinding;
-    private RecyclerView imagesRecycler;
-    private File photoFile;
-    private final List<ImageOfProperty> imagesToAdd = new ArrayList<>();
-    private ImageListOfAddPropertyAdapter mImageAdapter;
-    private boolean mIsPropertySold = false;
-    private long mMillisOfRegisterProperty = 0;
-    private long mMillisOfSoldDate = 0;
-    private boolean isDateRegister;
-    private Location mLocation;
-
-    public AddProperty() {
-        // Required empty public constructor
+    companion object {
+        @JvmStatic
+        fun newInstance(): AddProperty {
+            return AddProperty()
+        }
     }
 
-    public static AddProperty newInstance() {
-        return new AddProperty();
+    private var mView: View? = null
+    private var mAddPropertyViewModel: AddPropertyViewModel? = null
+    private var binding: FragmentAddPropertyBinding? = null
+    private var amenitiesBinding: AmenitiesCheckboxesBinding? = null
+    private var formAddressBinding: FormAddressPropertyBinding? = null
+    private var imagesRecycler: RecyclerView? = null
+    private var photoFile: File? = null
+    private val imagesToAdd: MutableList<ImageOfProperty?> = ArrayList()
+    private var mImageAdapter: ImageListOfAddPropertyAdapter? = null
+    private var mIsPropertySold = false
+    private var mMillisOfRegisterProperty: Long = 0
+    private var mMillisOfSoldDate: Long = 0
+    private var isDateRegister = false
+    private var mLocation: Location? = null
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        initViewModel()
+        binding = FragmentAddPropertyBinding.inflate(inflater, container, false)
+        bindIncludesLayouts()
+        setEventListener()
+        return binding!!.root
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    private fun initViewModel() {
+        val vmF = sViewModelFactory(requireActivity())
+        mAddPropertyViewModel = ViewModelProvider(this, vmF).get(
+            AddPropertyViewModel::class.java
+        )
+        mAddPropertyViewModel!!.init()
     }
 
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        initViewModel();
-        binding = FragmentAddPropertyBinding.inflate(inflater, container, false);
-        bindIncludesLayouts();
-
-        setEventListener();
-        return binding.getRoot();
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        mView = view
+        setRecyclerView()
+        setPropertyTypeSpinner()
+        setAgentSpinner()
+        setCreationDate()
+        handleSoldDateInput()
+        setRecyclerViewObserver()
+        setOnPriceInputListener()
     }
 
-    private void initViewModel() {
-        ViewModelFactory vmF = Injection.sViewModelFactory(requireActivity());
-        mAddPropertyViewModel = new ViewModelProvider(this, vmF).get(AddPropertyViewModel.class);
-        mAddPropertyViewModel.init();
+    private fun setRecyclerViewObserver() {
+        mAddPropertyViewModel!!.imagesOfProperty!!.observe(viewLifecycleOwner, getImageOfProperty)
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        mView = view;
-        setRecyclerView();
-        setPropertyTypeSpinner();
-        setAgentSpinner();
-        setCreationDate();
-        handleSoldDateInput();
-        setRecyclerViewObserver();
-        setOnPriceInputListener();
+    private fun unsubscribeRecyclerViewObserver() {
+        mAddPropertyViewModel!!.imagesOfProperty!!.removeObserver(getImageOfProperty)
     }
 
-    private void setRecyclerViewObserver() {
-        mAddPropertyViewModel.getImagesOfProperty().observe(getViewLifecycleOwner(), getImageOfProperty);
-    }
-
-    private void unsubscribeRecyclerViewObserver() {
-        mAddPropertyViewModel.getImagesOfProperty().removeObserver(getImageOfProperty);
-    }
-
-    final Observer<List<ImageOfProperty>> getImageOfProperty = imageOfProperties -> {
+    private val getImageOfProperty = Observer { imageOfProperties: List<ImageOfProperty?>? ->
         if (imageOfProperties != null) {
-            if (imagesToAdd.size() == 0) {
-                imagesToAdd.addAll(imageOfProperties);
-                setRecyclerView();
+            if (imagesToAdd.size == 0) {
+                imagesToAdd.addAll(imageOfProperties)
+                setRecyclerView()
             } else {
-                imagesToAdd.clear();
-                imagesToAdd.addAll(imageOfProperties);
-                updateImageAdapter(imageOfProperties);
+                imagesToAdd.clear()
+                imagesToAdd.addAll(imageOfProperties)
+                updateImageAdapter(imageOfProperties)
             }
         }
-    };
-
-    private void updateImageAdapter(List<ImageOfProperty> ipsum) {
-        mImageAdapter.updateImagesList(ipsum);
     }
 
-    private void setPropertyTypeSpinner() {
-        String[] types = AppResources.getPropertyType();
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
-                android.R.layout.simple_dropdown_item_1line, types);
-        binding.addFTypeDropdown.setAdapter(adapter);
+    private fun updateImageAdapter(ipsum: List<ImageOfProperty?>) {
+        mImageAdapter!!.updateImagesList(ipsum)
     }
 
-    private void setAgentSpinner() {
-        String[] agents = AppResources.getAGENTS();
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
-                android.R.layout.simple_dropdown_item_1line, agents);
-        binding.addFAgent.setAdapter(adapter);
+    private fun setPropertyTypeSpinner() {
+        val types = AppResources.getPropertyType()
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_dropdown_item_1line, types
+        )
+        binding!!.addFTypeDropdown.setAdapter(adapter)
+    }
+
+    private fun setAgentSpinner() {
+        val agents = AppResources.getAGENTS()
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_dropdown_item_1line, agents
+        )
+        binding!!.addFAgent.setAdapter(adapter)
     }
 
     // SET UI
-    private void setCreationDate() {
-        mMillisOfRegisterProperty = System.currentTimeMillis();
-        setDateInputField(Utils.getTodayDate(), 0);
-        setListenerDatePicker();
+    private fun setCreationDate() {
+        mMillisOfRegisterProperty = System.currentTimeMillis()
+        setDateInputField(Utils.getTodayDate(), 0)
+        setListenerDatePicker()
     }
 
-    private void setListenerDatePicker() {
-        binding.addFDateSince.setOnClickListener(view -> {
-            showDatePickerDialog();
-            isDateRegister = true;
-        });
+    private fun setListenerDatePicker() {
+        binding!!.addFDateSince.setOnClickListener {
+            showDatePickerDialog()
+            isDateRegister = true
+        }
     }
 
-    private void showDatePickerDialog() {
-        DatePickerDialog datePicker = new DatePickerDialog(
-                requireActivity(), this,
-                Calendar.getInstance().get(Calendar.YEAR),
-                Calendar.getInstance().get(Calendar.MONTH),
-                Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
-        );
-        datePicker.show();
+    private fun showDatePickerDialog() {
+        val datePicker = DatePickerDialog(
+            requireActivity(), this,
+            Calendar.getInstance()[Calendar.YEAR],
+            Calendar.getInstance()[Calendar.MONTH],
+            Calendar.getInstance()[Calendar.DAY_OF_MONTH]
+        )
+        datePicker.show()
     }
 
-    private void handleSoldDateInput() {
-        binding.addFDateSoldOn.setEnabled(mIsPropertySold);
+    private fun handleSoldDateInput() {
+        binding!!.addFDateSoldOn.isEnabled = mIsPropertySold
     }
 
-    private void setEventListener() {
-        binding.addFBtnAddImgCamera.setOnClickListener(view -> takePictureIntent());
-        binding.addFBtnAddImgGallery.setOnClickListener(view -> openGallery());
-        binding.addFSoldSwitch.setOnClickListener(view -> handleSwitchEvent());
+    private fun setEventListener() {
+        binding!!.addFBtnAddImgCamera.setOnClickListener { takePictureIntent() }
+        binding!!.addFBtnAddImgGallery.setOnClickListener { openGallery() }
+        binding!!.addFSoldSwitch.setOnClickListener { handleSwitchEvent() }
     }
 
-    private void handleSwitchEvent() {
-        mIsPropertySold = !mIsPropertySold;
+    private fun handleSwitchEvent() {
+        mIsPropertySold = !mIsPropertySold
         if (mIsPropertySold) {
-            setDateInputField(Utils.getTodayDate(), 1);
-            mMillisOfSoldDate = System.currentTimeMillis();
-            binding.addFDateSoldOn.setOnClickListener(view -> {
-                isDateRegister = false;
-                showDatePickerDialog();
-            });
+            setDateInputField(Utils.getTodayDate(), 1)
+            mMillisOfSoldDate = System.currentTimeMillis()
+            binding!!.addFDateSoldOn.setOnClickListener {
+                isDateRegister = false
+                showDatePickerDialog()
+            }
         } else {
-            setDateInputField(requireActivity().getResources().getString(R.string.add_sold_on), 1);
-            mMillisOfSoldDate = 0;
-            if (binding.addFDateSoldOn.hasOnClickListeners()) {
-                binding.addFDateSoldOn.setOnClickListener(null);
+            setDateInputField(requireActivity().resources.getString(R.string.add_sold_on), 1)
+            mMillisOfSoldDate = 0
+            if (binding!!.addFDateSoldOn.hasOnClickListeners()) {
+                binding!!.addFDateSoldOn.setOnClickListener(null)
             }
         }
-        handleSoldDateInput();
+        handleSoldDateInput()
     }
 
-    private void setDateInputField(String date, int mode) {
+    private fun setDateInputField(date: String, mode: Int) {
         if (mode == 1) {
-            binding.addFDateSoldOn.setText(date);
+            binding!!.addFDateSoldOn.text = date
         } else {
-            binding.addFDateSince.setText(date);
+            binding!!.addFDateSince.text = date
         }
     }
 
-    private void setRecyclerView() {
-        imagesRecycler = binding.addFImagesRecycler;
-        mImageAdapter = new ImageListOfAddPropertyAdapter(imagesToAdd);
-        imagesRecycler.setAdapter(mImageAdapter);
-        imagesRecycler.setHasFixedSize(true);
-        imagesRecycler.setLayoutManager(new LinearLayoutManager(requireContext()));
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(mSimpleCallback);
-        itemTouchHelper.attachToRecyclerView(imagesRecycler);
+    private fun setRecyclerView() {
+        imagesRecycler = binding!!.addFImagesRecycler
+        mImageAdapter = ImageListOfAddPropertyAdapter(imagesToAdd)
+        imagesRecycler!!.adapter = mImageAdapter
+        imagesRecycler!!.setHasFixedSize(true)
+        imagesRecycler!!.layoutManager = LinearLayoutManager(requireContext())
+        val itemTouchHelper = ItemTouchHelper(mSimpleCallback)
+        itemTouchHelper.attachToRecyclerView(imagesRecycler)
     }
 
-    ItemTouchHelper.SimpleCallback mSimpleCallback = new ItemTouchHelper.SimpleCallback(
-            ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.START | ItemTouchHelper.END,
-            ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-        @Override
-        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-            int fromPosition = viewHolder.getAbsoluteAdapterPosition();
-            int toPosition = target.getAbsoluteAdapterPosition();
-            Collections.swap(imagesToAdd, fromPosition, toPosition);
-            Objects.requireNonNull(imagesRecycler.getAdapter()).notifyItemMoved(fromPosition, toPosition);
-            return false;
+    private var mSimpleCallback: ItemTouchHelper.SimpleCallback =
+        object : ItemTouchHelper.SimpleCallback(
+            ItemTouchHelper.UP or ItemTouchHelper.DOWN or ItemTouchHelper.START or ItemTouchHelper.END,
+            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+        ) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                val fromPosition = viewHolder.absoluteAdapterPosition
+                val toPosition = target.absoluteAdapterPosition
+                Collections.swap(imagesToAdd, fromPosition, toPosition)
+                Objects.requireNonNull(imagesRecycler!!.adapter)
+                    .notifyItemMoved(fromPosition, toPosition)
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                mAddPropertyViewModel!!.removeOneImageOfProperty(
+                    mImageAdapter!!.getImageOfPropertyAt(
+                        viewHolder.absoluteAdapterPosition
+                    )
+                )
+            }
         }
 
-        @Override
-        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-            mAddPropertyViewModel.removeOneImageOfProperty(mImageAdapter.getImageOfPropertyAt(viewHolder.getAbsoluteAdapterPosition()));
-        }
-    };
-
-    private void bindIncludesLayouts() {
-        View amenitiesView = binding.addFAmenities.getRoot();
-        View addressFormView = binding.addFFormAddress.getRoot();
-        amenitiesBinding = AmenitiesCheckboxesBinding.bind(amenitiesView);
-        formAddressBinding = FormAddressPropertyBinding.bind(addressFormView);
+    private fun bindIncludesLayouts() {
+        val amenitiesView: View = binding!!.addFAmenities.root
+        val addressFormView: View = binding!!.addFFormAddress.root
+        amenitiesBinding = AmenitiesCheckboxesBinding.bind(amenitiesView)
+        formAddressBinding = FormAddressPropertyBinding.bind(addressFormView)
     }
 
-    private void takePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-        if (takePictureIntent.resolveActivity(requireContext().getPackageManager()) != null) {
-            photoFile = ImageFileUtils.createImageFile();
-
+    private fun takePictureIntent() {
+        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        if (takePictureIntent.resolveActivity(requireContext().packageManager) != null) {
+            photoFile = ImageFileUtils.createImageFile()
             if (photoFile != null) {
-                Uri fp;
-                if ((Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP)) {
-                    fp = FileProvider.getUriForFile(
-                            requireActivity(),
-                            "com.openclassrooms.realestatemanager.fileprovider",
-                            photoFile);
+                val fp: Uri = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+                    FileProvider.getUriForFile(
+                        requireActivity(),
+                        "com.openclassrooms.realestatemanager.fileprovider",
+                        photoFile!!
+                    )
                 } else {
-                    fp = Uri.fromFile(photoFile);
+                    Uri.fromFile(photoFile)
                 }
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fp);
-
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fp)
                 try {
-                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-                } catch (ActivityNotFoundException e) {
-                    Log.e("ERROR", "takePictureIntent: ", e);
+                    startActivityForResult(takePictureIntent, Constants.REQUEST_IMAGE_CAPTURE)
+                } catch (e: ActivityNotFoundException) {
+                    Log.e("ERROR", "takePictureIntent: ", e)
                     // TODO display error state to the user
                 }
             }
         }
     }
 
-    private void openGallery() {
-        Intent gallery = new Intent(Intent.ACTION_OPEN_DOCUMENT, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-        startActivityForResult(gallery, PICK_IMAGE_GALLERY);
+    private fun openGallery() {
+        val gallery =
+            Intent(Intent.ACTION_OPEN_DOCUMENT, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+        startActivityForResult(gallery, Constants.PICK_IMAGE_GALLERY)
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Uri imageUri = Uri.fromFile(photoFile);
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == Constants.REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
+            val imageUri = Uri.fromFile(photoFile)
             //String uri = ImageFilePathUtil.getRealPathFromURI_API19(requireContext(), imageUri);
-            mAddPropertyViewModel.createOneImageOfProperty(imageUri.toString());
-        } else if (requestCode == PICK_IMAGE_GALLERY && resultCode == RESULT_OK) {
+            mAddPropertyViewModel!!.createOneImageOfProperty(imageUri.toString())
+        } else if (requestCode == Constants.PICK_IMAGE_GALLERY && resultCode == Activity.RESULT_OK) {
             if (data != null) {
-                Uri uri = data.getData();
-                mAddPropertyViewModel.createOneImageOfProperty(uri.toString());
+                val uri = data.data
+                mAddPropertyViewModel!!.createOneImageOfProperty(uri.toString())
             }
         }
     }
 
     // Add coma to price during put in input
-    private void setOnPriceInputListener() {
-        binding.addFInputPrice.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {/**/}
+    private fun setOnPriceInputListener() {
+        binding!!.addFInputPrice.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(
+                charSequence: CharSequence,
+                i: Int,
+                i1: Int,
+                i2: Int
+            ) { /**/
+            }
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {/**/}
+            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) { /**/
+            }
 
-            @Override
-            public void afterTextChanged(Editable editable) {/**/
+            override fun afterTextChanged(editable: Editable) { /**/
                 //https://www.google.com/search?client=opera&q=android+editable.setFilters&sourceid=opera&ie=UTF-8&oe=UTF-8
                 //https://stackoverflow.com/questions/3349121/how-do-i-use-inputfilter-to-limit-characters-in-an-edittext-in-android
-                editable.setFilters(new InputFilter[]{priceFilter});
+                editable.filters = arrayOf(priceFilter)
             }
-        });
+        })
     }
 
-    private final InputFilter priceFilter = (source, start, end, dest, dstart, dend) -> StringModifier.addComaInPrice(source.toString());
+    private val priceFilter =
+        InputFilter { source: CharSequence, start: Int, end: Int, dest: Spanned?, dstart: Int, dend: Int ->
+            StringModifier.addComaInPrice(source.toString())
+        }
 
     // after click on save icon, main activity run this function to check if required fields was fill
     // If so, this function run save method
-    public void checkFormValidityBeforeSave() {
-        int checked = 0;
-        final boolean[] requiredValues = new boolean[8];
+    fun checkFormValidityBeforeSave() {
+        var checked = 0
+        val requiredValues = BooleanArray(8)
         // image
-        requiredValues[0] = imagesToAdd.size() == 0;
+        requiredValues[0] = imagesToAdd.size == 0
         // type
-        requiredValues[1] = binding.addFTypeDropdown.getText().toString().equals("");
+        requiredValues[1] = binding!!.addFTypeDropdown.text.toString() == ""
         // price
-        requiredValues[2] = binding.addFInputPrice.getText().toString().equals("");
+        requiredValues[2] = binding!!.addFInputPrice.text.toString() == ""
         // address1
-        requiredValues[3] = Objects.requireNonNull(binding.addFFormAddress.addAddress1FormAddress.getText()).toString().equals("");
+        requiredValues[3] =
+            Objects.requireNonNull(binding!!.addFFormAddress.addAddress1FormAddress.text)
+                .toString() == ""
         // quarter
-        requiredValues[4] = Objects.requireNonNull(binding.addFFormAddress.addAddressFormQuarter.getText()).toString().equals("");
+        requiredValues[4] =
+            Objects.requireNonNull(binding!!.addFFormAddress.addAddressFormQuarter.text)
+                .toString() == ""
         // city
-        requiredValues[5] = Objects.requireNonNull(binding.addFFormAddress.addAddressFormCity.getText()).toString().equals("");
+        requiredValues[5] =
+            Objects.requireNonNull(binding!!.addFFormAddress.addAddressFormCity.text)
+                .toString() == ""
         // postalCode
-        requiredValues[6] = Objects.requireNonNull(binding.addFFormAddress.addAddressFormPostalCode.getText()).toString().equals("");
+        requiredValues[6] =
+            Objects.requireNonNull(binding!!.addFFormAddress.addAddressFormPostalCode.text)
+                .toString() == ""
         // agent
-        requiredValues[7] = binding.addFAgent.getText().toString().equals("");
-
-        for (boolean value : requiredValues) {
-            if (value) checked++;
+        requiredValues[7] = binding!!.addFAgent.text.toString() == ""
+        for (value in requiredValues) {
+            if (value) checked++
         }
-
         if (checked == 0) {
-            mAddPropertyViewModel.setImagesOfPropertyList(mImageAdapter.getImageOfPropertyList());
+            mAddPropertyViewModel!!.setImagesOfPropertyList(mImageAdapter!!.imageOfPropertyList)
             if (Utils.isInternetAvailable(requireContext())) {
-                getGeoLocationOfProperty();
+                geoLocationOfProperty
             } else {
-                createProperty();
+                createProperty()
             }
         } else {
-            String msg = requireActivity().getResources().getString(R.string.warning_missing_fields);
-            NotifyBySnackBar.showSnackBar(1, mView, msg);
+            val msg = requireActivity().resources.getString(R.string.warning_missing_fields)
+            NotifyBySnackBar.showSnackBar(1, mView, msg)
         }
     }
 
-    private void getGeoLocationOfProperty() {
-        String address1 = formAddressBinding.addAddress1FormAddress.getEditableText().toString();
-        String city = formAddressBinding.addAddressFormCity.getEditableText().toString();
-        String quarter = formAddressBinding.addAddressFormQuarter.getEditableText().toString();
-        String address = StringModifier.formatAddressToGeocoding(address1, city, quarter);
-        mAddPropertyViewModel.getLocationFromAddress(address);
-        setOnResponseObserver();
+    private val geoLocationOfProperty: Unit
+        get() {
+            val address1 = formAddressBinding!!.addAddress1FormAddress.editableText.toString()
+            val city = formAddressBinding!!.addAddressFormCity.editableText.toString()
+            val quarter = formAddressBinding!!.addAddressFormQuarter.editableText.toString()
+            val address = StringModifier.formatAddressToGeocoding(address1, city, quarter)
+            mAddPropertyViewModel!!.getLocationFromAddress(address)
+            setOnResponseObserver()
+        }
+
+    private fun setOnResponseObserver() {
+        mAddPropertyViewModel!!.geoLocationOfProperty!!.observe(
+            viewLifecycleOwner,
+            { location: Location? ->
+                if (location != null) {
+                    mLocation = location
+                    createProperty()
+                }
+            })
     }
 
-    private void setOnResponseObserver() {
-        mAddPropertyViewModel.getGeoLocationOfProperty().observe(getViewLifecycleOwner(), location -> {
-            if (location != null) {
-                mLocation = location;
-                createProperty();
-            }
-        });
-    }
-
-    public void createProperty() {
+    private fun createProperty() {
         // Get inputs values:
-        String type = binding.addFTypeDropdown.getText().toString();
-        String desc = binding.addFDescription.getEditableText().toString();
-        String surfaceStr = binding.addFInputSurface.getText().toString();
-        int surface = TextUtils.isEmpty(surfaceStr) ? 0 : Integer.parseInt(surfaceStr);
-        String priceStr = binding.addFInputPrice.getText().toString();
-        int price = TextUtils.isEmpty(priceStr) ? 0 : Integer.parseInt(priceStr);
-        String roomsStr = binding.addFInputRooms.getText().toString();
-        int rooms = TextUtils.isEmpty(roomsStr) ? 0 : Integer.parseInt(roomsStr);
-        String bedroomsStr = binding.addFInputBedrooms.getText().toString();
-        int bedrooms = TextUtils.isEmpty(bedroomsStr) ? 0 : Integer.parseInt(bedroomsStr);
-        String bathroomsStr = binding.addFInputBathrooms.getText().toString();
-        int bathrooms = TextUtils.isEmpty(bathroomsStr) ? 0 : Integer.parseInt(bathroomsStr);
-        String address1 = formAddressBinding.addAddress1FormAddress.getEditableText().toString();
-        String address2 = formAddressBinding.addAddress2FormAddressSuite.getEditableText().toString();
-        String city = formAddressBinding.addAddressFormCity.getEditableText().toString();
-        String quarter = formAddressBinding.addAddressFormQuarter.getEditableText().toString();
-        String location = mLocation == null ? "" : formatLocationInString();
-        String postalCodeStr = formAddressBinding.addAddressFormPostalCode.getEditableText().toString();
-        int postalCode = TextUtils.isEmpty(postalCodeStr) ? 0 : Integer.parseInt(postalCodeStr);
-        String amenities = getAmenities();
-        String agent = binding.addFAgent.getText().toString();
-        String dateR = String.valueOf(mMillisOfRegisterProperty);
-        String dateSold = mMillisOfSoldDate == 0 ? "" : String.valueOf(mMillisOfSoldDate);
-        mAddPropertyViewModel.createNewProperty(type, desc, surface, price, rooms, bedrooms, bathrooms, dateR, dateSold, address1, address2, city, quarter, postalCode, location, amenities, agent);
-        saveDataAndNotifyUser();
+        val type = binding!!.addFTypeDropdown.text.toString()
+        val desc = binding!!.addFDescription.editableText.toString()
+        val surfaceStr = binding!!.addFInputSurface.text.toString()
+        val surface = if (TextUtils.isEmpty(surfaceStr)) 0 else surfaceStr.toInt()
+        val priceStr = binding!!.addFInputPrice.text.toString()
+        val price = if (TextUtils.isEmpty(priceStr)) 0 else priceStr.toInt()
+        val roomsStr = binding!!.addFInputRooms.text.toString()
+        val rooms = if (TextUtils.isEmpty(roomsStr)) 0 else roomsStr.toInt()
+        val bedroomsStr = binding!!.addFInputBedrooms.text.toString()
+        val bedrooms = if (TextUtils.isEmpty(bedroomsStr)) 0 else bedroomsStr.toInt()
+        val bathroomsStr = binding!!.addFInputBathrooms.text.toString()
+        val bathrooms = if (TextUtils.isEmpty(bathroomsStr)) 0 else bathroomsStr.toInt()
+        val address1 = formAddressBinding!!.addAddress1FormAddress.editableText.toString()
+        val address2 = formAddressBinding!!.addAddress2FormAddressSuite.editableText.toString()
+        val city = formAddressBinding!!.addAddressFormCity.editableText.toString()
+        val quarter = formAddressBinding!!.addAddressFormQuarter.editableText.toString()
+        val location = if (mLocation == null) "" else formatLocationInString()
+        val postalCodeStr = formAddressBinding!!.addAddressFormPostalCode.editableText.toString()
+        val postalCode = if (TextUtils.isEmpty(postalCodeStr)) 0 else postalCodeStr.toInt()
+        val amenities = amenities
+        val agent = binding!!.addFAgent.text.toString()
+        val dateR = mMillisOfRegisterProperty.toString()
+        val dateSold = if (mMillisOfSoldDate == 0L) "" else mMillisOfSoldDate.toString()
+        mAddPropertyViewModel!!.createNewProperty(
+            type,
+            desc,
+            surface,
+            price,
+            rooms,
+            bedrooms,
+            bathrooms,
+            dateR,
+            dateSold,
+            address1,
+            address2,
+            city,
+            quarter,
+            postalCode,
+            location,
+            amenities,
+            agent
+        )
+        saveDataAndNotifyUser()
     }
 
-    private String formatLocationInString() {
-        return String.valueOf(mLocation.getLat()) + "," + String.valueOf(mLocation.getLng());
+    private fun formatLocationInString(): String {
+        return mLocation!!.lat.toString() + "," + mLocation!!.lng.toString()
     }
 
-    private void saveDataAndNotifyUser() {
-        mAddPropertyViewModel.createProperty();
-        mAddPropertyViewModel.getCreatePropertyResponse().observe(getViewLifecycleOwner(), createPropertyObserver);
+    private fun saveDataAndNotifyUser() {
+        mAddPropertyViewModel!!.createProperty()
+        mAddPropertyViewModel!!.createPropertyResponse.observe(
+            viewLifecycleOwner,
+            createPropertyObserver
+        )
     }
 
-    private void saveImagesOfProperty() {
-        mAddPropertyViewModel.saveImagesOfProperty();
-        mAddPropertyViewModel.getSaveImagesResponse().observe(getViewLifecycleOwner(), saveImagesObserver);
+    private fun saveImagesOfProperty() {
+        mAddPropertyViewModel!!.saveImagesOfProperty()
+        mAddPropertyViewModel!!.saveImagesResponse.observe(viewLifecycleOwner, saveImagesObserver)
     }
 
-    final Observer<long[]> saveImagesObserver = longs -> {
-        boolean res = readSaveImageResponse(longs);
+    private val saveImagesObserver = Observer { longs: LongArray ->
+        val res = readSaveImageResponse(longs)
         if (res) {
-            NotificationsUtils notify = new NotificationsUtils(requireContext());
-            notify.showWarning(requireContext(), SAVE_IMAGES_FAIL);
+            val notify = NotificationsUtils(requireContext())
+            notify.showWarning(requireContext(), Constants.SAVE_IMAGES_FAIL)
         } else {
-            mAddPropertyViewModel.resetImageOfProperty();
-            unsubscribeSavePropertyObserver();
-            goBackToList();
+            mAddPropertyViewModel!!.resetImageOfProperty()
+            unsubscribeSavePropertyObserver()
+            goBackToList()
         }
-    };
-
-    final Observer<Long> createPropertyObserver = aLong -> {
-        boolean res = aLong == -1;
-        NotificationsUtils notify = new NotificationsUtils(requireContext());
+    }
+    private val createPropertyObserver = Observer { aLong: Long ->
+        val res = aLong == -1L
+        val notify = NotificationsUtils(requireContext())
         if (res) {
-            notify.showWarning(requireContext(), SAVE_PROPERTY_FAIL);
+            notify.showWarning(requireContext(), Constants.SAVE_PROPERTY_FAIL)
         } else {
-            notify.showWarning(requireContext(), SAVE_PROPERTY_OK);
-            saveImagesOfProperty();
+            notify.showWarning(requireContext(), Constants.SAVE_PROPERTY_OK)
+            saveImagesOfProperty()
         }
-    };
-    private void unsubscribeSaveImagesObserver() {
-        mAddPropertyViewModel.getSaveImagesResponse().removeObserver(saveImagesObserver);
     }
 
-    private void unsubscribeSavePropertyObserver() {
-        mAddPropertyViewModel.getCreatePropertyResponse().removeObserver(createPropertyObserver);
+    private fun unsubscribeSaveImagesObserver() {
+        mAddPropertyViewModel!!.saveImagesResponse.removeObserver(saveImagesObserver)
     }
 
-    private boolean readSaveImageResponse(long[] longs) {
-        for (long i : longs) {
-            if (i == 0) {
-                return true;
+    private fun unsubscribeSavePropertyObserver() {
+        mAddPropertyViewModel!!.createPropertyResponse.removeObserver(createPropertyObserver)
+    }
+
+    private fun readSaveImageResponse(longs: LongArray): Boolean {
+        for (i in longs) {
+            if (i == 0L) {
+                return true
             }
         }
-        return false;
+        return false
     }
 
-    private void goBackToList() {
-        MainActivity ma = (MainActivity) requireActivity();
-        ma.onBackPressed();
+    private fun goBackToList() {
+        val ma = requireActivity() as MainActivity
+        ma.onBackPressed()
     }
 
-    private String getAmenities() {
-        String[] amenities = new String[6];
-        amenities[0] = amenitiesBinding.amenitiesShop.isChecked() ? SHOP : NULL;
-        amenities[1] = amenitiesBinding.amenitiesPark.isChecked() ? PARK : NULL;
-        amenities[2] = amenitiesBinding.amenitiesPlayground.isChecked() ? PLAYGROUND : NULL;
-        amenities[3] = amenitiesBinding.amenitiesSchool.isChecked() ? SCHOOL : NULL;
-        amenities[4] = amenitiesBinding.amenitiesBus.isChecked() ? BUS : NULL;
-        amenities[5] = amenitiesBinding.amenitiesSubway.isChecked() ? SUBWAY : NULL;
-        return StringModifier.arrayToSingleString(amenities);
-    }
+    private val amenities: String
+        get() {
+            val amenities = arrayOfNulls<String>(6)
+            amenities[0] =
+                if (amenitiesBinding!!.amenitiesShop.isChecked) Constants.SHOP else Constants.NULL
+            amenities[1] =
+                if (amenitiesBinding!!.amenitiesPark.isChecked) Constants.PARK else Constants.NULL
+            amenities[2] =
+                if (amenitiesBinding!!.amenitiesPlayground.isChecked) Constants.PLAYGROUND else Constants.NULL
+            amenities[3] =
+                if (amenitiesBinding!!.amenitiesSchool.isChecked) Constants.SCHOOL else Constants.NULL
+            amenities[4] =
+                if (amenitiesBinding!!.amenitiesBus.isChecked) Constants.BUS else Constants.NULL
+            amenities[5] =
+                if (amenitiesBinding!!.amenitiesSubway.isChecked) Constants.SUBWAY else Constants.NULL
+            return StringModifier.arrayToSingleString(amenities)
+        }
 
-    @Override
-    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR, i);
-        calendar.set(Calendar.MONTH, i1);
-        calendar.set(Calendar.DAY_OF_MONTH, i2);
-        Date date = calendar.getTime();
+    override fun onDateSet(datePicker: DatePicker, i: Int, i1: Int, i2: Int) {
+        val calendar = Calendar.getInstance()
+        calendar[Calendar.YEAR] = i
+        calendar[Calendar.MONTH] = i1
+        calendar[Calendar.DAY_OF_MONTH] = i2
+        val date = calendar.time
         if (isDateRegister) {
-            mMillisOfRegisterProperty = calendar.getTimeInMillis();
-            setDateInputField(Utils.getUSFormatOfDate(date), 0);
+            mMillisOfRegisterProperty = calendar.timeInMillis
+            setDateInputField(Utils.getUSFormatOfDate(date), 0)
         } else {
-            mMillisOfSoldDate = calendar.getTimeInMillis();
+            mMillisOfSoldDate = calendar.timeInMillis
             if (mMillisOfSoldDate >= mMillisOfRegisterProperty) {
-                setDateInputField(Utils.getUSFormatOfDate(date), 1);
+                setDateInputField(Utils.getUSFormatOfDate(date), 1)
             } else {
-                String msg = requireActivity().getResources().getString(R.string.warning_date_sold_smaller_than_register);
-                NotifyBySnackBar.showSnackBar(1, mView, msg);
+                val msg =
+                    requireActivity().resources.getString(R.string.warning_date_sold_smaller_than_register)
+                NotifyBySnackBar.showSnackBar(1, mView, msg)
             }
         }
     }
 
-    @Override
-    public void onDestroyView() {
-        formAddressBinding = null;
-        amenitiesBinding = null;
-        binding = null;
-        super.onDestroyView();
+    override fun onDestroyView() {
+        formAddressBinding = null
+        amenitiesBinding = null
+        binding = null
+        super.onDestroyView()
     }
 
-    @Override
-    public void onDestroy() {
-        if (mAddPropertyViewModel.getImagesOfProperty().hasActiveObservers())
-            unsubscribeRecyclerViewObserver();
-        if (mAddPropertyViewModel.getSaveImagesResponse().hasActiveObservers()) unsubscribeSaveImagesObserver();
-        mAddPropertyViewModel.disposeDisposable();
-        super.onDestroy();
+    override fun onDestroy() {
+        if (mAddPropertyViewModel!!.imagesOfProperty!!.hasActiveObservers()) unsubscribeRecyclerViewObserver()
+        if (mAddPropertyViewModel!!.saveImagesResponse.hasActiveObservers()) unsubscribeSaveImagesObserver()
+        mAddPropertyViewModel!!.disposeDisposable()
+        super.onDestroy()
     }
 }
