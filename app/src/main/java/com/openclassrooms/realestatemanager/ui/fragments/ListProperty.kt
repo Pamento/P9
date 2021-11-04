@@ -1,199 +1,187 @@
-package com.openclassrooms.realestatemanager.ui.fragments;
+package com.openclassrooms.realestatemanager.ui.fragments
 
-import android.os.Bundle;
+import com.openclassrooms.realestatemanager.injection.Injection.sViewModelFactory
+import com.openclassrooms.realestatemanager.ui.adapters.ListPropertyAdapter.OnItemPropertyListClickListener
+import com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM.ListPropertyViewModel
+import androidx.recyclerview.widget.RecyclerView
+import com.openclassrooms.realestatemanager.data.local.entities.PropertyWithImages
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.os.Bundle
+import android.view.View
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import com.openclassrooms.realestatemanager.util.enums.QueryState
+import androidx.sqlite.db.SimpleSQLiteQuery
+import com.openclassrooms.realestatemanager.R
+import com.openclassrooms.realestatemanager.util.notification.NotifyBySnackBar
+import com.openclassrooms.realestatemanager.util.enums.EFragments
+import com.openclassrooms.realestatemanager.ui.activity.MainActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.DividerItemDecoration
+import com.openclassrooms.realestatemanager.databinding.FragmentListPropertyBinding
+import com.openclassrooms.realestatemanager.ui.adapters.ListPropertyAdapter
+import java.util.ArrayList
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.sqlite.db.SimpleSQLiteQuery;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import com.openclassrooms.realestatemanager.R;
-import com.openclassrooms.realestatemanager.data.local.entities.PropertyWithImages;
-import com.openclassrooms.realestatemanager.data.viewModelFactory.ViewModelFactory;
-import com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM.ListPropertyViewModel;
-import com.openclassrooms.realestatemanager.databinding.FragmentListPropertyBinding;
-import com.openclassrooms.realestatemanager.injection.Injection;
-import com.openclassrooms.realestatemanager.ui.activity.MainActivity;
-import com.openclassrooms.realestatemanager.ui.adapters.ListPropertyAdapter;
-import com.openclassrooms.realestatemanager.util.enums.EFragments;
-import com.openclassrooms.realestatemanager.util.enums.QueryState;
-import com.openclassrooms.realestatemanager.util.notification.NotifyBySnackBar;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.openclassrooms.realestatemanager.util.enums.EFragments.DETAIL;
-import static com.openclassrooms.realestatemanager.util.enums.EFragments.MAP;
-
-public class ListProperty extends Fragment implements ListPropertyAdapter.OnItemPropertyListClickListener {
-
-    private ListPropertyViewModel mListPropertyViewModel;
-    private View view;
-    private FragmentListPropertyBinding binding;
-    private RecyclerView recyclerView;
-    private final List<PropertyWithImages> mProperties = new ArrayList<>();
-
-    public ListProperty() {
-        // Required empty public constructor
+class ListProperty : Fragment(), OnItemPropertyListClickListener {
+    private var mListPropertyViewModel: ListPropertyViewModel? = null
+    private var binding: FragmentListPropertyBinding? = null
+    private var recyclerView: RecyclerView? = null
+    private val mProperties: MutableList<PropertyWithImages> = ArrayList()
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        initViewModel()
+        binding = FragmentListPropertyBinding.inflate(inflater, container, false)
+        setRecyclerView()
+        setQueryStateObserver()
+        return binding!!.root
     }
 
-    public static ListProperty newInstance() {
-        return new ListProperty();
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setFabListener()
     }
 
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        initViewModel();
-        binding = FragmentListPropertyBinding.inflate(inflater, container, false);
-        setRecyclerView();
-        setQueryStateObserver();
-        return binding.getRoot();
+    private fun initViewModel() {
+        val vmF = sViewModelFactory(requireActivity())
+        mListPropertyViewModel = ViewModelProvider(this, vmF).get(
+            ListPropertyViewModel::class.java
+        )
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        this.view = view;
-        setFabListener();
+    private fun setQueryStateObserver() {
+        mListPropertyViewModel!!.queryState.observe(viewLifecycleOwner, queryStateObserver)
     }
 
-    private void initViewModel() {
-        ViewModelFactory vmF = Injection.sViewModelFactory(requireActivity());
-        mListPropertyViewModel = new ViewModelProvider(this, vmF).get(ListPropertyViewModel.class);
+    private fun unsubscribeQueryState() {
+        mListPropertyViewModel!!.queryState.removeObserver(queryStateObserver)
     }
 
-    private void setQueryStateObserver() {
-        mListPropertyViewModel.getQueryState().observe(getViewLifecycleOwner(), queryStateObserver);
-    }
-
-    private void unsubscribeQueryState() {
-        mListPropertyViewModel.getQueryState().removeObserver(queryStateObserver);
-    }
-
-    final Observer<QueryState> queryStateObserver = queryState -> {
-        if (queryState.equals(QueryState.NULL)) {
-            setPropertiesObserver();
+    private val queryStateObserver = Observer { queryState: QueryState ->
+        if (queryState == QueryState.NULL) {
+            setPropertiesObserver()
         } else {
-            subscribeRowQuery();
+            subscribeRowQuery()
         }
-    };
-
-    private void setPropertiesObserver() {
-        mListPropertyViewModel.getPropertyWithImages().observe(getViewLifecycleOwner(), getProperties);
     }
 
-    private void unsubscribeProperties() {
-        mListPropertyViewModel.getPropertyWithImages().removeObserver(getProperties);
+    private fun setPropertiesObserver() {
+        mListPropertyViewModel!!.propertyWithImages.observe(viewLifecycleOwner, getProperties)
     }
 
-    private void unsubscribeRowQuery() {
-        mListPropertyViewModel.getSimpleSQLiteQuery().removeObserver(rowQueryObserver);
+    private fun unsubscribeProperties() {
+        mListPropertyViewModel!!.propertyWithImages.removeObserver(getProperties)
     }
 
-    private void unsubscribeRowQueryResponse() {
-        mListPropertyViewModel.getPropertiesWithImagesFromQuery().removeObserver(getPropertiesWithImagesFromQuery);
+    private fun unsubscribeRowQuery() {
+        mListPropertyViewModel!!.simpleSQLiteQuery.removeObserver(rowQueryObserver)
     }
 
-    private void subscribeRowQuery() {
-        mListPropertyViewModel.getSimpleSQLiteQuery().observe(getViewLifecycleOwner(), rowQueryObserver);
+    private fun unsubscribeRowQueryResponse() {
+        mListPropertyViewModel!!.propertiesWithImagesFromQuery.removeObserver(
+            getPropertiesWithImagesFromQuery
+        )
     }
 
-    public void resetRowQuery() {
-        mListPropertyViewModel.setQueryState(QueryState.NULL);
-        setQueryStateObserver();
+    private fun subscribeRowQuery() {
+        mListPropertyViewModel!!.simpleSQLiteQuery.observe(viewLifecycleOwner, rowQueryObserver)
     }
 
-    private final Observer<SimpleSQLiteQuery> rowQueryObserver = new Observer<SimpleSQLiteQuery>() {
-        @Override
-        public void onChanged(SimpleSQLiteQuery simpleSQLiteQuery) {
-            if (simpleSQLiteQuery != null) {
-                unsubscribeProperties();
-                mProperties.clear();
-                mListPropertyViewModel.getPropertiesWithImagesFromRowQuery();
-                mListPropertyViewModel.getPropertiesWithImagesFromQuery().observe(getViewLifecycleOwner(), getPropertiesWithImagesFromQuery);
+    fun resetRowQuery() {
+        mListPropertyViewModel!!.setQueryState(QueryState.NULL)
+        setQueryStateObserver()
+    }
+
+    private val rowQueryObserver: Observer<SimpleSQLiteQuery> = Observer { simpleSQLiteQuery ->
+        if (simpleSQLiteQuery != null) {
+            unsubscribeProperties()
+            mProperties.clear()
+            mListPropertyViewModel!!.propertiesWithImagesFromRowQuery
+            mListPropertyViewModel!!.propertiesWithImagesFromQuery.observe(
+                viewLifecycleOwner,
+                getPropertiesWithImagesFromQuery
+            )
+        }
+    }
+    private val getPropertiesWithImagesFromQuery =
+        Observer<List<PropertyWithImages>> { propertyWithImages ->
+            if (propertyWithImages.isEmpty()) {
+                val msg = resources.getString(R.string.search_give_zero_data)
+                NotifyBySnackBar.showSnackBar(1, view, msg)
             }
+            mProperties.addAll(propertyWithImages)
+            displayDataOnRecyclerView()
         }
-    };
-
-    private final Observer<List<PropertyWithImages>> getPropertiesWithImagesFromQuery = new Observer<List<PropertyWithImages>>() {
-        @Override
-        public void onChanged(List<PropertyWithImages> propertyWithImages) {
-            if (propertyWithImages.size() == 0) {
-                String msg = getResources().getString(R.string.search_give_zero_data);
-                NotifyBySnackBar.showSnackBar(1, view, msg);
-            }
-            mProperties.addAll(propertyWithImages);
-            displayDataOnRecyclerView();
-        }
-    };
-
-    private final Observer<List<PropertyWithImages>> getProperties = propertyWithImages -> {
+    private val getProperties = Observer { propertyWithImages: List<PropertyWithImages>? ->
         if (propertyWithImages != null) {
-            mProperties.clear();
-            mProperties.addAll(propertyWithImages);
+            mProperties.clear()
+            mProperties.addAll(propertyWithImages)
         }
-        displayDataOnRecyclerView();
-    };
-
-    private void startOtherFragment(EFragments fragment, String param) {
-        MainActivity ma = (MainActivity) requireActivity();
-        ma.displayFragm(fragment, param);
+        displayDataOnRecyclerView()
     }
 
-    private void setFabListener() {
-        binding.fabList.setOnClickListener(view -> startOtherFragment(MAP, ""));
+    private fun startOtherFragment(fragment: EFragments, param: String) {
+        val ma = requireActivity() as MainActivity
+        ma.displayFragm(fragment, param)
     }
 
-    private void setRecyclerView() {
-        recyclerView = binding.listRecyclerView;
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
+    private fun setFabListener() {
+        binding!!.fabList.setOnClickListener {
+            startOtherFragment(
+                EFragments.MAP,
+                ""
+            )
+        }
     }
 
-    private void displayDataOnRecyclerView() {
-        if (mListPropertyViewModel.getPropertiesWithImagesFromQuery().hasActiveObservers()) unsubscribeRowQueryResponse();
-        ListPropertyAdapter adapter = new ListPropertyAdapter(mProperties, this);
-        recyclerView.setAdapter(adapter);
+    private fun setRecyclerView() {
+        recyclerView = binding!!.listRecyclerView
+        recyclerView!!.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView!!.addItemDecoration(
+            DividerItemDecoration(
+                recyclerView!!.context,
+                DividerItemDecoration.VERTICAL
+            )
+        )
     }
 
-    @Override
-    public void onItemPropertyListClickListener(int position) {
-        if (mProperties.size() > 0) {
-            PropertyWithImages prop = mProperties.get(position);
-            String id = prop.mSingleProperty.getId();
-            String propertyType = prop.mSingleProperty.getType();
+    private fun displayDataOnRecyclerView() {
+        if (mListPropertyViewModel!!.propertiesWithImagesFromQuery.hasActiveObservers()) unsubscribeRowQueryResponse()
+        val adapter = ListPropertyAdapter(mProperties, this)
+        recyclerView!!.adapter = adapter
+    }
+
+    override fun onItemPropertyListClickListener(position: Int) {
+        if (mProperties.size > 0) {
+            val prop = mProperties[position]
+            val id = prop.mSingleProperty!!.id
+            val propertyType = prop.mSingleProperty!!.type
             // setPropertyId in local data Repositories for Detail, Edit fragment and others: Loan simulator, ...
-            mListPropertyViewModel.setPropertyId(id);
-            startOtherFragment(DETAIL, propertyType);
-        } else startOtherFragment(DETAIL, "Property Type");
+            mListPropertyViewModel!!.setPropertyId(id)
+            startOtherFragment(EFragments.DETAIL, propertyType)
+        } else startOtherFragment(EFragments.DETAIL, "Property Type")
     }
 
-    @Override
-    public void onDestroyView() {
-        binding = null;
-        super.onDestroyView();
+    override fun onDestroyView() {
+        binding = null
+        super.onDestroyView()
     }
 
-    @Override
-    public void onDestroy() {
-        if (mListPropertyViewModel.getQueryState().hasActiveObservers())
-            unsubscribeQueryState();
-        if (mListPropertyViewModel.getSimpleSQLiteQuery().hasActiveObservers())
-            unsubscribeRowQuery();
-        if (mListPropertyViewModel.getPropertyWithImages().hasActiveObservers())
-            unsubscribeProperties();
-        if (mListPropertyViewModel.getPropertiesWithImagesFromQuery().hasActiveObservers())
-            unsubscribeRowQueryResponse();
-        super.onDestroy();
+    override fun onDestroy() {
+        if (mListPropertyViewModel!!.queryState.hasActiveObservers()) unsubscribeQueryState()
+        if (mListPropertyViewModel!!.simpleSQLiteQuery.hasActiveObservers()) unsubscribeRowQuery()
+        if (mListPropertyViewModel!!.propertyWithImages.hasActiveObservers()) unsubscribeProperties()
+        if (mListPropertyViewModel!!.propertiesWithImagesFromQuery.hasActiveObservers()) unsubscribeRowQueryResponse()
+        super.onDestroy()
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(): ListProperty {
+            return ListProperty()
+        }
     }
 }
