@@ -1,295 +1,291 @@
-package com.openclassrooms.realestatemanager.ui.fragments;
+package com.openclassrooms.realestatemanager.ui.fragments
 
-import android.os.Bundle;
+import com.openclassrooms.realestatemanager.injection.Injection.sViewModelFactory
+import com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM.DetailViewModel
+import com.openclassrooms.realestatemanager.data.local.entities.SingleProperty
+import androidx.recyclerview.widget.RecyclerView
+import com.openclassrooms.realestatemanager.data.local.entities.ImageOfProperty
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.openclassrooms.realestatemanager.data.local.entities.PropertyWithImages
+import com.openclassrooms.realestatemanager.util.texts.StringModifier
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.openclassrooms.realestatemanager.ui.adapters.ImageListOfDetailAdapter
+import com.openclassrooms.realestatemanager.R
+import com.openclassrooms.realestatemanager.util.dateTime.SQLTimeHelper
+import com.bumptech.glide.Glide
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation
+import android.widget.ArrayAdapter
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import com.openclassrooms.realestatemanager.data.remote.models.geocode.Location
+import com.openclassrooms.realestatemanager.databinding.FragmentDetailBinding
+import com.openclassrooms.realestatemanager.util.Utils
+import com.openclassrooms.realestatemanager.util.system.AdapterHelper
+import java.util.ArrayList
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-
-import com.bumptech.glide.Glide;
-import com.openclassrooms.realestatemanager.R;
-import com.openclassrooms.realestatemanager.data.local.entities.*;
-import com.openclassrooms.realestatemanager.data.remote.models.geocode.Location;
-import com.openclassrooms.realestatemanager.data.viewModelFactory.ViewModelFactory;
-import com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM.DetailViewModel;
-import com.openclassrooms.realestatemanager.databinding.FragmentDetailBinding;
-import com.openclassrooms.realestatemanager.injection.Injection;
-import com.openclassrooms.realestatemanager.ui.adapters.ImageListOfDetailAdapter;
-import com.openclassrooms.realestatemanager.util.Utils;
-import com.openclassrooms.realestatemanager.util.dateTime.SQLTimeHelper;
-import com.openclassrooms.realestatemanager.util.system.AdapterHelper;
-import com.openclassrooms.realestatemanager.util.texts.StringModifier;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
-
-public class DetailFragment extends Fragment {
-    private static final String TAG = "DetailFragment";
-    private static final String LAYOUT_MODE = "double";
-    private static final String POSITION_OF_LIST = "position_list";
-    private boolean isTwoFragmentLayout = false;
-    private boolean isFirstItemOfList = true;
-    private DetailViewModel mDetailViewModel;
-    private FragmentDetailBinding binding;
-    private SingleProperty mSingleProperty;
-    private RecyclerView recyclerV;
-    private final List<ImageOfProperty> mImageOfPropertyList = new ArrayList<>();
-
-    public DetailFragment() {
-        // Required empty public constructor
-    }
-
-    public static DetailFragment newInstance(boolean isTwoFragmentsToDisplay, boolean displayFirstItem) {
-        DetailFragment fragment = new DetailFragment();
-        Bundle args = new Bundle();
-        args.putBoolean(LAYOUT_MODE, isTwoFragmentsToDisplay);
-        args.putBoolean(POSITION_OF_LIST, displayFirstItem);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            isTwoFragmentLayout = getArguments().getBoolean(LAYOUT_MODE);
-            isFirstItemOfList = getArguments().getBoolean(POSITION_OF_LIST);
+class DetailFragment : Fragment() {
+    private var isTwoFragmentLayout = false
+    private var isFirstItemOfList = true
+    private var mDetailViewModel: DetailViewModel? = null
+    private var binding: FragmentDetailBinding? = null
+    private var mSingleProperty: SingleProperty? = null
+    private var recyclerV: RecyclerView? = null
+    private val mImageOfPropertyList: MutableList<ImageOfProperty> = ArrayList()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (arguments != null) {
+            isTwoFragmentLayout = requireArguments().getBoolean(LAYOUT_MODE)
+            isFirstItemOfList = requireArguments().getBoolean(POSITION_OF_LIST)
         }
     }
 
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        initViewModel();
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        initViewModel()
         // Inflate the layout for this fragment
-        binding = FragmentDetailBinding.inflate(inflater, container, false);
-        setDetailRecyclerView();
-        return binding.getRoot();
+        binding = FragmentDetailBinding.inflate(inflater, container, false)
+        setDetailRecyclerView()
+        return binding!!.root
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         if (isTwoFragmentLayout) {
-            mDetailViewModel.getPropertyId();
+            mDetailViewModel!!.propertyId
         }
-        setOnDataObservers();
+        setOnDataObservers()
     }
 
-    private void setOnDataObservers() {
-        mDetailViewModel.getSingleProperty().observe(getViewLifecycleOwner(), getProperty);
-        mDetailViewModel.getImagesOfProperty().observe(getViewLifecycleOwner(), getImagesOfProperty);
+    private fun setOnDataObservers() {
+        mDetailViewModel!!.singleProperty.observe(viewLifecycleOwner, getProperty)
+        mDetailViewModel!!.imagesOfProperty.observe(viewLifecycleOwner, getImagesOfProperty)
     }
 
-    private final Observer<List<ImageOfProperty>> getImagesOfProperty = imageOfProperties -> {
+    private val getImagesOfProperty = Observer { imageOfProperties: List<ImageOfProperty>? ->
         if (imageOfProperties != null) {
-            if (mImageOfPropertyList.size() > 0) mImageOfPropertyList.clear();
-            mImageOfPropertyList.addAll(imageOfProperties);
-            displayDataOnRecyclerView();
+            if (mImageOfPropertyList.size > 0) mImageOfPropertyList.clear()
+            mImageOfPropertyList.addAll(imageOfProperties)
+            displayDataOnRecyclerView()
         }
-    };
-
-    private final Observer<SingleProperty> getProperty = new Observer<SingleProperty>() {
-        @Override
-        public void onChanged(SingleProperty singleProperty) {
-            if (singleProperty != null) {
-                mSingleProperty = singleProperty;
-                if (mSingleProperty.getLocation().equals("")) {
-                    getLocationFromAddress();
-                } else {
-                    mDetailViewModel.setUrlOfStaticMapOfProperty(singleProperty.getLocation());
-                }
+    }
+    private val getProperty: Observer<SingleProperty> = Observer { singleProperty ->
+        if (singleProperty != null) {
+            mSingleProperty = singleProperty
+            if (mSingleProperty!!.location == "") {
+                locationFromAddress
+            } else {
+                mDetailViewModel!!.setUrlOfStaticMapOfProperty(singleProperty.location)
             }
-            updateUI();
         }
-    };
-
-    private void unsubscribeImagesOfProperty() {
-        mDetailViewModel.getImagesOfProperty().removeObserver(getImagesOfProperty);
+        updateUI()
     }
 
-    private void unsubscribeGetProperty() {
-        mDetailViewModel.getSingleProperty().removeObserver(getProperty);
+    private fun unsubscribeImagesOfProperty() {
+        mDetailViewModel!!.imagesOfProperty.removeObserver(getImagesOfProperty)
     }
 
-    private void getAllProperties() {
-        mDetailViewModel.getAllProperties().observe(getViewLifecycleOwner(), getPropertyWithImages);
+    private fun unsubscribeGetProperty() {
+        mDetailViewModel!!.singleProperty.removeObserver(getProperty)
     }
 
-    private final Observer<List<PropertyWithImages>> getPropertyWithImages = new Observer<List<PropertyWithImages>>() {
-        @Override
-        public void onChanged(List<PropertyWithImages> propertyWithImages) {
+//    private val allProperties: Unit
+//        get() {
+//            mDetailViewModel!!.allProperties.observe(viewLifecycleOwner, getPropertyWithImages)
+//        }
+
+    private val getPropertyWithImages: Observer<List<PropertyWithImages>> =
+        Observer { propertyWithImages ->
             if (propertyWithImages != null) {
-                PropertyWithImages property;
-                if (isFirstItemOfList) {
-                    property = propertyWithImages.get(0);
+                val property: PropertyWithImages = if (isFirstItemOfList) {
+                    propertyWithImages[0]
                 } else {
-                    property = propertyWithImages.get(propertyWithImages.size() - 1);
+                    propertyWithImages[propertyWithImages.size - 1]
                 }
-                mSingleProperty = property.mSingleProperty;
-                if (property.mSingleProperty.getLocation().equals("") && Utils.isInternetAvailable(requireContext())) {
-                    getLocationFromAddress();
+                mSingleProperty = property.mSingleProperty
+                if (property.mSingleProperty!!.location == "" && Utils.isInternetAvailable(
+                        requireContext()
+                    )
+                ) {
+                    locationFromAddress
                 } else {
-                    mDetailViewModel.setUrlOfStaticMapOfProperty(property.mSingleProperty.getLocation());
+                    mDetailViewModel!!.setUrlOfStaticMapOfProperty(property.mSingleProperty!!.location)
                 }
-                updateUI();
-                if (mImageOfPropertyList.size() > 0) mImageOfPropertyList.clear();
-                mImageOfPropertyList.addAll(property.ImagesOfProperty);
-                displayDataOnRecyclerView();
+                updateUI()
+                if (mImageOfPropertyList.size > 0) mImageOfPropertyList.clear()
+                mImageOfPropertyList.addAll(property.ImagesOfProperty!!)
+                displayDataOnRecyclerView()
             }
         }
-    };
 
-    private void unsubscribeGetProperties() {
-        mDetailViewModel.getAllProperties().removeObserver(getPropertyWithImages);
+    private fun unsubscribeGetProperties() {
+        mDetailViewModel!!.allProperties.removeObserver(getPropertyWithImages)
     }
 
-    private void getLocationFromAddress() {
-        if (Utils.isInternetAvailable(requireContext())) {
-            String address1 = mSingleProperty.getAddress1();
-            String city = mSingleProperty.getCity();
-            String quarter = mSingleProperty.getQuarter();
-            String address = StringModifier.formatAddressToGeocoding(address1, city, quarter);
-            mDetailViewModel.getLocationFromAddress(address);
-            setResponseObserver();
-        }
-    }
-
-    private void setResponseObserver() {
-        mDetailViewModel.getGeoLocationOfProperty().observe(getViewLifecycleOwner(), getLocation);
-    }
-
-    private void unsubscribeGetLocation() {
-        mDetailViewModel.getGeoLocationOfProperty().removeObserver(getLocation);
-    }
-
-    final Observer<Location> getLocation = new Observer<Location>() {
-        @Override
-        public void onChanged(Location location) {
-            if (location != null) {
-                String l = String.valueOf(location.getLat()) + "," + String.valueOf(location.getLng());
-                mDetailViewModel.setUrlOfStaticMapOfProperty(l);
-                setStaticMapOfProperty();
-                mSingleProperty.setLocation(l);
-                updatePropertyInRoom();
-                unsubscribeGetLocation();
+    private val locationFromAddress: Unit
+        get() {
+            if (Utils.isInternetAvailable(requireContext())) {
+                val address1 = mSingleProperty!!.address1
+                val city = mSingleProperty!!.city
+                val quarter = mSingleProperty!!.quarter
+                val address = StringModifier.formatAddressToGeocoding(address1, city, quarter)
+                mDetailViewModel!!.getLocationFromAddress(address)
+                setResponseObserver()
             }
         }
-    };
 
-    private void setDetailRecyclerView() {
-        recyclerV = binding.detailImgRecyclerView;
-        LinearLayoutManager layoutManager
-                = new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false);
-        recyclerV.setHasFixedSize(true);
-        recyclerV.setLayoutManager(layoutManager);
+    private fun setResponseObserver() {
+        mDetailViewModel!!.geoLocationOfProperty.observe(viewLifecycleOwner, getLocation)
     }
 
-    private void displayDataOnRecyclerView() {
-        ImageListOfDetailAdapter adapter = new ImageListOfDetailAdapter(mImageOfPropertyList);
-        recyclerV.setAdapter(adapter);
+    private fun unsubscribeGetLocation() {
+        mDetailViewModel!!.geoLocationOfProperty.removeObserver(getLocation)
     }
 
-    private void updateUI() {
+    private val getLocation: Observer<Location> = Observer { location ->
+        if (location != null) {
+            val l = location.lat.toString() + "," + location.lng.toString()
+            mDetailViewModel!!.setUrlOfStaticMapOfProperty(l)
+            setStaticMapOfProperty()
+            mSingleProperty!!.location = l
+            updatePropertyInRoom()
+            unsubscribeGetLocation()
+        }
+    }
+
+    private fun setDetailRecyclerView() {
+        recyclerV = binding!!.detailImgRecyclerView
+        val layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        recyclerV!!.setHasFixedSize(true)
+        recyclerV!!.layoutManager = layoutManager
+    }
+
+    private fun displayDataOnRecyclerView() {
+        val adapter = ImageListOfDetailAdapter(mImageOfPropertyList)
+        recyclerV!!.adapter = adapter
+    }
+
+    private fun updateUI() {
         if (mSingleProperty != null) {
-            if (!mSingleProperty.getDateSold().equals(""))
-                binding.detailAvailable.setText(R.string.detail_text_sold);
-            else
-                binding.detailAvailable.setText(R.string.detail_estate_available);
+            if (mSingleProperty!!.dateSold != "") binding!!.detailAvailable.setText(R.string.detail_text_sold) else binding!!.detailAvailable.setText(
+                R.string.detail_estate_available
+            )
             // continue
-            binding.detailDateRegister.setText(SQLTimeHelper.getUSFormDateFromTimeInMillis(Long.parseLong(mSingleProperty.getDateRegister())));
-            String surfaceMetre = requireActivity().getResources().getString(R.string.detail_surface_integer);
-            binding.detailSurface.setText(String.format(surfaceMetre, mSingleProperty.getSurface()));
-            String estatePrice = mDetailViewModel.isDollar() ? requireActivity().getResources().getString(R.string.price_dollar) :
-                    requireActivity().getResources().getString(R.string.price_euro);
-            int price = mDetailViewModel.isDollar() ? mSingleProperty.getPrice() : Utils.convertDollarToEuro(mSingleProperty.getPrice());
-            String priceComa = StringModifier.addComaInPrice(String.valueOf(price));
-            binding.detailPrice.setText(String.format(estatePrice, priceComa));
-            String estateRooms = requireActivity().getResources().getString(R.string.detail_rooms);
-            binding.detailRoomsNumber.setText(String.format(estateRooms, mSingleProperty.getRooms()));
-            String estateBathroom = requireActivity().getResources().getString(R.string.detail_bathroom);
-            binding.detailBathroomsNumber.setText(String.format(estateBathroom, mSingleProperty.getBathroom()));
-            String estateBedroom = requireActivity().getResources().getString(R.string.detail_bedroom);
-            binding.detailBedroomNumber.setText(String.format(estateBedroom, mSingleProperty.getBedroom()));
-            binding.detailDescription.setText(mSingleProperty.getDescription());
+            binding!!.detailDateRegister.text = SQLTimeHelper.getUSFormDateFromTimeInMillis(
+                mSingleProperty!!.dateRegister.toLong()
+            )
+            val surfaceMetre =
+                requireActivity().resources.getString(R.string.detail_surface_integer)
+            binding!!.detailSurface.text = String.format(surfaceMetre, mSingleProperty!!.surface)
+            val estatePrice =
+                if (mDetailViewModel!!.isDollar) requireActivity().resources.getString(R.string.price_dollar) else requireActivity().resources.getString(
+                    R.string.price_euro
+                )
+            val price =
+                if (mDetailViewModel!!.isDollar) mSingleProperty!!.price else Utils.convertDollarToEuro(
+                    mSingleProperty!!.price
+                )
+            val priceComa = StringModifier.addComaInPrice(price.toString())
+            binding!!.detailPrice.text = String.format(estatePrice, priceComa)
+            val estateRooms = requireActivity().resources.getString(R.string.detail_rooms)
+            binding!!.detailRoomsNumber.text = String.format(estateRooms, mSingleProperty!!.rooms)
+            val estateBathroom = requireActivity().resources.getString(R.string.detail_bathroom)
+            binding!!.detailBathroomsNumber.text =
+                String.format(estateBathroom, mSingleProperty!!.bathroom)
+            val estateBedroom = requireActivity().resources.getString(R.string.detail_bedroom)
+            binding!!.detailBedroomNumber.text =
+                String.format(estateBedroom, mSingleProperty!!.bedroom)
+            binding!!.detailDescription.text = mSingleProperty!!.description
             // Address form
-            binding.detailAddress1.setText(mSingleProperty.getAddress1());
-            binding.detailAddress2.setText(mSingleProperty.getAddress2());
-            binding.detailAddressQuarter.setText(mSingleProperty.getQuarter());
-            binding.detailAddressCity.setText(mSingleProperty.getCity());
-            binding.detailAddressPostalCode.setText(String.valueOf(mSingleProperty.getPostalCode()));
-            String country = requireActivity().getResources().getString(R.string.detail_united_states);
-            binding.detailAddress6.setText(country);
-            setStaticMapOfProperty();
-            setAmenitiesView();
-            binding.detailAgent.setText(mSingleProperty.getAgent());
+            binding!!.detailAddress1.text = mSingleProperty!!.address1
+            binding!!.detailAddress2.text = mSingleProperty!!.address2
+            binding!!.detailAddressQuarter.text = mSingleProperty!!.quarter
+            binding!!.detailAddressCity.text = mSingleProperty!!.city
+            binding!!.detailAddressPostalCode.text = mSingleProperty!!.postalCode.toString()
+            val country = requireActivity().resources.getString(R.string.detail_united_states)
+            binding!!.detailAddress6.text = country
+            setStaticMapOfProperty()
+            setAmenitiesView()
+            binding!!.detailAgent.text = mSingleProperty!!.agent
         }
     }
 
-    public String getPropertyType() {
-        if (mSingleProperty != null) return mSingleProperty.getType();
-        else return "...";
-    }
+    val propertyType: String
+        get() = if (mSingleProperty != null) mSingleProperty!!.type else "..."
 
-    public void handleCurrency(int oneIsDollar) {
+    fun handleCurrency(oneIsDollar: Int) {
         // Value of oneIsDollar = 1 -> $ (one is dollar)
-        if (oneIsDollar == 2 && mDetailViewModel.isDollar()) mDetailViewModel.setDollar(false);
-        else if (oneIsDollar == 1 && !mDetailViewModel.isDollar()) mDetailViewModel.setDollar(true);
-        updateUI();
+        if (oneIsDollar == 2 && mDetailViewModel!!.isDollar) mDetailViewModel!!.isDollar =
+            false else if (oneIsDollar == 1 && !mDetailViewModel!!.isDollar) mDetailViewModel!!.isDollar =
+            true
+        updateUI()
     }
 
-    private void setStaticMapOfProperty() {
+    private fun setStaticMapOfProperty() {
         Glide.with(requireContext())
-                .load(mDetailViewModel.getUrlOfStaticMapOfProperty())
-                .placeholder(R.drawable.image_placeholder)
-                .error(R.drawable.image_not_found_square)
-                .transform(new RoundedCornersTransformation(2, 2))
-                .into(binding.detailSmallStaticMap);
+            .load(mDetailViewModel!!.urlOfStaticMapOfProperty)
+            .placeholder(R.drawable.image_placeholder)
+            .error(R.drawable.image_not_found_square)
+            .transform(RoundedCornersTransformation(2, 2))
+            .into(binding!!.detailSmallStaticMap)
     }
 
-    private void setAmenitiesView() {
-        String[] amenities = StringModifier.singleStringToArrayString(mSingleProperty.getAmenities());
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireActivity(), android.R.layout.simple_list_item_1, amenities);
-        binding.detailAmenitiesListView.setAdapter(adapter);
-        AdapterHelper.setListViewHeightBasedOnChildren(binding.detailAmenitiesListView);
+    private fun setAmenitiesView() {
+        val amenities = StringModifier.singleStringToArrayString(
+            mSingleProperty!!.amenities
+        )
+        val adapter =
+            ArrayAdapter(requireActivity(), android.R.layout.simple_list_item_1, amenities)
+        binding!!.detailAmenitiesListView.adapter = adapter
+        AdapterHelper.setListViewHeightBasedOnChildren(
+            binding!!.detailAmenitiesListView
+        )
     }
 
-    private void initViewModel() {
-        ViewModelFactory vmF = Injection.sViewModelFactory(requireActivity());
-        mDetailViewModel = new ViewModelProvider(this, vmF).get(DetailViewModel.class);
+    private fun initViewModel() {
+        val vmF = sViewModelFactory(requireActivity())
+        mDetailViewModel = ViewModelProvider(this, vmF).get(DetailViewModel::class.java)
     }
 
-    private void updatePropertyInRoom() {
-        mDetailViewModel.updateSingleProperty(mSingleProperty);
+    private fun updatePropertyInRoom() {
+        mDetailViewModel!!.updateSingleProperty(mSingleProperty)
     }
 
-    @Override
-    public void onDestroyView() {
-        binding = null;
-        mDetailViewModel.clearDisposable();
-        super.onDestroyView();
+    override fun onDestroyView() {
+        binding = null
+        mDetailViewModel!!.clearDisposable()
+        super.onDestroyView()
     }
 
-    @Override
-    public void onDestroy() {
-        if (mDetailViewModel.getGeoLocationOfProperty().hasActiveObservers()) unsubscribeGetLocation();
-        if (mDetailViewModel.getAllProperties().hasActiveObservers()) unsubscribeGetProperties();
-        if (mDetailViewModel.getSingleProperty().hasActiveObservers()) unsubscribeGetProperty();
-        if (mDetailViewModel.getImagesOfProperty().hasActiveObservers()) unsubscribeImagesOfProperty();
-        mDetailViewModel.disposeDisposable();
-        super.onDestroy();
+    override fun onDestroy() {
+        if (mDetailViewModel!!.geoLocationOfProperty.hasActiveObservers()) unsubscribeGetLocation()
+        if (mDetailViewModel!!.allProperties.hasActiveObservers()) unsubscribeGetProperties()
+        if (mDetailViewModel!!.singleProperty.hasActiveObservers()) unsubscribeGetProperty()
+        if (mDetailViewModel!!.imagesOfProperty.hasActiveObservers()) unsubscribeImagesOfProperty()
+        mDetailViewModel!!.disposeDisposable()
+        super.onDestroy()
+    }
+
+    companion object {
+        private const val LAYOUT_MODE = "double"
+        private const val POSITION_OF_LIST = "position_list"
+        @JvmStatic
+        fun newInstance(
+            isTwoFragmentsToDisplay: Boolean,
+            displayFirstItem: Boolean
+        ): DetailFragment {
+            val fragment = DetailFragment()
+            val args = Bundle()
+            args.putBoolean(LAYOUT_MODE, isTwoFragmentsToDisplay)
+            args.putBoolean(POSITION_OF_LIST, displayFirstItem)
+            fragment.arguments = args
+            return fragment
+        }
     }
 }
