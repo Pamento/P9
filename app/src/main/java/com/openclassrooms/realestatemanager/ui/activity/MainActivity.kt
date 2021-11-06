@@ -20,17 +20,17 @@ import com.openclassrooms.realestatemanager.util.Constants.Constants
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
-    private var view: View? = null
-    private var binding: ActivityMainBinding? = null
+    private lateinit var view: View
+    private lateinit var binding: ActivityMainBinding
     private var mActivityHasTwoFragment = false
-    private var mFragmentManager: FragmentManager? = null
+    private lateinit var mFragmentManager: FragmentManager
     private var mEFragments = EFragments.LIST
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(
             layoutInflater
         )
-        view = binding!!.root
+        view = binding.root
         setFragmentManager()
         setContentView(view)
         checkIfActivityHasDoubleFragment()
@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkIfActivityHasDoubleFragment() {
-        val fc = binding!!.mainActivityFragmentContainerSecondary
+        val fc = binding.mainActivityFragmentContainerSecondary
         mActivityHasTwoFragment = fc != null
     }
 
@@ -61,25 +61,20 @@ class MainActivity : AppCompatActivity() {
 
     private fun initListFragment() {
         // The function: initListFragment() is called only on the opening the application. She doesn't part of navigation.
-        if (mFragmentManager != null) {
-            val fTransaction = mFragmentManager!!.beginTransaction()
-            val listProperty = ListProperty.newInstance()
-            fTransaction.replace(
-                R.id.main_activity_fragment_container,
-                listProperty,
-                Constants.LIST_FRAGMENT
-            ).commit()
-            if (mActivityHasTwoFragment) initDetailFragment(true)
-        } else {
-            setFragmentManager()
-            initListFragment()
-        }
+        val fTransaction = mFragmentManager.beginTransaction()
+        val listProperty = ListProperty.newInstance()
+        fTransaction.replace(
+            R.id.main_activity_fragment_container,
+            listProperty,
+            Constants.LIST_FRAGMENT
+        ).commit()
+        if (mActivityHasTwoFragment) initDetailFragment(true)
     }
 
     private fun initDetailFragment(firstPositionOfList: Boolean) {
         // The function: initDetailFragment() is called only on the opening the application. She doesn't part of navigation.
         val detail = newInstance(mActivityHasTwoFragment, firstPositionOfList)
-        val ft = mFragmentManager!!.beginTransaction()
+        val ft = mFragmentManager.beginTransaction()
         ft.replace(
             R.id.main_activity_fragment_container_secondary,
             detail,
@@ -89,55 +84,53 @@ class MainActivity : AppCompatActivity() {
 
     fun displayFragm(fragment: EFragments, toolbarTitle: String) {
         mEFragments = fragment
-        if (mFragmentManager != null) {
-            val transaction = mFragmentManager!!.beginTransaction()
-            when (fragment) {
-                EFragments.LIST -> {
-                    setToolbarTitle(resources.getString(R.string.app_name), false)
-                    val lp = ListProperty.newInstance()
-                    transaction.replace(getFragmentContainer(fragment), lp, Constants.LIST_FRAGMENT)
-                    if (mActivityHasTwoFragment) {
-                        initDetailFragment(false)
-                    }
-                }
-                EFragments.MAP -> if (isMapsServiceOk) {
-                    setToolbarTitle("New York", false)
-                    val mf = newInstance(mActivityHasTwoFragment)
-                    transaction.replace(getFragmentContainer(null), mf, Constants.MAP_FRAGMENT)
-                } else {
-                    val msg = resources.getString(R.string.error_msg_map_service_not_available)
-                    NotifyBySnackBar.showSnackBar(1, view, msg)
-                }
-                EFragments.DETAIL -> {
-                    setToolbarTitle(toolbarTitle, true)
-                    val df = newInstance(mActivityHasTwoFragment, true)
-                    // transaction.add add the fragment as a layer without removing the list
-                    transaction.add(getFragmentContainer(null), df, Constants.DETAIL_FRAGMENT)
-                }
-                EFragments.ADD -> {
-                    setToolbarTitle(toolbarTitle, false)
-                    val ap = AddProperty.newInstance()
-                    transaction.add(getFragmentContainer(null), ap, Constants.ADD_FRAGMENT)
-                }
-                EFragments.SEARCH -> {
-                    setToolbarTitle(toolbarTitle, false)
-                    val se = SearchEngine.newInstance()
-                    transaction.add(getFragmentContainer(null), se, Constants.SEARCH_FRAGMENT)
-                }
-                EFragments.SIMULATOR -> {
-                    setToolbarTitle(toolbarTitle, true)
-                    val ls = LoanSimulator.newInstance()
-                    transaction.add(getFragmentContainer(null), ls, Constants.SIMULATOR_FRAGMENT)
-                }
-                EFragments.EDIT -> {
-                    setToolbarTitle(toolbarTitle, false)
-                    val ep = EditProperty.newInstance()
-                    transaction.add(getFragmentContainer(null), ep, Constants.EDIT_FRAGMENT)
+        val transaction = mFragmentManager.beginTransaction()
+        when (fragment) {
+            EFragments.LIST -> {
+                setToolbarTitle(resources.getString(R.string.app_name), false)
+                val lp = ListProperty.newInstance()
+                transaction.replace(getFragmentContainer(fragment), lp, Constants.LIST_FRAGMENT)
+                if (mActivityHasTwoFragment) {
+                    initDetailFragment(false)
                 }
             }
-            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-            transaction.addToBackStack(toolbarTitle).commit()
+            EFragments.MAP -> if (isMapsServiceOk) {
+                setToolbarTitle("New York", false)
+                val mf = newInstance(mActivityHasTwoFragment)
+                transaction.replace(getFragmentContainer(null), mf, Constants.MAP_FRAGMENT)
+            } else {
+                val msg = resources.getString(R.string.error_msg_map_service_not_available)
+                NotifyBySnackBar.showSnackBar(1, view, msg)
+            }
+            EFragments.DETAIL -> {
+                setToolbarTitle(toolbarTitle, true)
+                val df = newInstance(mActivityHasTwoFragment, true)
+                // transaction.add add the fragment as a layer without removing the list
+                transaction.add(getFragmentContainer(null), df, Constants.DETAIL_FRAGMENT)
+            }
+            EFragments.ADD -> {
+                setToolbarTitle(toolbarTitle, false)
+                val ap = AddProperty.newInstance()
+                transaction.add(getFragmentContainer(null), ap, Constants.ADD_FRAGMENT)
+            }
+            EFragments.SEARCH -> {
+                setToolbarTitle(toolbarTitle, false)
+                val se = SearchEngine.newInstance()
+                transaction.add(getFragmentContainer(null), se, Constants.SEARCH_FRAGMENT)
+            }
+            EFragments.SIMULATOR -> {
+                setToolbarTitle(toolbarTitle, true)
+                val ls = LoanSimulator.newInstance()
+                transaction.add(getFragmentContainer(null), ls, Constants.SIMULATOR_FRAGMENT)
+            }
+            EFragments.EDIT -> {
+                setToolbarTitle(toolbarTitle, false)
+                val ep = EditProperty.newInstance()
+                transaction.add(getFragmentContainer(null), ep, Constants.EDIT_FRAGMENT)
+            }
         }
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        transaction.addToBackStack(toolbarTitle).commit()
     }
 
     private fun getFragmentContainer(fragment: EFragments?): Int {
@@ -182,7 +175,7 @@ class MainActivity : AppCompatActivity() {
             EFragments.DETAIL -> {
                 var propertyType = "Real Estate:"
                 val d =
-                    mFragmentManager!!.findFragmentByTag(Constants.DETAIL_FRAGMENT) as DetailFragment?
+                    mFragmentManager.findFragmentByTag(Constants.DETAIL_FRAGMENT) as DetailFragment?
                 if (d != null) propertyType = d.propertyType
                 setToolbarTitle(propertyType, true)
             }
@@ -255,40 +248,40 @@ class MainActivity : AppCompatActivity() {
         when (mEFragments) {
             EFragments.ADD -> {
                 val aF =
-                    mFragmentManager!!.findFragmentByTag(Constants.ADD_FRAGMENT) as AddProperty?
+                    mFragmentManager.findFragmentByTag(Constants.ADD_FRAGMENT) as AddProperty?
                 aF?.checkFormValidityBeforeSave()
             }
             EFragments.EDIT -> {
                 val eF =
-                    mFragmentManager!!.findFragmentByTag(Constants.EDIT_FRAGMENT) as EditProperty?
+                    mFragmentManager.findFragmentByTag(Constants.EDIT_FRAGMENT) as EditProperty?
                 eF?.updateProperty()
             }
             EFragments.SEARCH -> {
                 val sF =
-                    mFragmentManager!!.findFragmentByTag(Constants.SEARCH_FRAGMENT) as SearchEngine?
+                    mFragmentManager.findFragmentByTag(Constants.SEARCH_FRAGMENT) as SearchEngine?
                 sF?.searchProperties()
             }
             EFragments.SIMULATOR -> {
                 val lF =
-                    mFragmentManager!!.findFragmentByTag(Constants.SIMULATOR_FRAGMENT) as LoanSimulator?
+                    mFragmentManager.findFragmentByTag(Constants.SIMULATOR_FRAGMENT) as LoanSimulator?
                 lF?.handleCurrency(commandCode)
             }
             EFragments.DETAIL -> {
                 val dF =
-                    mFragmentManager!!.findFragmentByTag(Constants.DETAIL_FRAGMENT) as DetailFragment?
+                    mFragmentManager.findFragmentByTag(Constants.DETAIL_FRAGMENT) as DetailFragment?
                 dF?.handleCurrency(commandCode)
                 val list =
-                    mFragmentManager!!.findFragmentByTag(Constants.LIST_FRAGMENT) as ListProperty?
+                    mFragmentManager.findFragmentByTag(Constants.LIST_FRAGMENT) as ListProperty?
                 list?.resetRowQuery()
             }
             EFragments.LIST -> {
                 val list =
-                    mFragmentManager!!.findFragmentByTag(Constants.LIST_FRAGMENT) as ListProperty?
+                    mFragmentManager.findFragmentByTag(Constants.LIST_FRAGMENT) as ListProperty?
                 list?.resetRowQuery()
             }
             EFragments.MAP -> {
                 val map =
-                    mFragmentManager!!.findFragmentByTag(Constants.MAP_FRAGMENT) as MapFragment?
+                    mFragmentManager.findFragmentByTag(Constants.MAP_FRAGMENT) as MapFragment?
                 map?.resetRowQuery()
             }
         }
