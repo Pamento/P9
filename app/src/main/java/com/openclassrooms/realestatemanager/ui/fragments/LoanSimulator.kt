@@ -128,8 +128,8 @@ class LoanSimulator : Fragment() {
     }
 
     private fun setOnButtonsDurationListener() {
-        binding!!.loanCalcBtnYear.setOnClickListener { view: View? -> handButtonDurationState() }
-        binding!!.loanCalcBtnMonth.setOnClickListener { view: View? -> handButtonDurationState() }
+        binding!!.loanCalcBtnYear.setOnClickListener { handButtonDurationState() }
+        binding!!.loanCalcBtnMonth.setOnClickListener { handButtonDurationState() }
     }
 
     private fun handButtonDurationState() {
