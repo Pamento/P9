@@ -49,7 +49,7 @@ class DetailViewModel(private val mPropertiesRepository: PropertiesRepository, p
                     }
 
                     override fun onNext(result: Result) {
-                        mLocationOfAddress.value = result.geometry.location
+                        mLocationOfAddress.value = result.geometry?.location
                     }
 
                     override fun onError(e: Throwable) { /**/

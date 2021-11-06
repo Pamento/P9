@@ -1,31 +1,14 @@
-package com.openclassrooms.realestatemanager.data.remote.models.geocode;
+package com.openclassrooms.realestatemanager.data.remote.models.geocode
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.SerializedName
+import com.google.gson.annotations.Expose
 
-public class PlusCode {
-
+class PlusCode {
     @SerializedName("compound_code")
     @Expose
-    private String compoundCode;
+    var compoundCode: String? = null
+
     @SerializedName("global_code")
     @Expose
-    private String globalCode;
-
-    public String getCompoundCode() {
-        return compoundCode;
-    }
-
-    public void setCompoundCode(String compoundCode) {
-        this.compoundCode = compoundCode;
-    }
-
-    public String getGlobalCode() {
-        return globalCode;
-    }
-
-    public void setGlobalCode(String globalCode) {
-        this.globalCode = globalCode;
-    }
-
+    var globalCode: String? = null
 }

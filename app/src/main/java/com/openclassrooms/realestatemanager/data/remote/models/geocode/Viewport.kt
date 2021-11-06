@@ -1,33 +1,16 @@
-package com.openclassrooms.realestatemanager.data.remote.models.geocode;
+package com.openclassrooms.realestatemanager.data.remote.models.geocode
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-import com.openclassrooms.realestatemanager.data.remote.models.geocode.Northeast;
-import com.openclassrooms.realestatemanager.data.remote.models.geocode.Southwest;
+import com.google.gson.annotations.SerializedName
+import com.google.gson.annotations.Expose
+import com.openclassrooms.realestatemanager.data.remote.models.geocode.Northeast
+import com.openclassrooms.realestatemanager.data.remote.models.geocode.Southwest
 
-public class Viewport {
-
+class Viewport {
     @SerializedName("northeast")
     @Expose
-    private Northeast northeast;
+    var northeast: Northeast? = null
+
     @SerializedName("southwest")
     @Expose
-    private Southwest southwest;
-
-    public Northeast getNortheast() {
-        return northeast;
-    }
-
-    public void setNortheast(Northeast northeast) {
-        this.northeast = northeast;
-    }
-
-    public Southwest getSouthwest() {
-        return southwest;
-    }
-
-    public void setSouthwest(Southwest southwest) {
-        this.southwest = southwest;
-    }
-
+    var southwest: Southwest? = null
 }
