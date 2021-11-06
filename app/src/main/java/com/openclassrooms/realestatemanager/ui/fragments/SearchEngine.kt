@@ -1,218 +1,215 @@
-package com.openclassrooms.realestatemanager.ui.fragments;
+package com.openclassrooms.realestatemanager.ui.fragments
 
-import android.app.DatePickerDialog;
-import android.os.Bundle;
+import com.openclassrooms.realestatemanager.injection.Injection.sViewModelFactory
+import android.app.DatePickerDialog.OnDateSetListener
+import com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM.SearchEngineViewModel
+import com.openclassrooms.realestatemanager.data.local.models.RowQueryEstates
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import com.openclassrooms.realestatemanager.util.resources.AppResources
+import android.widget.ArrayAdapter
+import android.app.DatePickerDialog
+import android.text.TextWatcher
+import android.text.Editable
+import android.view.View
+import android.widget.DatePicker
+import androidx.fragment.app.Fragment
+import com.openclassrooms.realestatemanager.util.calculation.Calculation
+import com.openclassrooms.realestatemanager.R
+import com.openclassrooms.realestatemanager.util.notification.NotifyBySnackBar
+import androidx.lifecycle.ViewModelProvider
+import com.openclassrooms.realestatemanager.databinding.FragmentSearchEngineBinding
+import com.openclassrooms.realestatemanager.ui.activity.MainActivity
+import com.openclassrooms.realestatemanager.util.Utils
+import java.util.*
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
+class SearchEngine : Fragment(), OnDateSetListener {
+    private var mSearchEngineViewModel: SearchEngineViewModel? = null
+    private var binding: FragmentSearchEngineBinding? = null
+    private var mMillisDateToSearchFrom: Long = 0
+    private val mParamsForQuery = RowQueryEstates()
 
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
-
-import com.openclassrooms.realestatemanager.R;
-import com.openclassrooms.realestatemanager.data.local.models.RowQueryEstates;
-import com.openclassrooms.realestatemanager.data.viewModelFactory.ViewModelFactory;
-import com.openclassrooms.realestatemanager.data.viewmodel.fragmentVM.SearchEngineViewModel;
-import com.openclassrooms.realestatemanager.databinding.FragmentSearchEngineBinding;
-import com.openclassrooms.realestatemanager.injection.Injection;
-import com.openclassrooms.realestatemanager.ui.activity.MainActivity;
-import com.openclassrooms.realestatemanager.util.Utils;
-import com.openclassrooms.realestatemanager.util.calculation.Calculation;
-import com.openclassrooms.realestatemanager.util.notification.NotifyBySnackBar;
-import com.openclassrooms.realestatemanager.util.resources.AppResources;
-
-import java.util.Calendar;
-import java.util.Date;
-
-public class SearchEngine extends Fragment implements DatePickerDialog.OnDateSetListener {
-
-    private SearchEngineViewModel mSearchEngineViewModel;
-    private FragmentSearchEngineBinding binding;
-    private View view;
-    private long mMillisDateToSearchFrom = 0;
-    private final RowQueryEstates mParamsForQuery = new RowQueryEstates();
-
-    public SearchEngine() {
-        // Required empty public constructor
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        initViewModel()
+        binding = FragmentSearchEngineBinding.inflate(inflater, container, false)
+        setMinMaxSurface()
+        setMinMaxPrice()
+        return binding!!.root
     }
 
-    public static SearchEngine newInstance() {
-        return new SearchEngine();
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setPropertyTypeSpinner()
+        setOnDateRegisterListener()
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    private fun setPropertyTypeSpinner() {
+        val types = AppResources.getPropertyType()
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_dropdown_item_1line, types
+        )
+        binding!!.searchFType.setAdapter(adapter)
     }
 
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        initViewModel();
-        binding = FragmentSearchEngineBinding.inflate(inflater, container, false);
-        setMinMaxSurface();
-        setMinMaxPrice();
-        return binding.getRoot();
+    private fun setOnDateRegisterListener() {
+        setDateInputField(Utils.getTodayDate())
+        binding!!.searchFOnMarketSince.setOnClickListener { openDatePicker() }
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        this.view = view;
-        setPropertyTypeSpinner();
-        setOnDateRegisterListener();
+    private fun openDatePicker() {
+        val datePicker = DatePickerDialog(
+            requireActivity(), this,
+            Calendar.getInstance()[Calendar.YEAR],
+            Calendar.getInstance()[Calendar.MONTH],
+            Calendar.getInstance()[Calendar.DAY_OF_MONTH]
+        )
+        datePicker.show()
     }
 
-    private void setPropertyTypeSpinner() {
-        String[] types = AppResources.getPropertyType();
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
-                android.R.layout.simple_dropdown_item_1line, types);
-        binding.searchFType.setAdapter(adapter);
+    private fun setDateInputField(date: String) {
+        binding!!.searchFOnMarketSince.text = date
     }
 
-    private void setOnDateRegisterListener() {
-        setDateInputField(Utils.getTodayDate());
-        binding.searchFOnMarketSince.setOnClickListener(view -> openDatePicker());
-    }
+    private fun setMinMaxPrice() {
+        binding!!.searchFMaxPrice.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(
+                charSequence: CharSequence,
+                i: Int,
+                i1: Int,
+                i2: Int
+            ) { /**/
+            }
 
-    private void openDatePicker() {
-        DatePickerDialog datePicker = new DatePickerDialog(
-                requireActivity(), this,
-                Calendar.getInstance().get(Calendar.YEAR),
-                Calendar.getInstance().get(Calendar.MONTH),
-                Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
-        );
-        datePicker.show();
-    }
+            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) { /**/
+            }
 
-    private void setDateInputField(String date) {
-        binding.searchFOnMarketSince.setText(date);
-    }
-
-    private void setMinMaxPrice() {
-        binding.searchFMaxPrice.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {/**/}
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {/**/}
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (binding.searchFMinPrice.getText() != null && !editable.toString().equals("")) {
-                    int minPrice = binding.searchFMinPrice.getText().toString().equals("") ? 0 : Integer.parseInt(binding.searchFMinPrice.getText().toString());
-
-                    if (Calculation.isMinGreaterMaxValue(minPrice, Integer.parseInt(editable.toString()))) {
-                        String msg = requireActivity().getResources().getString(R.string.min_greater_max);
-                        NotifyBySnackBar.showSnackBar(1, view, msg);
+            override fun afterTextChanged(editable: Editable) {
+                if (binding!!.searchFMinPrice.text != null && editable.toString() != "") {
+                    val minPrice =
+                        if (binding!!.searchFMinPrice.text.toString() == "") 0 else binding!!.searchFMinPrice.text.toString()
+                            .toInt()
+                    if (Calculation.isMinGreaterMaxValue(minPrice, editable.toString().toInt())) {
+                        val msg = requireActivity().resources.getString(R.string.min_greater_max)
+                        NotifyBySnackBar.showSnackBar(1, view, msg)
                     }
                 }
             }
-        });
+        })
     }
 
-    private void setMinMaxSurface() {
-        binding.searchFMaxSurface.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {/**/}
+    private fun setMinMaxSurface() {
+        binding!!.searchFMaxSurface.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(
+                charSequence: CharSequence,
+                i: Int,
+                i1: Int,
+                i2: Int
+            ) { /**/
+            }
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {/**/}
+            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) { /**/
+            }
 
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (binding.searchFMinSurface.getText() != null && !editable.toString().equals("")) {
-                    int minSurface = binding.searchFMinSurface.getText().toString().equals("") ? 0 : Integer.parseInt(binding.searchFMinSurface.getText().toString());
-                    if (Calculation.isMinGreaterMaxValue(minSurface, Integer.parseInt(editable.toString()))) {
-                        String msg = requireActivity().getResources().getString(R.string.min_greater_max);
-                        NotifyBySnackBar.showSnackBar(1, view, msg);
+            override fun afterTextChanged(editable: Editable) {
+                if (binding!!.searchFMinSurface.text != null && editable.toString() != "") {
+                    val minSurface =
+                        if (binding!!.searchFMinSurface.text.toString() == "") 0 else binding!!.searchFMinSurface.text.toString()
+                            .toInt()
+                    if (Calculation.isMinGreaterMaxValue(minSurface, editable.toString().toInt())) {
+                        val msg = requireActivity().resources.getString(R.string.min_greater_max)
+                        NotifyBySnackBar.showSnackBar(1, view, msg)
                     }
                 }
             }
-        });
-
+        })
     }
 
-    private void initViewModel() {
-        ViewModelFactory vmF = Injection.sViewModelFactory(requireActivity());
-        mSearchEngineViewModel = new ViewModelProvider(this, vmF).get(SearchEngineViewModel.class);
+    private fun initViewModel() {
+        val vmF = sViewModelFactory(requireActivity())
+        mSearchEngineViewModel = ViewModelProvider(this, vmF).get(
+            SearchEngineViewModel::class.java
+        )
     }
 
-
-    public void searchProperties() {
-        getValues();
+    fun searchProperties() {
+        values
     }
 
-    private void getValues() {
-        mParamsForQuery.setType(binding.searchFType.getText().toString());
-        if (binding.searchFMinSurface.getText() != null) {
-            mParamsForQuery.setMinSurface(getIntValues(binding.searchFMinSurface.getText().toString()));
+    private val values: Unit
+        get() {
+            mParamsForQuery.type = binding!!.searchFType.text.toString()
+            if (binding!!.searchFMinSurface.text != null) {
+                mParamsForQuery.minSurface =
+                    getIntValues(binding!!.searchFMinSurface.text.toString())
+            }
+            if (binding!!.searchFMaxSurface.text != null) {
+                mParamsForQuery.maxSurface =
+                    getIntValues(binding!!.searchFMaxSurface.text.toString())
+            }
+            if (binding!!.searchFMinPrice.text != null) {
+                mParamsForQuery.minPrice = getIntValues(binding!!.searchFMinPrice.text.toString())
+            }
+            if (binding!!.searchFMaxPrice.text != null) {
+                mParamsForQuery.maxPrice = getIntValues(binding!!.searchFMaxPrice.text.toString())
+            }
+            if (binding!!.searchFRooms.text != null) {
+                mParamsForQuery.rooms = getIntValues(binding!!.searchFRooms.text.toString())
+            }
+            if (binding!!.searchFBedrooms.text != null) {
+                mParamsForQuery.bedroom = getIntValues(binding!!.searchFBedrooms.text.toString())
+            }
+            if (binding!!.searchFBathrooms.text != null) {
+                mParamsForQuery.bathroom = getIntValues(binding!!.searchFBathrooms.text.toString())
+            }
+            mParamsForQuery.dateRegister = mMillisDateToSearchFrom.toString()
+            mParamsForQuery.quarter = binding!!.searchFQuarter.text.toString()
+            mParamsForQuery.isSoldEstateInclude = binding!!.searchFSoldSwitch.isChecked
+            checkMinMaxV()
         }
-        if (binding.searchFMaxSurface.getText() != null) {
-            mParamsForQuery.setMaxSurface(getIntValues(binding.searchFMaxSurface.getText().toString()));
+
+    private fun checkMinMaxV() {
+        val price = mParamsForQuery.maxPrice >= mParamsForQuery.minPrice
+        val surface = mParamsForQuery.maxSurface >= mParamsForQuery.minSurface
+        if (price && surface) sendQuery() else {
+            val msg = resources.getString(R.string.search_min_max_velues_error)
+            NotifyBySnackBar.showSnackBar(1, view, msg)
         }
-        if (binding.searchFMinPrice.getText() != null) {
-            mParamsForQuery.setMinPrice(getIntValues(binding.searchFMinPrice.getText().toString()));
-        }
-        if (binding.searchFMaxPrice.getText() != null) {
-            mParamsForQuery.setMaxPrice(getIntValues(binding.searchFMaxPrice.getText().toString()));
-        }
-        if (binding.searchFRooms.getText() != null) {
-            mParamsForQuery.setRooms(getIntValues(binding.searchFRooms.getText().toString()));
-        }
-        if (binding.searchFBedrooms.getText() != null) {
-            mParamsForQuery.setBedroom(getIntValues(binding.searchFBedrooms.getText().toString()));
-        }
-        if (binding.searchFBathrooms.getText() != null) {
-            mParamsForQuery.setBathroom(getIntValues(binding.searchFBathrooms.getText().toString()));
-        }
-        mParamsForQuery.setDateRegister(String.valueOf(mMillisDateToSearchFrom));
-        mParamsForQuery.setQuarter(binding.searchFQuarter.getText().toString());
-        mParamsForQuery.setSoldEstateInclude(binding.searchFSoldSwitch.isChecked());
-        checkMinMaxV();
     }
 
-    private void checkMinMaxV() {
-        boolean price = mParamsForQuery.getMaxPrice() >= mParamsForQuery.getMinPrice();
-        boolean surface = mParamsForQuery.getMaxSurface() >= mParamsForQuery.getMinSurface();
-        if (price && surface) sendQuery();
-        else {
-            String msg = getResources().getString(R.string.search_min_max_velues_error);
-            NotifyBySnackBar.showSnackBar(1, view, msg);
+    private fun getIntValues(value: String): Int {
+        return if (value == "") 0 else value.toInt()
+    }
+
+    private fun sendQuery() {
+        mSearchEngineViewModel!!.buildAndSendSearchEstateQuery(mParamsForQuery)
+        val ma = requireActivity() as MainActivity
+        ma.onBackPressed()
+    }
+
+    override fun onDateSet(datePicker: DatePicker, i: Int, i1: Int, i2: Int) {
+        val calendar = Calendar.getInstance()
+        calendar[Calendar.YEAR] = i
+        calendar[Calendar.MONTH] = i1
+        calendar[Calendar.DAY_OF_MONTH] = i2
+        val date = calendar.time
+        mMillisDateToSearchFrom = calendar.timeInMillis
+        setDateInputField(Utils.getUSFormatOfDate(date))
+    }
+
+    override fun onDestroyView() {
+        binding = null
+        super.onDestroyView()
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(): SearchEngine {
+            return SearchEngine()
         }
-    }
-
-    private int getIntValues(String value) {
-        return value.equals("") ? 0 : Integer.parseInt(value);
-    }
-
-    private void sendQuery() {
-        mSearchEngineViewModel.buildAndSendSearchEstateQuery(mParamsForQuery);
-        MainActivity ma = (MainActivity) requireActivity();
-        ma.onBackPressed();
-    }
-
-    @Override
-    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR, i);
-        calendar.set(Calendar.MONTH, i1);
-        calendar.set(Calendar.DAY_OF_MONTH, i2);
-        Date date = calendar.getTime();
-        mMillisDateToSearchFrom = calendar.getTimeInMillis();
-        setDateInputField(Utils.getUSFormatOfDate(date));
-    }
-
-    @Override
-    public void onDestroyView() {
-        binding = null;
-        super.onDestroyView();
     }
 }
