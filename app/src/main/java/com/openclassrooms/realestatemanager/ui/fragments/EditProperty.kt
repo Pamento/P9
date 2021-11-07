@@ -205,7 +205,7 @@ class EditProperty : Fragment(), OnDateSetListener {
     private fun handleSwitchEvent() {
         mIsPropertySold = !mIsPropertySold
         if (mIsPropertySold) {
-            setDateInputField(Utils.getTodayDate(), 1)
+            setDateInputField(Utils.todayDate, 1)
             mMillisOfSoldDate = System.currentTimeMillis()
             binding!!.addFDateSoldOn.setOnClickListener {
                 isDateRegister = false

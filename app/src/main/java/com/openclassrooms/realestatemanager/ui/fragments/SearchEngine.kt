@@ -57,7 +57,7 @@ class SearchEngine : Fragment(), OnDateSetListener {
     }
 
     private fun setOnDateRegisterListener() {
-        setDateInputField(Utils.getTodayDate())
+        setDateInputField(Utils.todayDate)
         binding!!.searchFOnMarketSince.setOnClickListener { openDatePicker() }
     }
 

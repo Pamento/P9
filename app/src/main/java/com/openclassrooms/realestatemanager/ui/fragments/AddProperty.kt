@@ -149,7 +149,7 @@ class AddProperty : Fragment(), OnDateSetListener {
     // SET UI
     private fun setCreationDate() {
         mMillisOfRegisterProperty = System.currentTimeMillis()
-        setDateInputField(Utils.getTodayDate(), 0)
+        setDateInputField(Utils.todayDate, 0)
         setListenerDatePicker()
     }
 
@@ -183,7 +183,7 @@ class AddProperty : Fragment(), OnDateSetListener {
     private fun handleSwitchEvent() {
         mIsPropertySold = !mIsPropertySold
         if (mIsPropertySold) {
-            setDateInputField(Utils.getTodayDate(), 1)
+            setDateInputField(Utils.todayDate, 1)
             mMillisOfSoldDate = System.currentTimeMillis()
             binding.addFDateSoldOn.setOnClickListener {
                 isDateRegister = false

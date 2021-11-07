@@ -1,21 +1,17 @@
-package com.openclassrooms.realestatemanager.util;
+package com.openclassrooms.realestatemanager.util
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.Build;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.math.roundToInt
 
 /**
  * Created by Philippe on 21/02/2018.
  */
-
-public class Utils {
-
+object Utils {
     /**
      * Conversion d'un prix d'un bien immobilier (Dollars vers Euros)
      * NOTE : NE PAS SUPPRIMER, A MONTRER DURANT LA SOUTENANCE
@@ -23,8 +19,9 @@ public class Utils {
      * @param dollars value to convert
      * @return converted value of money
      */
-    public static int convertDollarToEuro(int dollars) {
-        return (int) Math.round(dollars * 0.812);
+    @JvmStatic
+    fun convertDollarToEuro(dollars: Int): Int {
+        return (dollars * 0.812).roundToInt()
     }
 
     /**
@@ -33,8 +30,9 @@ public class Utils {
      * @param euros value to convert
      * @return converted value of money
      */
-    public static int convertEuroToDollar(int euros) {
-        return (int) Math.round(euros * 1.137);
+    @JvmStatic
+    fun convertEuroToDollar(euros: Int): Int {
+        return (euros * 1.137).roundToInt()
     }
 
     /**
@@ -43,14 +41,17 @@ public class Utils {
      *
      * @return data format in english version
      */
-    public static String getTodayDate() {
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
-        return dateFormat.format(new Date());
-    }
+    @JvmStatic
+    val todayDate: String
+        get() {
+            val dateFormat: DateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.US)
+            return dateFormat.format(Date())
+        }
 
-    public static String getUSFormatOfDate(Date date) {
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
-        return dateFormat.format(date);
+    @JvmStatic
+    fun getUSFormatOfDate(date: Date): String {
+        val dateFormat: DateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.US)
+        return dateFormat.format(date)
     }
 
     /**
@@ -60,9 +61,24 @@ public class Utils {
      * @return boolean true or false about question if is internet available
      */
     //@SuppressWarnings("deprecation")
-    public static Boolean isInternetAvailable(Context context) {
-        ConnectivityManager cm = (ConnectivityManager) context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo nI = cm.getActiveNetworkInfo();
-        return nI != null && nI.getState() == NetworkInfo.State.CONNECTED;
+    @JvmStatic
+    fun isInternetAvailable(context: Context): Boolean {
+        val cm =
+            context.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val nI = cm.activeNetworkInfo
+        val activeNetwork = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE)
+        val isModileActive: Boolean = activeNetwork?.isConnected == true
+        //return nI != null && nI.state == NetworkInfo.State.CONNECTED
+        return nI != null && isModileActive
     }
+
+    /**
+     * Alternative solution
+     *
+    fun isInternetConnected(context: Context): Boolean {
+        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
+        return activeNetwork?.isConnectedOrConnecting == true
+    }
+    */
 }
