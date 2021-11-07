@@ -5,6 +5,7 @@ import com.openclassrooms.realestatemanager.ui.fragments.MapFragment.Companion.n
 import androidx.appcompat.app.AppCompatActivity
 import com.openclassrooms.realestatemanager.util.enums.EFragments
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import com.openclassrooms.realestatemanager.R
 import com.openclassrooms.realestatemanager.util.notification.NotifyBySnackBar
@@ -20,6 +21,7 @@ import com.openclassrooms.realestatemanager.util.Constants.Constants
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
+    private val TAG = "MainActivity"
     private lateinit var view: View
     private lateinit var binding: ActivityMainBinding
     private var mActivityHasTwoFragment = false
@@ -245,10 +247,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun runCommand(commandCode: Int) {
+        Log.i(TAG, "runCommand:=: $mEFragments")
         when (mEFragments) {
             EFragments.ADD -> {
                 val aF =
                     mFragmentManager.findFragmentByTag(Constants.ADD_FRAGMENT) as AddProperty?
+                aF?.let {
+                    Log.i(TAG, "runCommand: Fragment Add Manager is NOT null")
+                }
                 aF?.checkFormValidityBeforeSave()
             }
             EFragments.EDIT -> {

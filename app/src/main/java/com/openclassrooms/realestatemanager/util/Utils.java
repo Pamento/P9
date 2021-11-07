@@ -59,7 +59,7 @@ public class Utils {
      *
      * @return boolean true or false about question if is internet available
      */
-    @SuppressWarnings("deprecation")
+    //@SuppressWarnings("deprecation")
     public static Boolean isInternetAvailable(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo nI = cm.getActiveNetworkInfo();

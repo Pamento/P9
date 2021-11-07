@@ -48,7 +48,7 @@ import java.io.File
 import java.util.*
 
 class AddProperty : Fragment(), OnDateSetListener {
-
+    private final val TAG = "MainActivity-aDD"
     companion object {
         @JvmStatic
         fun newInstance(): AddProperty {
@@ -58,7 +58,8 @@ class AddProperty : Fragment(), OnDateSetListener {
 
     private var mView: View? = null
     private var mAddPropertyViewModel: AddPropertyViewModel? = null
-    private var binding: FragmentAddPropertyBinding? = null
+    private var _binding: FragmentAddPropertyBinding? = null
+    private val binding get() = _binding!!
     private var amenitiesBinding: AmenitiesCheckboxesBinding? = null
     private var formAddressBinding: FormAddressPropertyBinding? = null
     private var imagesRecycler: RecyclerView? = null
@@ -76,10 +77,10 @@ class AddProperty : Fragment(), OnDateSetListener {
         savedInstanceState: Bundle?
     ): View {
         initViewModel()
-        binding = FragmentAddPropertyBinding.inflate(inflater, container, false)
+        _binding = FragmentAddPropertyBinding.inflate(inflater, container, false)
         bindIncludesLayouts()
         setEventListener()
-        return binding!!.root
+        return binding.root
     }
 
     private fun initViewModel() {
@@ -133,7 +134,7 @@ class AddProperty : Fragment(), OnDateSetListener {
             requireContext(),
             android.R.layout.simple_dropdown_item_1line, types
         )
-        binding!!.addFTypeDropdown.setAdapter(adapter)
+        binding.addFTypeDropdown.setAdapter(adapter)
     }
 
     private fun setAgentSpinner() {
@@ -142,7 +143,7 @@ class AddProperty : Fragment(), OnDateSetListener {
             requireContext(),
             android.R.layout.simple_dropdown_item_1line, agents
         )
-        binding!!.addFAgent.setAdapter(adapter)
+        binding.addFAgent.setAdapter(adapter)
     }
 
     // SET UI
@@ -153,7 +154,7 @@ class AddProperty : Fragment(), OnDateSetListener {
     }
 
     private fun setListenerDatePicker() {
-        binding!!.addFDateSince.setOnClickListener {
+        binding.addFDateSince.setOnClickListener {
             showDatePickerDialog()
             isDateRegister = true
         }
@@ -170,13 +171,13 @@ class AddProperty : Fragment(), OnDateSetListener {
     }
 
     private fun handleSoldDateInput() {
-        binding!!.addFDateSoldOn.isEnabled = mIsPropertySold
+        binding.addFDateSoldOn.isEnabled = mIsPropertySold
     }
 
     private fun setEventListener() {
-        binding!!.addFBtnAddImgCamera.setOnClickListener { takePictureIntent() }
-        binding!!.addFBtnAddImgGallery.setOnClickListener { openGallery() }
-        binding!!.addFSoldSwitch.setOnClickListener { handleSwitchEvent() }
+        binding.addFBtnAddImgCamera.setOnClickListener { takePictureIntent() }
+        binding.addFBtnAddImgGallery.setOnClickListener { openGallery() }
+        binding.addFSoldSwitch.setOnClickListener { handleSwitchEvent() }
     }
 
     private fun handleSwitchEvent() {
@@ -184,15 +185,15 @@ class AddProperty : Fragment(), OnDateSetListener {
         if (mIsPropertySold) {
             setDateInputField(Utils.getTodayDate(), 1)
             mMillisOfSoldDate = System.currentTimeMillis()
-            binding!!.addFDateSoldOn.setOnClickListener {
+            binding.addFDateSoldOn.setOnClickListener {
                 isDateRegister = false
                 showDatePickerDialog()
             }
         } else {
             setDateInputField(requireActivity().resources.getString(R.string.add_sold_on), 1)
             mMillisOfSoldDate = 0
-            if (binding!!.addFDateSoldOn.hasOnClickListeners()) {
-                binding!!.addFDateSoldOn.setOnClickListener(null)
+            if (binding.addFDateSoldOn.hasOnClickListeners()) {
+                binding.addFDateSoldOn.setOnClickListener(null)
             }
         }
         handleSoldDateInput()
@@ -200,14 +201,14 @@ class AddProperty : Fragment(), OnDateSetListener {
 
     private fun setDateInputField(date: String, mode: Int) {
         if (mode == 1) {
-            binding!!.addFDateSoldOn.text = date
+            binding.addFDateSoldOn.text = date
         } else {
-            binding!!.addFDateSince.text = date
+            binding.addFDateSince.text = date
         }
     }
 
     private fun setRecyclerView() {
-        imagesRecycler = binding!!.addFImagesRecycler
+        imagesRecycler = binding.addFImagesRecycler
         mImageAdapter = ImageListOfAddPropertyAdapter(imagesToAdd)
         imagesRecycler!!.adapter = mImageAdapter
         imagesRecycler!!.setHasFixedSize(true)
@@ -244,8 +245,8 @@ class AddProperty : Fragment(), OnDateSetListener {
         }
 
     private fun bindIncludesLayouts() {
-        val amenitiesView: View = binding!!.addFAmenities.root
-        val addressFormView: View = binding!!.addFFormAddress.root
+        val amenitiesView: View = binding.addFAmenities.root
+        val addressFormView: View = binding.addFFormAddress.root
         amenitiesBinding = AmenitiesCheckboxesBinding.bind(amenitiesView)
         formAddressBinding = FormAddressPropertyBinding.bind(addressFormView)
     }
@@ -296,7 +297,7 @@ class AddProperty : Fragment(), OnDateSetListener {
 
     // Add coma to price during put in input
     private fun setOnPriceInputListener() {
-        binding!!.addFInputPrice.addTextChangedListener(object : TextWatcher {
+        binding.addFInputPrice.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(
                 charSequence: CharSequence,
                 i: Int,
@@ -317,7 +318,7 @@ class AddProperty : Fragment(), OnDateSetListener {
     }
 
     private val priceFilter =
-        InputFilter { source: CharSequence, start: Int, end: Int, dest: Spanned?, dstart: Int, dend: Int ->
+        InputFilter { source: CharSequence, _: Int, _: Int, _: Spanned?, _: Int, _: Int ->
             StringModifier.addComaInPrice(source.toString())
         }
 
@@ -325,38 +326,33 @@ class AddProperty : Fragment(), OnDateSetListener {
     // If so, this function run save method
     fun checkFormValidityBeforeSave() {
         var checked = 0
+        Log.i(TAG, "checkFormValidityBeforeSave: checked:: $checked")
+        val isWifi: Boolean = Utils.isInternetAvailable(requireContext())
+        Log.i(TAG,"checkFormValidityBeforeSave: wifi:: $isWifi")
         val requiredValues = BooleanArray(8)
         // image
         requiredValues[0] = imagesToAdd.size == 0
         // type
-        requiredValues[1] = binding!!.addFTypeDropdown.text.toString() == ""
+        requiredValues[1] = binding.addFTypeDropdown.text.toString() == ""
         // price
-        requiredValues[2] = binding!!.addFInputPrice.text.toString() == ""
+        requiredValues[2] = binding.addFInputPrice.text.toString() == ""
         // address1
-        requiredValues[3] =
-            Objects.requireNonNull(binding!!.addFFormAddress.addAddress1FormAddress.text)
-                .toString() == ""
+        requiredValues[3] = binding.addFFormAddress.addAddress1FormAddress.text.toString() == ""
         // quarter
-        requiredValues[4] =
-            Objects.requireNonNull(binding!!.addFFormAddress.addAddressFormQuarter.text)
-                .toString() == ""
+        requiredValues[4] = binding.addFFormAddress.addAddressFormQuarter.text.toString() == ""
         // city
-        requiredValues[5] =
-            Objects.requireNonNull(binding!!.addFFormAddress.addAddressFormCity.text)
-                .toString() == ""
+        requiredValues[5] = binding.addFFormAddress.addAddressFormCity.text.toString() == ""
         // postalCode
-        requiredValues[6] =
-            Objects.requireNonNull(binding!!.addFFormAddress.addAddressFormPostalCode.text)
-                .toString() == ""
+        requiredValues[6] = binding.addFFormAddress.addAddressFormPostalCode.text.toString() == ""
         // agent
-        requiredValues[7] = binding!!.addFAgent.text.toString() == ""
+        requiredValues[7] = binding.addFAgent.text.toString() == ""
         for (value in requiredValues) {
             if (value) checked++
         }
         if (checked == 0) {
             mAddPropertyViewModel!!.setImagesOfPropertyList(mImageAdapter!!.imageOfPropertyList)
             if (Utils.isInternetAvailable(requireContext())) {
-                geoLocationOfProperty
+                geoLocationOfProperty()
             } else {
                 createProperty()
             }
@@ -366,40 +362,44 @@ class AddProperty : Fragment(), OnDateSetListener {
         }
     }
 
-    private val geoLocationOfProperty: Unit
-        get() {
+    private fun geoLocationOfProperty() {
             val address1 = formAddressBinding!!.addAddress1FormAddress.editableText.toString()
-            val city = formAddressBinding!!.addAddressFormCity.editableText.toString()
-            val quarter = formAddressBinding!!.addAddressFormQuarter.editableText.toString()
-            val address = StringModifier.formatAddressToGeocoding(address1, city, quarter)
-            mAddPropertyViewModel!!.getLocationFromAddress(address)
-            setOnResponseObserver()
-        }
+        val city = formAddressBinding!!.addAddressFormCity.editableText.toString()
+        val quarter = formAddressBinding!!.addAddressFormQuarter.editableText.toString()
+        val address = StringModifier.formatAddressToGeocoding(address1, city, quarter)
+        mAddPropertyViewModel!!.getLocationFromAddress(address)
+        Log.i(TAG, "geoLocationOfProperty: $address")
+        setOnResponseObserver()
+    }
 
     private fun setOnResponseObserver() {
+        Log.i(TAG, "setOnResponseObserver: ")
         mAddPropertyViewModel!!.geoLocationOfProperty!!.observe(
             viewLifecycleOwner,
-            { location: Location? ->
-                if (location != null) {
+            { location ->
+                location?.let {
                     mLocation = location
+                    Log.i(TAG, "setOnResponseObserver: location:: $location")
                     createProperty()
+                    // TODO Wi-Fi is "true" and must be "false" and location is null !! Why Wi-Fi is "true" ?!
                 }
             })
     }
 
     private fun createProperty() {
+        Log.i(TAG, "createProperty: ")
         // Get inputs values:
-        val type = binding!!.addFTypeDropdown.text.toString()
-        val desc = binding!!.addFDescription.editableText.toString()
-        val surfaceStr = binding!!.addFInputSurface.text.toString()
+        val type = binding.addFTypeDropdown.text.toString()
+        val desc = binding.addFDescription.editableText.toString()
+        val surfaceStr = binding.addFInputSurface.text.toString()
         val surface = if (TextUtils.isEmpty(surfaceStr)) 0 else surfaceStr.toInt()
-        val priceStr = binding!!.addFInputPrice.text.toString()
+        val priceStr = binding.addFInputPrice.text.toString()
         val price = if (TextUtils.isEmpty(priceStr)) 0 else priceStr.toInt()
-        val roomsStr = binding!!.addFInputRooms.text.toString()
+        val roomsStr = binding.addFInputRooms.text.toString()
         val rooms = if (TextUtils.isEmpty(roomsStr)) 0 else roomsStr.toInt()
-        val bedroomsStr = binding!!.addFInputBedrooms.text.toString()
+        val bedroomsStr = binding.addFInputBedrooms.text.toString()
         val bedrooms = if (TextUtils.isEmpty(bedroomsStr)) 0 else bedroomsStr.toInt()
-        val bathroomsStr = binding!!.addFInputBathrooms.text.toString()
+        val bathroomsStr = binding.addFInputBathrooms.text.toString()
         val bathrooms = if (TextUtils.isEmpty(bathroomsStr)) 0 else bathroomsStr.toInt()
         val address1 = formAddressBinding!!.addAddress1FormAddress.editableText.toString()
         val address2 = formAddressBinding!!.addAddress2FormAddressSuite.editableText.toString()
@@ -409,7 +409,7 @@ class AddProperty : Fragment(), OnDateSetListener {
         val postalCodeStr = formAddressBinding!!.addAddressFormPostalCode.editableText.toString()
         val postalCode = if (TextUtils.isEmpty(postalCodeStr)) 0 else postalCodeStr.toInt()
         val amenities = amenities
-        val agent = binding!!.addFAgent.text.toString()
+        val agent = binding.addFAgent.text.toString()
         val dateR = mMillisOfRegisterProperty.toString()
         val dateSold = if (mMillisOfSoldDate == 0L) "" else mMillisOfSoldDate.toString()
         mAddPropertyViewModel!!.createNewProperty(
@@ -439,6 +439,7 @@ class AddProperty : Fragment(), OnDateSetListener {
     }
 
     private fun saveDataAndNotifyUser() {
+        Log.i(TAG, "saveDataAndNotifyUser: ")
         mAddPropertyViewModel!!.createProperty()
         mAddPropertyViewModel!!.createPropertyResponse.observe(
             viewLifecycleOwner,
@@ -464,6 +465,7 @@ class AddProperty : Fragment(), OnDateSetListener {
     }
     private val createPropertyObserver = Observer { aLong: Long ->
         val res = aLong == -1L
+        Log.i(TAG, "createPropertyObserver:: response code:: $res ")
         val notify = NotificationsUtils(requireContext())
         if (res) {
             notify.showWarning(requireContext(), Constants.SAVE_PROPERTY_FAIL)
@@ -537,7 +539,7 @@ class AddProperty : Fragment(), OnDateSetListener {
     override fun onDestroyView() {
         formAddressBinding = null
         amenitiesBinding = null
-        binding = null
+        _binding = null
         super.onDestroyView()
     }
 
